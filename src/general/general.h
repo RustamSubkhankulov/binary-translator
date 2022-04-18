@@ -8,12 +8,6 @@ const double Precise = 0.000001;
 
 //===================================================================
 
-#ifdef LOGS
-
-    //#define GENERAL_LOGS
-
-#endif 
-
 #ifdef GENERAL_LOGS
 
     #define general_log_report() \
@@ -124,20 +118,6 @@ const double Precise = 0.000001;
                                                                     \
     } while(0);                                                     \
 }
-
-//===================================================================
-
-#ifdef GENERAL_LOGS
-
-       #define general_log_report() \
-               log_report()
-
-#else
-
-       #define general_log_report() ""
-
-#endif
-
 
 //===================================================================
 
