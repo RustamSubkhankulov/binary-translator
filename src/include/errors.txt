@@ -1,0 +1,740 @@
+DEF_ERR(100, STK_INVALSIZE, 
+Invalid size of the stack)
+
+DEF_ERR(101, STK_NO_MEM,
+Can not find free memory)
+
+DEF_ERR(102, STK_OVRFLW,
+Max capacity of stack was reached)
+
+DEF_ERR(103, STK_UNDFLW,
+Stack is empty)
+
+DEF_ERR(104, STK_NO_ELEMS_PUSHED, 
+No elements have been pushed to the stack)
+
+DEF_ERR(105, STK_INV_NEW_SIZE,
+Invalid new size in stack_set_size)
+
+DEF_ERR(106, STK_CTOR_UNPREPARED,
+Stack is not prepared for stack constructor)
+
+DEF_ERR(107, STK_SZ_LESS_CT, 
+New size of stack in 'stack_resize' can not be less than number of elements in it)
+
+DEF_ERR(108, STK_UNKNOWN_RESZ_PARAM,
+Unknown resize parameter)
+
+DEF_ERR(109, STK_INV_SZ_ELEM,
+Invalid size of elem_t)
+
+DEF_ERR(110, STK_INV_CAPACITY,
+Invalid capacity of the stack)
+
+DEF_ERR(111, STK_INV_ELEM_CT,
+Invalid number of elements in stack)
+
+DEF_ERR(112, STK_CAPACITY_LESS_CT,
+Stack: capacity can not be less than number of elements in it)
+
+DEF_ERR(113, STK_INV_FREE_DATA,
+Stack: free data for elements is not valid. Every element in free data must equal 0)
+
+DEF_ERR(114, STK_INV_DATA_PTR, 
+Invalid data pointer is stuck structure)
+
+DEF_ERR(115, STK_POISON_CHECK,
+Stack poison check failed)
+
+DEF_ERR(116, STK_EMPTY_CHECK,
+Stack empty check failed)
+
+DEF_ERR(117, STK_CANARY1_ERR,
+Left canary protection has fallen. Save yourself if you can)
+
+DEF_ERR(118, STK_CANARY2_ERR,
+Right canary protection has fallen. Save yourself if you can)
+
+DEF_ERR(119, STK_DATA_CANARY1_ERR,
+Left data canary protection has fallen. Save yourself if you can)
+
+DEF_ERR(120, STK_DATA_CANARY2_ERR,
+Right data canary protection has fallen. Save yourself if you can)
+
+DEF_ERR(121, STK_INV_ORIG_FUNC,
+Invalid stack origin function name)
+
+DEF_ERR(122, STK_INV_ORIG_FILE,
+Invalid stack origin file name)
+
+DEF_ERR(123, STK_INV_ORIG_LINE,
+Invalid stack origin line number)
+
+DEF_ERR(124, STK_INV_SELF_PTR,
+Invalid stack self pointer)
+
+DEF_ERR(125, STK_BASE_HASH_ERR,
+Invalid stack base hash)
+
+DEF_ERR(126, STK_DATA_HASH_ERR,
+Invalid stack data hash)
+
+
+DEF_ERR(200, INV_FILE_NAME,
+Invalid file name)
+
+DEF_ERR(201, FOPEN_ERROR,
+File can not be opened)
+
+DEF_ERR(202, FILE_OUTPUT_ERROR,
+File output error)
+
+DEF_ERR(203, CLEAR_MEM_CHECK_ERR,
+Memory cleanliness check is failed)
+
+DEF_ERR(204, INV_ERROR_CODE,
+Invalid error code)
+
+DEF_ERR(205, INV_STACK_PTR,
+Invalid stack pointer)
+
+DEF_ERR(206, RECALLOC_INV_NUM_OF_ELEMS,
+Invalid unmber of elements argument in recalloc)
+
+DEF_ERR(207, RECALLOC_INV_POINTER,
+Invalid pointer in recalloc argumnet)
+
+DEF_ERR(208, RECALLOC_INV_SIZE_OF_ELEM,
+Invalid size of element in recalloc argument)
+
+DEF_ERR(209, CANNOT_ALLOCATE_MEM,
+Memory allocation error)
+
+DEF_ERR(210, INV_FOPEN_MODE,
+Invalid open mode in open_file function)
+
+
+DEF_ERR(301, TEXT_PROCESSING_ERR,
+Error during text processing)
+
+DEF_ERR(302, INV_TEXT_PTR,
+Invalid text structure pointer)
+
+DEF_ERR(303, EMPTY_OPER_NAME,
+Empty operation name)
+
+DEF_ERR(304, FWRITE_ERR,
+Fwrite error)
+
+DEF_ERR(305, COMPILATION_ERR,
+Invalid instruction string in text structure)
+
+DEF_ERR(306, CODE_FILE_SIZE_ERR,
+Size of binary code file after assembling is incorrect)
+
+DEF_ERR(307, EMPTY_OPERNAMEBUF,
+Empty operation name buffer)
+
+DEF_ERR(308, INV_PROCSTRUCT_PTR,
+Invalid performstruct structure pointer)
+
+DEF_ERR(309, FREAD_ERR,
+Fread returning value is not equal to size of file)
+
+DEF_ERR(310, LABEL_NAME_TOO_THICK,
+Label name is too big. Consider increasing LABEL_NAME_SIZE in processor_general.h)
+
+DEF_ERR(311, REPEATING_LABELS,
+Label is repeating. Consider renaming one of the repeating labels)
+
+DEF_ERR(312, INV_DESTINATION_OF_JMP,
+Invalid destination ip in jump command)
+
+DEF_ERR(313, NO_LABEL_FOR_JUMP,
+No label founded for jump destination)
+
+DEF_ERR(314, INV_LABEL_DEFINITION,
+Invalid label definition)
+
+DEF_ERR(315, NO_COMMAND_IN_STRING,
+Invalid instruction string(no commands in string))
+
+DEF_ERR(316, CANNOT_ADD_NEW_LABEL,
+Error: can not add new label)
+
+DEF_ERR(317, INV_STRING_NUMBER,
+Number of string is lower than zero or more than number of strings)
+
+DEF_ERR(318, INV_ASMSTRUCT_PTR,
+Null pointer to the assembler structure)
+
+DEF_ERR(319, ASMSTRUCT_INV_PTR,
+Null pointer to the assembler structure)
+
+DEF_ERR(320, ASMSTRUCT_EMPTY_CODE_ARR,
+Empty code array in assembler structure)
+
+DEF_ERR(323, ASMSTRUCT_INV_IP,
+Invalid instruction pointer in code array)
+
+
+DEF_ERR(401, HDR_INV_SIGN,
+Invalid signature in header of code file)
+
+DEF_ERR(402, HDR_INV_VERSION,
+Versions of processor and assembled code are not equal)
+
+DEF_ERR(403, HDR_INV_FILE_SIZE,
+Size of code file in header and real size are not equal)
+
+DEF_ERR(404, HDR_INV_CMD_NUMBERS,
+Invalid command numbers in header of code file)
+
+DEF_ERR(405, INV_FILE_PTR,
+Invalid FILE* pointer)
+
+DEF_ERR(406, INV_HDR_PTR,
+Invalid header structure pointer)
+
+DEF_ERR(407, FCLOSE_ERR,
+File can not be closed)
+
+DEF_ERR(408, TEXT_NO_STRINGS,
+No strings in text structure)
+
+DEF_ERR(409, NULL_STRING_TEXT,
+Null string in text structure)
+
+DEF_ERR(410, LOG_REPORT_PARAMS_ERR,
+Invalid arguments in log_report)
+
+DEF_ERR(411, PROC_RAM_IS_NULL,
+Null pointer in processor structure)
+
+DEF_ERR(412, INV_BUF_PTR,
+Null pointer to the buffer used in text stucture)
+
+DEF_ERR(413, ADD_STRING_JUMP_ERR,
+Error occuder during adding in jump by the number of string )
+
+DEF_ERR(414, SEARCH_LABEL_NAME_ERR,
+Error occured during search for label name in label array)
+
+DEF_ERR(415, ADD_UNKNOWN_DEST_JUMP_ERR,
+Error occured during adding unwnown-destination jump)
+
+
+DEF_ERR(501, INV_CODE_ARRAY_PTR,
+Invalid pointer to the code array in procstruct structure)
+
+DEF_ERR(502, PROC_INV_IP,
+Invalid instruction pointer (pointing to the outside of code array))
+
+DEF_ERR(503, PROC_INV_OPER_CODE,
+Invalid operation code in procstruct->code_array)
+
+DEF_ERR(504, PROC_DIV_BY_ZERO,
+Processor error: number cannot be divided by zero)
+
+DEF_ERR(505, FILE_INPUT_ERR,
+File input error)
+
+DEF_ERR(506, INV_INSTR_PTR,
+Instruction pointer do not point at the right place at the end of processing code array)
+
+DEF_ERR(507, NULL_STRING,
+Null string)
+
+DEF_ERR(508, INV_REGISTER_NUMBER,
+Number of register is lower than zero or higher than number of registers available)
+
+DEF_ERR(510, RAM_INV_ADDRESS,
+Invalid ram address (number of element is more than ram capacity))
+
+DEF_ERR(511, INV_ARGUMENT_NUMBER,
+Number of register is lower than zero or higher than number of registers available)
+
+DEF_ERR(512, INV_RAM_NUMBER,
+Number of register is lower than zero or higher than number of registers available)
+
+DEF_ERR(513, STACK_PROC_ERROR,
+Error occured with stack during executing)
+
+DEF_ERR(514, PROC_INVALID_CMND,
+Incorrect command in code array)
+
+
+DEF_ERR(601, INV_DISASMSTRUCT_PTR,
+Invalid disasmstruct structure pointer)
+
+DEF_ERR(602, DISASM_INV_OPER_CODE,
+Invalid operation code in code array during disassembling)
+
+DEF_ERR(701, INV_LIST_STRUCTURE_PTR,
+Null pointer to the list structure)
+
+DEF_ERR(702, LIST_UNPREPARED,
+List structure is not prepared for constructor)
+
+DEF_ERR(703, LIST_NEXT_IS_NULL,
+NULL pointer to the list.next )
+
+DEF_ERR(704, LIST_DATA_IS_NULL,
+Data array in list is NULL)
+
+DEF_ERR(705, SIZE_MORE_THAN_CAP,
+Size of list is more than its capacity)
+
+DEF_ERR(706, INV_LIST_CAPACITY,
+Invalid list capacity value)
+
+DEF_ERR(707, INV_LIST_SIZE,
+Invalid list size value)
+
+DEF_ERR(708, LIST_NO_LAST_ELEM,
+No last element in list)
+
+DEF_ERR(709, LIST_OVERFLOW,
+List reached its capacity)
+
+DEF_ERR(710, LIST_UNDERFLOW,
+No element in list)
+
+DEF_ERR(711, LIST_EMPTY_INDEX,
+Index in list is empty)
+
+DEF_ERR(713, LIST_INV_HEAD,
+Invalid head element of list)
+
+DEF_ERR(714, LIST_INV_TAIL,
+Invalid tail element of list)
+
+DEF_ERR(715, LIST_INV_INDEX,
+Invalid index of list element)
+
+DEF_ERR(716, LIST_PUSH_BY_ZERO,
+Can not push after zero element)
+
+DEF_ERR(717, LIST_POP_BY_ZERO,
+Can not pop from zero element)
+
+DEF_ERR(718, TAIL_EQUAL_HEAD,
+Tail is equal head while size more tha 1)
+
+DEF_ERR(719, POP_LAST_FALSE_CALL,
+Pop_last called but element is not last one)
+
+DEF_ERR(720, PUSH_FIRST_FALSE_CALL,
+Push_first called but element is not first)
+
+DEF_ERR(721, TAIL_NEXT_IS_NOT_ZERO,
+Next element for tail is not zero)
+
+DEF_ERR(722, LIST_INV_MAX_CAPACITY,
+Max list capacity is less than  starting size)
+
+DEF_ERR(723, CMND_LINE_ARGC_INV_NUM,
+Invalid number 0f command line arguments)
+
+DEF_ERR(724, LIST_INVALID_INDEX,
+Invalid index of element)
+
+DEF_ERR(725, LIST_INV_BASE_HASH,
+Invalid list structure base hash)
+
+DEF_ERR(726, LIST_INV_DATA_HASH,
+Invalid list structure data hash)
+
+DEF_ERR(727, LIST_INV_NEXT_HASH,
+Invalid list structure next hash)
+
+DEF_ERR(728, LIST_PREV_IS_NULL,
+Null pointer to the prev indexes array)
+
+DEF_ERR(729, LIST_INV_PREV_HASH,
+Invalid previous element array hash)
+
+DEF_ERR(730, LIST_DATA_PTR_CHANGED,
+Data pointer do not match with his correct value)
+
+DEF_ERR(731, LIST_NEXT_PTR_CHANGED,
+Next pointer do not match with his correct value)
+
+DEF_ERR(732, LIST_PREV_PTR_CHANGED,
+Prev pointer do not match with his correct value)
+
+DEF_ERR(733, LIST_INV_SELF_PTR,
+Invalid self pointer of list structure)
+
+DEF_ERR(734, LIST_INV_TAIL_NEXT,
+Next element index for tail is not zero)
+
+DEF_ERR(735, LIST_INV_HEAD_PREV,
+Previous element index for head element is not zero)
+
+DEF_ERR(736, LIST_INV_PREV_FOR_FREE_ELEM,
+Invalid free element: prev for free element is not -1)
+
+DEF_ERR(739, LIST_INV_FREE,
+List->free invalid value)
+
+DEF_ERR(740, INV_LOGICAL_NUMBER,
+Invalid number of element in logical order)
+
+DEF_ERR(741, LIST_CONNECTIONS_RUINED,
+Connections in list were ruined)
+
+DEF_ERR(742, LIST_PREV_IS_INCORRECT,
+List->prev is -1 for not empty element)
+
+DEF_ERR(743, LIST_ELEMENT_LOOP,
+Elements in list are looped)
+
+DEF_ERR(744, LIST_INVALID_FREE_AMOUNT,
+Invalid number of free eleemnts in list)
+
+DEF_ERR(745, INV_IS_LINEARIZED_VALUE,
+List->is_linearized has invalid value (value can be only 1 or 0))
+
+DEF_ERR(746, LIST_PUSH_FIRST_TEST_FAILED,
+Push_first work test was failed. Check out logs to have more information)
+
+DEF_ERR(747, LIST_POP_LAST_TEST_FAILED,
+Pop_last work test was failed. Check out logs to have more information)
+
+DEF_ERR(748, LIST_PUSH_BACK_TEST_FAILED,
+Push_back work test was failed. Check out logs to have more information)
+
+DEF_ERR(749, LIST_DATA_IS_EMPTY,
+List->data on index is empty after push)
+
+DEF_ERR(750, LIST_INV_PREV,
+Incorrect previous element)
+
+DEF_ERR(751, LIST_INV_NEXT,
+Incorrect next element)
+
+DEF_ERR(752, LIST_INV_DATA,
+Incorrect data in list)
+
+DEF_ERR(753, LIST_CTOR_ERR,
+An error occured during constructing list)
+
+DEF_ERR(754, LIST_DTOR_ERR,
+An error iccured duting destruction list)
+
+DEF_ERR(755, LIST_POP_INV_RET_VALUE,
+Incorrect returned value from list)
+
+DEF_ERR(756, LIST_INV_SIZE,
+Invalid size of list)
+
+DEF_ERR(757, LIST_POP_BACK_TEST_FAILED,
+Pop_back work test was failed. Check out logs to have more information)
+
+DEF_ERR(758, LIST_PUSH_FRONT_TEST_FAILED,
+Push_front work test was failed. Check out logs to have more information)
+
+DEF_ERR(759, LIST_POP_FRONT_TEST_FAILED,
+Pop_front work test was failed. Check out logs to have more information)
+
+DEF_ERR(760, LIST_PUSH_AFTER_INDEX_TEST_FAILED,
+Push_after_index test was failed. Check out logs to have more information)
+
+DEF_ERR(761, LIST_PUSH_BEFORE_INDEX_TEST_FAILED,
+Push_before_index test was failed. Check out logs to have more information)
+
+DEF_ERR(762, LIST_POP_BY_INDEX_TEST_FAILED,
+Pop_by_index test was failed. Check out logs to have more information)
+
+DEF_ERR(763, TEST_CRITICAL_ERR,
+Critical error occured during list unit resting)
+
+DEF_ERR(764, LIST_CTOR_TEST_FAILED,
+List_ctor test was failed. Check out logs to have more information)
+
+
+DEF_ERR(801, INV_TREE_PTR,
+Null pointer to the tree structure)
+
+DEF_ERR(802, INV_NODE_PTR,
+Null pointer to the node structure)
+
+DEF_ERR(803, TREE_STRUCT_CTOR_UNPREPARED,
+Tree structure is unprepared for constructing)
+
+DEF_ERR(804, INV_NODE_DOT_PTR,
+Null pointer to the node_dot helping structure)
+
+DEF_ERR(805, ADD_SON_ERROR,
+Can not add son to the node due to it already exists)
+
+DEF_ERR(806, BUFFER_STRUCT_INV_PTR,
+Null pointer to thw buffer structure)
+
+DEF_ERR(807, TREE_TEXT_INV_SYNTAXIS,
+Invalid syntaxis in text file with tree base)
+
+DEF_ERR(808, TREE_TEXT_EMPTY_NODE_NAME,
+Empty name for node in text file with tree base)
+
+DEF_ERR(809, TREE_TEXT_NO_CLOSING_BRACKET,
+No closing bracket in text file with tree base)
+
+DEF_ERR(810, NODE_INV_SPECIAL_FLAG,
+Node with special flag true do not have sons)
+
+DEF_ERR(811, INV_NODE_NAME,
+Invalid name of the node)
+
+DEF_ERR(812, INV_COMPARE_OBJ_PTR,
+Invalid pointer to the compare_obj structure)
+
+DEF_ERR(813, TREE_INV_SEARCH,
+Search for the node that is not an object)
+
+DEF_ERR(814, INV_CASE_IN_AKINATOR_MENU,
+Invalid answer case in menu. How it even possible?)
+
+DEF_ERR(815, INPUT_ERR,
+Error during read from console)
+
+DEF_ERR(816, AKINATOR_MAX_NEW_OBJECTS,
+Number of new objects in akinator reached maximum. Save tree and reboot akinator)
+
+DEF_ERR(817, DIFF_INV_DATA_TYPE,
+Invalid data_type of node)
+
+DEF_ERR(818, OPER_NO_SONS,
+Operand node with no sons)
+
+DEF_ERR(819, INV_VAR_NAME,
+Invalid name of the variable)
+
+DEF_ERR(820, CONSOLE_READ_ERROR,
+Error occurred during read from console)
+
+DEF_ERR(821, NODE_INV_PARENT,
+Invalid parent pointer in node structure)
+
+DEF_ERR(822, NODE_EQUAL_SONS,
+Children of the node can not be both equal)
+
+DEF_ERR(823, NODE_NO_SONS,
+Variable or constant nodes must not have children)
+
+DEF_ERR(824, DIFF_FUNC_FALSE_CALL,
+False call of diff function - not matching type of node data)
+
+DEF_ERR(825, DIFF_INV_OPERAND,
+Unknown operand in operand node)
+
+DEF_ERR(826, DIV_BY_ZERO,
+Cannot divide by zero)
+
+DEF_ERR(827, INV_ADD_PARAMETER,
+Invalid add parameter)
+
+DEF_ERR(828, INV_SONS_FUNCTION_OPERAND,
+Left son for function operand in NULL)
+
+DEF_ERR(901, SYNTAX_ERR,
+Syntax error)
+
+DEF_ERR(902, IS_FUNC_INV_ARG,
+Null pointer instead of identificator name)
+
+DEF_ERR(903, INV_FUNC_CODE,
+Invalid function code)
+
+DEF_ERR(904, IS_CONST_INV_ARG,
+Null pointer instead of identificator name)
+
+DEF_ERR(905, SCAN_ERROR,
+Sscanf error)
+
+DEF_ERR(906, INV_STRING_ARG,
+Null pointer instead of char* pointer to the string)
+
+DEF_ERR(907, INV_CMP_SIGN_CODE,
+Invalid comparison symbol code)
+
+DEF_ERR(908, INV_TOKENS_STRUCT_PTR,
+Invalid pointer to tokens structure)
+
+DEF_ERR(909, INV_TOKEN_PTR,
+Invalid ptr to the token)
+
+DEF_ERR(910, UNKNOWN_TOKEN,
+Unknown token)
+
+DEF_ERR(911, INV_KEY_NODE_CODE,
+Invalid key node code)
+
+DEF_ERR(912, INV_OPER_CODE,
+Invalid operand code)
+
+DEF_ERR(913, INV_NODE_DATA_TYPE,
+Invalid node data type)
+
+DEF_ERR(914, REQUIRE_KEY_WORD,
+No required key word - syntax error)
+
+DEF_ERR(915, MISSING_STATEMENT,
+Missing statement)
+
+DEF_ERR(916, MISSING_ID,
+Missing identificator)
+
+DEF_ERR(917, MISSING_EOL,
+Missing end of the line key word)
+
+DEF_ERR(918, MISSING_SOL,
+Missing start of the line key word)
+
+DEF_ERR(919, INV_LEFT_VALUE,
+Invalid left value of assignment)
+
+DEF_ERR(920, INV_DECL,
+No identificator in declaration)
+
+DEF_ERR(921, FUNC_REDECL,
+Redeclaration of the function)
+
+DEF_ERR(922, TOKENS_AFTER_END,
+Tokens after end of the code are left)
+
+DEF_ERR(923, INV_VAR_NUMBER,
+Invalid number of variables)
+
+DEF_ERR(924, LABEL_REDECL,
+Redeclaration of label)
+
+DEF_ERR(925, FUNC_UNDECLARED,
+Function is undeclared)
+
+DEF_ERR(926, VAR_REDECLARE,
+Variable redeclaration)
+
+DEF_ERR(927, VAR_UNDECLARED,
+Undeclared variable)
+
+DEF_ERR(928, INV_STD_FUNC_CODE,
+Invalid standart function code)
+
+DEF_ERR(929, NULL_VAR_ARR,
+Null ptr to the var array)
+
+DEF_ERR(930, NULL_LABEL_ARR,
+Null ptr to the label array)
+
+DEF_ERR(931, INV_TREE,
+Incorrect built tree)
+
+DEF_ERR(932, NODE_INV_OPER_CODE,
+Invalid operand code in node)
+
+DEF_ERR(933, ASS_TO_PERM,
+Assignment to the permanent value variable)
+
+DEF_ERR(934, INV_TRANS_PTR,
+Invalid pointer to tre trans main structure)
+
+DEF_ERR(935, INV_NAMES_STRUCT_PTR,
+Null pointer to the Names structure)
+
+DEF_ERR(936, INV_VAR_CLASTER_PTR,
+Null pointer to the Var_cluster)
+
+DEF_ERR(937, INV_FUNC_CLASTER_PTR,
+Null pointer to the Func_cluster)
+
+DEF_ERR(938, INV_LABEL_CLASTER_PTR,
+Null pointer to the Label_cluster)
+
+DEF_ERR(939, EMPTY_NAME_SPACE,
+Empty namespaces array in Trans structure)
+
+DEF_ERR(940, INV_ARR_SIZE,
+Size of array can be only constant value more than zero)
+
+DEF_ERR(941, MISSING_CONSTANT,
+Missing constant token)
+
+DEF_ERR(942, ARRAY_WITH_NO_INDEX,
+Cannot use array name without index of the element)
+
+DEF_ERR(943, VAR_WITH_INDEX,
+Cannot use variable name with index)
+
+DEF_ERR(944, ARR_KEY_WORD_WITH_VAR,
+Using array key word with variable of size 1)
+
+DEF_ERR(945, INV_ARG_NUM,
+Invalid number of arguments in func call)
+
+DEF_ERR(946, CMNT_UNCLOSED,
+Unclosed comment in code)
+
+DEF_ERR(947, CMNT_CLOSE_BEFORE,
+Comment closes before being opened)
+
+DEF_ERR(948, INV_COPY_ARG_SIZE,
+Inavalid size of the array aeguement of COPY)
+
+DEF_ERR(949, INV_MANDEL_MODE,
+Inavlid mandelbrot print function mode)
+
+DEF_ERR(950, MANDEL_EVAL_ERR,
+Error occured during mandelbrot evaluations)
+
+DEF_ERR(951, INV_CLOCK_PTR,
+Invalid pointer to the sf::Clock object)
+
+DEF_ERR(952, INV_WINDOW_PTR,
+Invalid pointer to the sf::RenderWindow)
+
+DEF_ERR(953, INV_VECTOR2U_PTR,
+Invalid pointer to sf::Vector2u)
+
+DEF_ERR(954, INV_PATCH_PICT_SIZE,
+Invalid size of the patch picture)
+
+DEF_ERR(855, INV_PATCH_PICT_POS,
+Invalid position of patch picture)
+
+DEF_ERR(1001, INV_HASH_TABLE_PTR,
+Invalid pointer to Hash_table structure)
+
+DEF_ERR(1002, HASH_TABLE_UNPREP,
+Hash_table structure is unprepared for constructing)
+
+DEF_ERR(1003, HASH_TABLE_INV_CONF_SIZE,
+Invalid configure values for max and init sizes of hash table - init more than max)
+
+DEF_ERR(1004, HASH_TABLE_CAP_DECR,
+Can not decrease capacity of hash table)
+
+DEF_ERR(1005, HASH_TABLE_INV_CAP_LESS_SIZE,
+Hash_table: size is more than capacity)
+
+DEF_ERR(1006, HASH_TABLE_INV_DATA_PTR,
+Hash_table: data ptr is NULL although capacity is not equal 0)
+
+DEF_ERR(1007, INV_HASH_FUNC_PTR,
+Null ptr to hash function)
+
+DEF_ERR(1008, HASH_T_ZERO_INIT_CAP,
+Hash_table: zero initial capacity of table)
+
+DEF_ERR(1009, HASH_T_NULL_LIST_PTR,
+Null ptr to list structure in hash_table)
+
+DEF_ERR(1010, HASH_T_MAX_SIZE_REACHED,
+Maximum size of hash table is reached)
+
+DEF_ERR(1100, INV_HAMLET_STRUCTURE_PTR,
+Imvalid pointer to Hamlet structure)
+
+DEF_ERR(1101, NO_STRINGS_IN_TEXT,
+No stings in source text)

@@ -1,0 +1,17 @@
+lumos
+
+    stupefy first riddikulus 1 flipendo
+    stupefy sec riddikulus 3 flipendo
+
+    confundo avada first <= sec cedavra imperio
+    wingardium
+
+        protego avada 997 cedavra flipendo
+
+        protego avada 100 cedavra flipendo
+
+        first riddikulus first + 1 flipendo
+
+    leviosa flipendo
+
+obliviate

@@ -1,0 +1,178 @@
+
+G::= {DEFINITIONS}? "START" ENTITY+ "END"
+
+DEFINITIONS ::= DEFN+ 
+
+ENTITY ::= (STATEMENT | LABEL_DECL)
+
+DEFN ::= "DEFN" ID "BR_OPEN" ID "BR_CLOSE" COMPL_STATEMENT 
+
+COMPL_STATEMENT ::= "FBR_OPEN" STATEMENT+ "FBR_CLOSE"
+
+INSTRUCTION ::=  COMPL_STATEMENT | STATEMENT 
+
+STATEMENT ::= "SOL" ( COND | DECL | CYCLE | ASS | STD_FUNC_CALL | FUNC_CALL | RETURN |  LABEL_JUMP) "EOL"
+
+COND ::= "IF" "BR_OPEN" EXP "BR_CLOSE" "DO" INSTRUCTION ( "ELSE" "DO" INSTRUCTION)?
+
+ASS ::= ARR_ASS | SIN_ASS
+
+ARR_ASS ::= ID "ASSGN" EXP
+
+RETURN ::= "RET" EXP
+
+DECL ::= "DECL" ASS
+
+STD_FUNC_CALL ::= STD_FUNC_ID "BR_OPEN" ID_VAR "BR_CLOSE"
+
+FUNC_CALL ::= ID "BR_OPEN" EXP "BR_CLOSE"
+
+CYCLE ::= "WHILE" "BR_OPEN" EXP "BR_CLOSE" "DO" INSTRUCTION
+
+LABEL_JUMP ::= "GOTO" ID
+
+LABEL_DECL ::= "SOL" LABEL ID "EOL"
+
+EXP ::= E { "CMP_SIGN" E}?
+
+//CMP_SIGN ::= "<" | ">" | "<=" | ">=" | "==" | "!="
+
+E ::= T{[+-]T}*
+
+T ::= M{[*/]M}*
+
+M ::= P {^P}?
+
+P ::= {"NEG"}? '('R')' | N | CALC_FUNC | FUNC_CALL | ID
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const::= IdC
+
+IdF::= "sin" | "cos" | ...
+IdC::= "e" | "pi" | ...m 
+
+N ::= [0-9]+ и опционально '.' до шести чисел[0-9]
+
+Id :: = ( [a-z] | [A-Z] )+
+
+//===================================================================
+
+G ::= R'$'
+
+R ::= E { CMP_SIGN E}?
+
+CMP_SIGN ::= "<" | ">" | "<=" | ">=" | "==" | "!="
+
+E ::= T{[+-]T}*
+
+T ::= M{[*/]M}*
+
+M ::= P {^P}?
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+P ::= '('R')' | N | FUNC_CALL | ID
+
+FUNC ::= IdF '(' R ')'
+
+const::= IdC
+
+IdF::= "sin" | "cos" | ...
+IdC::= "e" | "pi" | ...m 
+
+N ::= [0-9]+ и опционально '.' до шести чисел[0-9]
+
+Id :: = ( [a-z] | [A-Z] )+
+
+//===============================================================
+
+new:
+
+G::=ST+'$'
+ST::=ASG|COND
+
+COND::= if (E) ASSGN
+
+ASG::= Var = E
+
+var:: id 
+
+//===================================================================
+
+We're no strangers to love
+You know the rules and so do I
+A full commitment's what I'm thinking of
+You wouldn't get this from any other guy
+I just wanna tell you how I'm feeling
+Gotta make you understand
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+We've known each other for so long
+Your heart's been aching but you're too shy to say it
+Inside we both know what's been going on
+We know the game and we're gonna play it
+And if you ask me how I'm feeling
+Don't tell me you're too blind to see
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+Never gonna give, never gonna give
+(Give you up)
+We've known each other for so long
+Your heart's been aching but you're too shy to say it
+Inside we both know what's been going on
+We know the game and we're gonna play it
+I just wanna tell you how I'm feeling
+Gotta make you understand
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye
+Never gonna tell a lie and hurt you
+Never gonna give you up
+Never gonna let you down
+Never gonna run around and desert you
+Never gonna make you cry
+Never gonna say goodbye

@@ -1,0 +1,18 @@
+INIT
+IN
+POP ax
+IN
+POP bx
+IN
+POP cx
+PUSH bx
+PUSH bx
+MUL
+PUSH 4
+PUSH ax
+PUSH cx
+MUL
+MUL
+SUB
+OUT
+HLT

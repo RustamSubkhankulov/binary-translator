@@ -1,0 +1,55 @@
+
+lumos 
+
+    stupefy currentline   riddikulus 1 flipendo
+    stupefy currentcolumn riddikulus 1 flipendo
+
+    stupefy centreline   riddikulus avada VLEN - 1 cedavra / 2 + 1 flipendo
+    stupefy centrecolumn riddikulus avada VWID - 1 cedavra / 2 + 1 flipendo
+
+    stupefy radius riddikulus 6  flipendo
+    stupefy symbol riddikulus 81 flipendo
+    stupefy space  riddikulus 32 flipendo
+
+    stupefy counter riddikulus 0 flipendo
+    stupefy dist    riddikulus 0 flipendo
+
+    stupefy alohomora array expecto FSIZE patronum riddikulus wingardium leviosa flipendo
+
+    confundo avada counter < FSIZE cedavra imperio
+        wingardium
+
+            petrificus protego avada counter cedavra flipendo
+
+            protego avada currentline cedavra flipendo
+            protego avada currentcolumn cedavra flipendo totalus 
+
+            dist riddikulus sqrt avada avada avada currentline - centreline cedavra / 1.06 cedavra ^ 2 + avada avada currentcolumn - centrecolumn cedavra / 1.21 cedavra ^ 2 cedavra flipendo
+
+            reducto avada dist <= radius cedavra imperio
+                wingardium
+                    array expecto counter patronum riddikulus symbol flipendo
+                leviosa 
+            aguamenti
+                array expecto counter patronum riddikulus space flipendo
+            flipendo
+
+            counter riddikulus counter + 1 flipendo
+
+            currentcolumn riddikulus currentcolumn + 1 flipendo
+
+            reducto avada currentcolumn == VWID + 1 cedavra imperio
+                wingardium
+
+                    currentcolumn riddikulus 1 flipendo
+                    currentline   riddikulus currentline + 1 flipendo
+
+                leviosa flipendo
+
+        leviosa flipendo
+
+    expulso avada array cedavra flipendo
+
+    morsmordre avada cedavra flipendo 
+
+obliviate

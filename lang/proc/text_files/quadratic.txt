@@ -1,0 +1,189 @@
+CALL: main 
+HLT 
+
+main:                         ;;;
+CALL: get_args
+CALL: solve 
+RET 
+
+
+get_args:                     ;;
+
+IN 
+POP [ax + 4]
+IN 
+POP bx 
+IN
+POP [cx] 
+RET 
+
+
+solve:                        ;;
+
+PUSH [ax + 4] 
+PUSH 0 
+JE: solve_linear 
+JMP: solve_quadratic 
+
+
+solve_linear:                 ;;
+
+PUSH [cx] 
+PUSH 0 
+JE: linear_c_is_zero
+JMP: linear_c_is_not_zero
+
+
+linear_c_is_zero:             ;;
+
+PUSH bx 
+PUSH 0
+JE: inf_roots
+PUSH 0
+OUT 
+RET 
+
+
+inf_roots:                    ;;
+
+PUSH 999
+OUT
+RET 
+
+
+no_roots:                     ;;
+
+PUSH 404
+OUT
+RET 
+
+
+linear_c_is_not_zero:         ;;
+PUSH bx 
+PUSH 0
+JE: no_roots
+PUSH [ cx ] 
+PUSH -1
+MUL 
+PUSH bx 
+DIV 
+OUT 
+RET 
+
+
+solve_quadratic:              ;;
+
+PUSH [ cx ] 
+PUSH 0
+JE: quadratic_c_is_zero
+
+PUSH bx 
+PUSH 0 
+JE: quadratic_b_is_zero
+
+CALL: discriminant 
+
+PUSH dx
+PUSH 0
+JE: quadratic_one_root
+PUSH dx
+PUSH 0
+JA: no_roots
+PUSH dx 
+PUSH 0.5
+POW 
+POP dx 
+PUSH bx 
+PUSH -1 
+MUL 
+POP bx 
+
+PUSH bx 
+PUSH dx 
+ADD  
+PUSH 2
+PUSH [ax + 4] 
+MUL 
+DIV 
+OUT 
+
+PUSH bx 
+PUSH dx 
+SUB   
+PUSH 2
+PUSH [ax + 4] 
+MUL 
+DIV 
+OUT 
+RET
+
+
+quadratic_one_root:           ;;
+
+PUSH bx
+PUSH -1
+MUL 
+PUSH 2
+PUSH [ax + 4] 
+MUL 
+DIV 
+OUT 
+RET 
+
+
+quadratic_c_is_zero:          ;;
+
+PUSH bx
+PUSH 0
+JE: quadratic_c_and_b_are_zero
+PUSH 0
+OUT 
+PUSH bx 
+PUSH -1 
+MUL 
+PUSH [ax + 4] 
+DIV 
+OUT 
+RET
+
+
+quadratic_c_and_b_are_zero:   ;;
+
+PUSH 0
+OUT
+RET
+
+
+quadratic_b_is_zero:          ;;
+
+PUSH [ cx ] 
+PUSH 0 
+JB: no_roots
+PUSH [ cx ] 
+PUSH -1 
+MUL 
+PUSH 0.5 
+POW 
+POP [ cx ] 
+PUSH [ cx ] 
+OUT 
+PUSH [ cx ] 
+PUSH -1
+MUL  
+OUT 
+RET 
+
+
+discriminant:                 ;;
+
+PUSH bx 
+PUSH bx 
+MUL 
+PUSH 4
+PUSH [ax + 4] 
+PUSH [ cx ] 
+MUL 
+MUL 
+SUB 
+POP dx 
+RET 

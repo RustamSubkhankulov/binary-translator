@@ -1,0 +1,167 @@
+PUSH 0
+POP ax                  ;counter
+
+PUSH 1024 
+POP bx                  ;address of the video memory
+
+PUSH 15
+POP cx                  ;length
+
+PUSH 41
+POP dx                  ;width
+
+PUSH cx
+PUSH dx
+MUL 
+POP ex                  ;number of cells
+
+PUSH 0
+POP fx                  ;current line
+
+PUSH 0
+POP gx                  ;current column
+
+PUSH cx
+PUSH 1
+SUB
+PUSH 2
+DIV
+PUSH 1
+ADD
+POP hx                  ;line of the centre
+
+PUSH dx
+PUSH 1
+SUB
+PUSH 2
+DIV
+PUSH 1
+ADD
+POP ix                  ;column of the centre
+
+PUSH 5
+POP jx                  ;radius
+
+PUSH 82
+POP kx                  ;printing symbol
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+CALL: main             
+HLT 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+main:                  
+             
+    CALL: draw_circle 
+    RET 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+draw_circle: 
+
+    REPEAT:
+
+    PUSH ax 
+    PUSH ex 
+    JE: END
+
+    CALL: fill_cell
+    CALL: move_to_next_cell
+
+    JMP: REPEAT
+
+    END:
+    DRAW
+
+    RET 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+fill_cell:  
+
+    PUSH fx
+    PUSH hx
+    SUB
+    PUSH 1.27
+    DIV
+    POP ox
+    PUSH ox
+    PUSH ox
+    MUL
+
+    PUSH gx
+    PUSH ix
+    SUB
+    PUSH 2.73
+    DIV
+    POP ox
+    PUSH ox
+    PUSH ox
+    MUL
+
+    ADD
+
+    PUSH 0.5
+    POW
+    POP ox
+
+    PUSH ox
+    PUSH jx
+    DUMP 
+    JAE: fill
+
+    JMP:  fill_with_space
+
+fill:
+
+    PUSH 81
+    POP [bx]
+
+    RET
+
+fill_with_space:
+
+    PUSH 32
+    POP [bx]
+
+    RET
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+move_to_next_cell:
+
+    PUSH ax
+    PUSH 1
+    ADD
+    POP ax
+
+    PUSH bx
+    PUSH 1
+    ADD
+    POP bx
+
+    PUSH gx 
+    PUSH 1
+    ADD
+    POP gx 
+
+    PUSH gx
+    PUSH dx
+    JE: next_line
+    RET
+
+next_line:
+
+    PUSH fx
+    PUSH 1
+    ADD
+    POP fx
+
+    PUSH 0
+    POP gx
+
+    RET
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

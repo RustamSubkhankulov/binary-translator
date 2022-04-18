@@ -1,0 +1,37 @@
+CALL: main 
+HLT 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+main:
+
+    IN           ;argument 
+    POP bx
+    PUSH 1
+    POP cx 
+
+    CALL: factorial  
+    PUSH cx  
+    OUT 
+    RET
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+factorial:
+
+    PUSH bx 
+    PUSH 1
+    JAE: END
+    PUSH cx   
+    PUSH bx 
+    MUL  
+    POP cx  
+    PUSH bx 
+    PUSH 1
+    SUB 
+    POP bx  
+
+    CALL: factorial
+    
+    END: 
+    RET

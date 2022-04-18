@@ -1,0 +1,80 @@
+colorvaria solvelinear avada b nox c cedavra
+    wingardium
+
+        reducto avada b == 0 cedavra imperio
+            reducto avada c == 0 cedavra imperio 
+
+                protego avada 999 cedavra flipendo
+
+            aguamenti
+
+                protego avada cursed 444 cedavra flipendo
+
+            flipendo
+        flipendo 
+
+        reducto avada b #= 0 cedavra imperio 
+            reducto avada c == 0 cedavra imperio 
+
+                protego avada 0 cedavra flipendo
+
+            aguamenti
+
+                protego avada avada cursed c cedavra / b cedavra flipendo
+
+            flipendo
+        flipendo
+
+    expelliarmus cursed 997 flipendo
+
+    leviosa
+
+colorvaria solvequadratic avada a nox b nox c cedavra
+    wingardium
+
+        stupefy discroot riddikulus sqrt avada b ^ 2 - 4 * a * c cedavra flipendo
+
+        stupefy firstroot riddikulus avada cursed b - discroot cedavra / avada 2 * a cedavra  flipendo
+
+        stupefy secondroot riddikulus avada cursed b + discroot cedavra / avada 2 * a cedavra flipendo
+
+        protego avada firstroot cedavra flipendo
+
+        protego avada secondroot cedavra flipendo 
+
+    expelliarmus cursed 1000 flipendo
+
+    leviosa
+
+colorvaria solve avada a nox b nox c cedavra
+    wingardium
+
+        stupefy return riddikulus 0 flipendo
+
+        reducto avada a == 0 cedavra imperio
+        
+            return riddikulus solvelinear avada b nox c cedavra flipendo  
+            
+        aguamenti 
+        
+            return riddikulus solvequadratic avada a nox b nox c cedavra flipendo 
+            
+        flipendo
+
+    expelliarmus cursed 7 flipendo
+
+    leviosa
+
+lumos 
+
+    stupefy a riddikulus 10 flipendo
+    stupefy b riddikulus 20 flipendo
+    stupefy c riddikulus 30 flipendo
+
+    crucio avada a cedavra flipendo
+    crucio avada b cedavra flipendo
+    crucio avada c cedavra flipendo
+
+    stupefy return riddikulus solve avada a nox b nox c cedavra flipendo
+
+obliviate

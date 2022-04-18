@@ -1,0 +1,224 @@
+Current position: 10. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 15. Input string : POP ax                   Written bytes: 46 01 
+
+Current position: 17. Input string : PUSH 1024  Written bytes: 25 00 00 80 44 
+
+Current position: 1c. Input string : POP bx                   Written bytes: 46 02 
+
+Current position: 1e. Input string : PUSH 15 Written bytes: 25 00 00 70 41 
+
+Current position: 23. Input string : POP cx                   Written bytes: 46 03 
+
+Current position: 25. Input string : PUSH 41 Written bytes: 25 00 00 24 42 
+
+Current position: 2a. Input string : POP dx                   Written bytes: 46 04 
+
+Current position: 2c. Input string : PUSH cx Written bytes: 45 03 
+
+Current position: 2e. Input string : PUSH dx Written bytes: 45 04 
+
+Current position: 30. Input string : MUL  Written bytes: 03 
+
+Current position: 31. Input string : POP ex                   Written bytes: 46 05 
+
+Current position: 33. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 38. Input string : POP fx                   Written bytes: 46 06 
+
+Current position: 3a. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 3f. Input string : POP gx                   Written bytes: 46 07 
+
+Current position: 41. Input string : PUSH cx Written bytes: 45 03 
+
+Current position: 43. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+
+Current position: 48. Input string : SUB Written bytes: 02 
+
+Current position: 49. Input string : PUSH 2 Written bytes: 25 00 00 00 40 
+
+Current position: 4e. Input string : DIV Written bytes: 04 
+
+Current position: 4f. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+
+Current position: 54. Input string : ADD Written bytes: 01 
+
+Current position: 55. Input string : POP hx                   Written bytes: 46 08 
+
+Current position: 57. Input string : PUSH dx Written bytes: 45 04 
+
+Current position: 59. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+
+Current position: 5e. Input string : SUB Written bytes: 02 
+
+Current position: 5f. Input string : PUSH 2 Written bytes: 25 00 00 00 40 
+
+Current position: 64. Input string : DIV Written bytes: 04 
+
+Current position: 65. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+
+Current position: 6a. Input string : ADD Written bytes: 01 
+
+Current position: 6b. Input string : POP ix                   Written bytes: 46 09 
+
+Current position: 6d. Input string : PUSH 5 Written bytes: 25 00 00 a0 40 
+
+Current position: 72. Input string : POP jx                   Written bytes: 46 0a 
+
+Current position: 74. Input string : PUSH 82 Written bytes: 25 00 00 a4 42 
+
+Current position: 79. Input string : POP kx                   Written bytes: 46 0b 
+
+Current position: 7b. Input string : CALL: main              Written bytes: 14 00 00 00 00 
+
+Current position: 80. Input string : HLT  Written bytes: 00 
+
+Current position: 81. Input string : CALL: draw_circle  Written bytes: 14 00 00 00 00 
+
+Current position: 86. Input string : RET  Written bytes: 0c 
+
+Current position: 87. Input string : PUSH ax  Written bytes: 45 01 
+
+Current position: 89. Input string : PUSH ex  Written bytes: 45 05 
+
+Current position: 8b. Input string : JE: END Written bytes: 12 00 00 00 00 
+
+Current position: 90. Input string : CALL: fill_cell Written bytes: 14 00 00 00 00 
+
+Current position: 95. Input string : CALL: move_to_next_cell Written bytes: 14 00 00 00 00 
+
+Current position: 9a. Input string : JMP: REPEAT Written bytes: 0f 87 00 00 00 
+
+Current position: 9f. Input string : DRAW Written bytes: 0e 
+
+Current position: a0. Input string : RET  Written bytes: 0c 
+
+Current position: a1. Input string : PUSH fx Written bytes: 45 06 
+
+Current position: a3. Input string : PUSH hx Written bytes: 45 08 
+
+Current position: a5. Input string : SUB Written bytes: 02 
+
+Current position: a6. Input string : PUSH 1.27 Written bytes: 25 5c 8f a2 3f 
+
+Current position: ab. Input string : DIV Written bytes: 04 
+
+Current position: ac. Input string : POP ox Written bytes: 46 0f 
+
+Current position: ae. Input string : PUSH ox Written bytes: 45 0f 
+
+Current position: b0. Input string : PUSH ox Written bytes: 45 0f 
+
+Current position: b2. Input string : MUL Written bytes: 03 
+
+Current position: b3. Input string : PUSH gx Written bytes: 45 07 
+
+Current position: b5. Input string : PUSH ix Written bytes: 45 09 
+
+Current position: b7. Input string : SUB Written bytes: 02 
+
+Current position: b8. Input string : PUSH 2.73 Written bytes: 25 52 b8 2e 40 
+
+Current position: bd. Input string : DIV Written bytes: 04 
+
+Current position: be. Input string : POP ox Written bytes: 46 0f 
+
+Current position: c0. Input string : PUSH ox Written bytes: 45 0f 
+
+Current position: c2. Input string : PUSH ox Written bytes: 45 0f 
+
+Current position: c4. Input string : MUL Written bytes: 03 
+
+Current position: c5. Input string : ADD Written bytes: 01 
+
+Current position: c6. Input string : PUSH 0.5 Written bytes: 25 00 00 00 3f 
+
+Current position: cb. Input string : POW Written bytes: 0d 
+
+Current position: cc. Input string : POP ox Written bytes: 46 0f 
+
+Current position: ce. Input string : PUSH ox Written bytes: 45 0f 
+
+Current position: d0. Input string : PUSH jx Written bytes: 45 0a 
+
+Current position: d2. Input string : DUMP  Written bytes: 09 
+
+Current position: d3. Input string : JAE: fill Written bytes: 10 00 00 00 00 
+
+Current position: d8. Input string : JMP:  fill_with_space Written bytes: 0f 00 00 00 00 
+
+Current position: dd. Input string : PUSH 81 Written bytes: 25 00 00 a2 42 
+
+Current position: e2. Input string : POP [bx] Written bytes: c6 02 
+
+Current position: e4. Input string : RET Written bytes: 0c 
+
+Current position: e5. Input string : PUSH 32 Written bytes: 25 00 00 00 42 
+
+Current position: ea. Input string : POP [bx] Written bytes: c6 02 
+
+Current position: ec. Input string : RET Written bytes: 0c 
+
+Current position: ed. Input string : PUSH ax Written bytes: 45 01 
+
+Current position: ef. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+
+Current position: f4. Input string : ADD Written bytes: 01 
+
+Current position: f5. Input string : POP ax Written bytes: 46 01 
+
+Current position: f7. Input string : PUSH bx Written bytes: 45 02 
+
+Current position: f9. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+
+Current position: fe. Input string : ADD Written bytes: 01 
+
+Current position: ff. Input string : POP bx Written bytes: 46 02 
+
+Current position: 101. Input string : PUSH gx  Written bytes: 45 07 
+
+Current position: 103. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+
+Current position: 108. Input string : ADD Written bytes: 01 
+
+Current position: 109. Input string : POP gx  Written bytes: 46 07 
+
+Current position: 10b. Input string : PUSH gx Written bytes: 45 07 
+
+Current position: 10d. Input string : PUSH dx Written bytes: 45 04 
+
+Current position: 10f. Input string : JE: next_line Written bytes: 12 00 00 00 00 
+
+Current position: 114. Input string : RET Written bytes: 0c 
+
+Current position: 115. Input string : PUSH fx Written bytes: 45 06 
+
+Current position: 117. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+
+Current position: 11c. Input string : ADD Written bytes: 01 
+
+Current position: 11d. Input string : POP fx Written bytes: 46 06 
+
+Current position: 11f. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 124. Input string : POP gx Written bytes: 46 07 
+
+Current position: 126. Input string : RET Written bytes: 0c 
+
+Filled jump destination. Ip: 7c. Destination Ip: 81 
+
+Filled jump destination. Ip: 82. Destination Ip: 87 
+
+Filled jump destination. Ip: 8c. Destination Ip: 9f 
+
+Filled jump destination. Ip: 91. Destination Ip: a1 
+
+Filled jump destination. Ip: 96. Destination Ip: ed 
+
+Filled jump destination. Ip: d4. Destination Ip: dd 
+
+Filled jump destination. Ip: d9. Destination Ip: e5 
+
+Filled jump destination. Ip: 110. Destination Ip: 115 
+

@@ -1,0 +1,101 @@
+
+G::= {DEFINITIONS}? "START" ENTITY+ "END"
+
+DEFINITIONS ::= DEFN+ 
+
+ENTITY ::= (STATEMENT | LABEL_DECL)
+
+DEFN ::= "DEFN" ID "BR_OPEN" ID+ "BR_CLOSE" COMPL_STATEMENT 
+
+COMPL_STATEMENT ::= "FBR_OPEN" STATEMENT+ "FBR_CLOSE"
+
+INSTRUCTION ::=  COMPL_STATEMENT | STATEMENT 
+
+STATEMENT ::= ( COND | DECL | CYCLE | ASS | STD_FUNC_CALL | FUNC_CALL | RETURN |  LABEL_JUMP) "EOL"
+
+COND ::= "IF" "BR_OPEN" EXP "BR_CLOSE" "DO" INSTRUCTION ( "ELSE" "DO" INSTRUCTION)?
+
+ASS ::= ARR_ASS | SIN_ASS 
+
+SIN_ASS = { VAR_ID | ARR_ID "SBR_OPEN" EXP "SBR_CLOSE" } "ASSGN" EXP
+
+ARR_ASS = "ARR" ID "SBR_OPEN" "SBR_CLOSE" "ASSGN" "FBR_OPEN" { EXP+}? "FBR_CLOSE
+
+RETURN ::= "RET" EXP
+
+DECL ::= "DECL" ARR_DECL | SIN_DECL 
+
+ARR_DECL ::= {CONST?} ID "SBR_OPEN" N "SBR_CLOSE" "ASS" "FBR_OPEN"  {EXP+}  FBR_CLOSE        const arr id; arr id; cosnt id; id;
+
+SIN_DECL ::= {CONST?} SIN_ASS          
+
+STD_FUNC_CALL ::= STD_FUNC_ID "BR_OPEN" ID_VAR "BR_CLOSE"
+
+FUNC_CALL ::= ID "BR_OPEN" EXP "BR_CLOSE"
+
+CYCLE ::= "WHILE" "BR_OPEN" EXP "BR_CLOSE" "DO" INSTRUCTION
+
+LABEL_JUMP ::= "GOTO" ID
+
+LABEL_DECL ::= LABEL ID "EOL"
+
+EXP ::= E { "CMP_SIGN" E}?
+
+//CMP_SIGN ::= "<" | ">" | "<=" | ">=" | "==" | "!="
+
+E ::= T{[+-]T}*
+
+T ::= M{[*/]M}*
+
+M ::= P {^P}?
+
+P ::= {"NEG"}? '('R')' | N | CALC_FUNC | FUNC_CALL | {ID_VAR | ID_ARR "SBR_OPEN" EXP "SBR_CLOSE"}
+
+const struct Key_word Key_words[] = 
+{
+    {"obliviate"        , END      , "end of code"         , 0},
+    {"aberto"           , SOL      , "start of the line"   , 0},
+    {"flipendo"         , EOL      , "end of the line"     , 0},
+    {"accio"            , GOTO     , "goto"                , 0},
+    {"geminio"          , LABEL    , "label"               , 0},
+    {"expelliarmus"     , RET      , "return"              , 0},
+    {"imperio"          , DO       , "do"                  , 0},
+    {"confundo"         , WHILE    , "while"               , 0},
+  //{"bombradamaxima"   , BREAK    , "break"               , 0},
+  //{"sectumsempra"     , CONT     , "continue"            , 0}, 
+    {"reducto"          , IF       , "if"                  , 0},
+    {"aguamenti"        , ELSE     , "else"                , 0},
+    {"avada"            , BR_OPEN  , "open bracket"        , 0},
+    {"cedavra"          , BR_CLOSE , "close bracket"       , 0},
+    {"riddikulus"       , ASS      , "assignment"          , 0},
+    {"lumos"            , START    , "start of the code"   , 0},
+    {"stupefy"          , DECL     , "declaration"         , 0},
+    {"colorvaria"       , DEFN     , "func definition"     , 0},
+    {"cursed"           , NEG      , "negative"            , 0},
+    {"wingardium"       , FBR_OPEN , "figure_bracket open" , 0},
+    {"leviosa"          , FBR_CLOSE, "fugire bracket close", 0},
+    {"ascendio"         , PERM     , "permanent"           , 0},
+    {"confringo"        , ARR      , "array"               , 0},
+    {"expecto"          , SBR_OPEN , "square open bracket" , 0},
+    {"patronum"         , SBR_CLOSE, "square close bracket", 0}
+
+const static struct Std_function Std_functions[] =
+{
+    {"crucio"  , SCAN,  0, "scan" },
+    {"protego" , PRINT, 0, "print"}
+};
+
+const static struct Calc_function Calc_functions[] = 
+{
+    {"sin"   , SIN   , 0}, //
+    {"cos"   , COS   , 0}, //
+    {"sqrt"  , SQRT  , 0},
+    {"tg"    , TG    , 0}, //
+    {"ctg"   , CTG   , 0},
+    {"ln"    , LN    , 0}, // 
+    {"arccos", ARCCOS, 0}, 
+    {"arcsin", ARCSIN, 0}, //
+    {"arctg" , ARCTG , 0}, //
+    {"atcctg", ARCCTG, 0},
+    {"sqr"   , SQR   , 0}
+};
