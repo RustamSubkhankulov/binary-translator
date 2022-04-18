@@ -1,6 +1,6 @@
 CC    = gcc 
 
-OBJ   = obj/main.o obj/logs.o obj/general.o
+OBJ   = obj/main.o obj/logs.o obj/general.o obj/bintrans.o
 
 FLAGS = 
 

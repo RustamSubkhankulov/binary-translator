@@ -1,8 +1,7 @@
 #include <stdlib.h>
 
 #include "global_conf.h"
-#include "hash/hash.h"
-#include "list/list.h"
+#include "bintrans/bintrans.h"
 
 //===============================================
 
