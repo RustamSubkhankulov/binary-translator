@@ -70,10 +70,6 @@ int _close_file(FILE* file_ptr FOR_LOGS(, LOG_PARAMS)) {
 
 //===================================================================
 
-int _close_file(FILE* file_prt);
-
-//===================================================================
-
 int my_swap(void* first_, void* second_, size_t size) {
 
 	assert(first_  != NULL);

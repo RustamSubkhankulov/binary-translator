@@ -12,7 +12,7 @@
 
 #else 
 
-    #define bintrans_log_report() ""
+    #define bintrans_log_report() 
 
 #endif 
 

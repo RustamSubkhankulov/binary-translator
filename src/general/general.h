@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../logs/errors_and_logs.h"
+#include "general_conf.h"
 
 //===================================================================
 
@@ -15,7 +16,7 @@ const double Precise = 0.000001;
 
 #else 
 
-    #define general_log_report() ""
+    #define general_log_report() 
 
 #endif
 
