@@ -18,11 +18,13 @@
 
 //===============================================
 
+//===============================================
+
 struct Binary_input 
 {
 
     FILE* file_ptr;
-    long  size;
+    unsigned int size;
 
     const char* buffer;
 };
@@ -42,7 +44,8 @@ struct Trans_entity
 struct Trans_struct
 {
     Trans_entity* entities;
-    unsigned int entities_number;
+    unsigned int entities_cap;
+    unsigned int entities_num;
 
     char*        input_buffer;
     unsigned int input_size;

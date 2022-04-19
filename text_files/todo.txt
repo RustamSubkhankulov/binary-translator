@@ -12,7 +12,10 @@ done 0. build language (again)
 	 of last step
 999. add saving feature 
 
+IDEAS:
 
+	после отработки функции  создания новой entity 
+	вызывать проверку и в случае чего ресайз
 
 
 DEF_CMD_(0, HLT, 0, 136272956, 

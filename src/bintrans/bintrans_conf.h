@@ -6,6 +6,19 @@
 
 //===============================================
 
+static const unsigned int Entities_init_cap = 100;
+
+//-----------------------------------------------
+
+#define LISTING
+
+#ifdef LISTING
+
+    static const char* Listing_filename = "text_files/listing.txt"
+
+#endif 
+
+//===============================================
 
 #ifdef LOGS
 
@@ -19,7 +32,7 @@
 
 // Turns on validator for BinaryTranslator structure
 
-//#define BINTRANS_STRUCT_VALID_CHECK
+#define BINTRANS_STRUCT_VALID_CHECK
 
 //===============================================
 

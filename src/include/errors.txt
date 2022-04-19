@@ -738,3 +738,21 @@ Imvalid pointer to Hamlet structure)
 
 DEF_ERR(1101, NO_STRINGS_IN_TEXT,
 No stings in source text)
+
+DEF_ERR(1201, TRANS_STRUCT_DTOR_EARLY,
+Trans_struct dtor called before end of translate)
+
+DEF_ERR(1202, TRANS_STRUCT_NULL_ENTITIES,
+Null pointer to array of entities in trans_struct structure)
+
+DEF_ERR(1203, TRANS_STRUCT_ZERO_CAP,
+Zero capacity of trans_struct structure)
+
+DEF_ERR(1204, TRANS_STRUCT_CAP_LESS_NUM,
+Capacity of trans_struct is less than number of entities)
+
+DEF_ERR(1205, TRANS_STRUCT_NULL_INPUT_BUFFER,
+Null pointer to the input buffer in trans_struct structure)
+
+DEF_ERR(1206, TRANS_STRUCT_INV_BUFFER_POS,
+Invalid buffer position in trans_struct)
