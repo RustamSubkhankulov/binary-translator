@@ -1,9 +1,11 @@
 done 0. build language (again)
 
-1. make info table for command codes 
-2. make каркас of the programm 
+2. make info table for command codes 
+1. make каркас of the programm 
 
-	- check header of file
+	- check header of file in ctor
+	- insert valid check in functions
+	- try to execute 
 
 3. make загатовочки for translating 
 4. listing 

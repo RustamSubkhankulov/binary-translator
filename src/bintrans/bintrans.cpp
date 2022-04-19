@@ -88,10 +88,15 @@ int _fill_input_buffer(Binary_input* binary_input FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-int _binary_translate(Binary_input* binary_input FOR_LOGS(, LOG_PARAMS))
+int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
+    assert(trans_struct);
 
+    int is_ok = trans_struct_validator(trans_struct);
+    if (is_ok == -1) return -1;
+
+    return 0;
 }
 
 //-----------------------------------------------
@@ -99,11 +104,13 @@ int _binary_translate(Binary_input* binary_input FOR_LOGS(, LOG_PARAMS))
 int _binary_execute(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
+    assert(trans_struct);
 
+    int is_ok = trans_struct_validator(trans_struct);
+    if (is_ok == -1) return -1;
 
+    return 0;
 }
-
-//-----------------------------------------------
 
 //-----------------------------------------------
 

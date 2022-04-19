@@ -18,6 +18,24 @@
 
 //===============================================
 
+#ifdef TRANS_STRUCT_VALID_CHECK
+
+    #define TRANS_VALID(trans_struct)                   \
+                                                        \
+    do                                                  \
+    {                                                   \
+                                                        \
+        if (trans_struct_validator(trans_struct) == -1) \
+            return -1;                                  \
+                                                        \
+    } while(0);
+
+#else
+
+    #define TRANS_VALID(trans_struct)
+
+#endif 
+
 //===============================================
 
 struct Binary_input 
