@@ -17,10 +17,8 @@ int main(int argc, char* argv[])
 
     int ret_val = 0;
 
-    const char* src_filename = argv[2];
-    assert(src_filename);
+    ret_val = 
 
-    
 
     ret_val = binary_translate(src_filename);
     if (ret_val == -1)  return -1;

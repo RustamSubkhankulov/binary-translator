@@ -4,8 +4,12 @@ done 0. build language (again)
 2. make каркас of the programm 
 
 	- check header of file
-	
 
+3. make загатовочки for translating 
+4. listing 
+
+998. add types for entities for optimizations 
+	 of last step
 999. add saving feature 
 
 
