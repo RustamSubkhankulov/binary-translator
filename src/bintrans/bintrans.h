@@ -49,7 +49,10 @@ struct Trans_struct
 
 //===============================================
 
-int _read_binary_input(const char* input_filename FOR_LOGS(, LOG_PARAMS));
+int _read_binary_input(Binary_input* binary_input, const char* input_filename 
+                                                      FOR_LOGS(, LOG_PARAMS));
+
+int _binary_input_validator(Binary_input* binary_input FOR_LOGS(, LOG_PARAMS));
 
 int _binary_translate(Binary_input* binary_input FOR_LOGS(, LOG_PARAMS));
 
@@ -61,8 +64,8 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 //===============================================
 
-#define read_binary_input(filename) \
-       _read_binary_input(filename FOR_LOGS(, LOG_ARGS)) 
+#define read_binary_input(binary_input, filename) \
+       _read_binary_input(binary_input, filename FOR_LOGS(, LOG_ARGS)) 
 
 #define trans_struct_ctor(trans_struct) \
        _trans_struct_ctor(trans_struct FOR_LOGS(, LOG_ARGS))

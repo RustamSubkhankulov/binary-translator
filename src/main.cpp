@@ -16,8 +16,7 @@ int main(int argc, char* argv[])
     //-------------------------------------------
 
     int ret_val = 0;
-
-    ret_val = 
+    Binary_input binary_input = { 0 };
 
 
     ret_val = binary_translate(src_filename);
