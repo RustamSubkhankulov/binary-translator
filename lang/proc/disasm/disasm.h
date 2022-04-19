@@ -22,7 +22,7 @@ struct Disasmstruct {
                       *(int*)disasmstruct->ip);                       \
                                                                       \
         if (err < 0)                                                  \
-            error_report(FWRITE_ERR);                          \
+            error_report(FWRITE_ERR);                                 \
                                                                       \
         disasmstruct->ip += sizeof(int);                              \
         DISASMSTRUCT_IP_CHECK(disasmstruct);                          \
@@ -38,10 +38,10 @@ do                                                                    \
                  *disasmstruct->ip + Ascii_offset);                   \
                                                                       \
     if (err < 0)                                                      \
-        error_report(FWRITE_ERR);                              \
+        error_report(FWRITE_ERR);                                     \
                                                                       \
     disasmstruct->ip++;                                               \
-    DISASMSTRUCT_IP_CHECK(disasmstruct);                             \
+    DISASMSTRUCT_IP_CHECK(disasmstruct);                              \
                                                                       \
 } while(0);
 
@@ -54,10 +54,10 @@ do                                                                    \
                   *(elem_t*)disasmstruct->ip);                        \
                                                                       \
     if (err < 0)                                                      \
-        error_report(FWRITE_ERR);                              \
+        error_report(FWRITE_ERR);                                     \
                                                                       \
     disasmstruct->ip += sizeof(elem_t);                               \
-    DISASMSTRUCT_IP_CHECK(disasmstruct);                             \
+    DISASMSTRUCT_IP_CHECK(disasmstruct);                              \
                                                                       \
 } while(0);
 
@@ -70,7 +70,7 @@ do                                                                    \
                  *disasmstruct->ip  + Ascii_offset);                  \
                                                                       \
     if (err < 0)                                                      \
-        error_report(FWRITE_ERR);                              \
+        error_report(FWRITE_ERR);                                     \
                                                                       \
     disasmstruct->ip++;                                               \
     DISASMSTRUCT_IP_CHECK(disasmstruct);                              \
@@ -89,17 +89,17 @@ do                                                                    \
                   sign, *(elem_t*)disasmstruct->ip);                  \
                                                                       \
     if (err < 0)                                                      \
-        error_report(FWRITE_ERR);                              \
+        error_report(FWRITE_ERR);                                     \
                                                                       \
 } while(0);
 
 //===================================================================
 
-#define DISASMSTRUCT_IP_CHECK(disasmstruct) {                        \
+#define DISASMSTRUCT_IP_CHECK(disasmstruct) {                         \
                                                                       \
     if (disasmstruct == NULL)                                         \
                                                                       \
-        error_report(INV_DISASMSTRUCT_PTR);                    \
+        error_report(INV_DISASMSTRUCT_PTR);                           \
 }
 
 //===================================================================
@@ -109,7 +109,7 @@ do                                                                    \
     if (disasmstruct->ip - disasmstruct->code_array                   \
        > disasmstruct->code_file_size)                                \
                                                                       \
-        error_report(INV_INSTR_PTR)                            \
+        error_report(INV_INSTR_PTR)                                   \
 }
 
 //===================================================================

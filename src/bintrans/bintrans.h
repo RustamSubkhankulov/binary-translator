@@ -18,9 +18,9 @@
 
 //===============================================
 
-int _binary_translate(FOR_LOGS(LOG_PARAMS));
+int _binary_translate(const char* src_filename FOR_LOGS(, LOG_PARAMS));
 
 //===============================================
 
-#define binary_translate() \
-       _binary_translate( FOR_LOGS(LOG_ARGS))
+#define binary_translate(src_filename) \
+       _binary_translate(src_filename FOR_LOGS(, LOG_ARGS))

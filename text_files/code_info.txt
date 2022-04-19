@@ -1,0 +1,6 @@
+Information about convertion my own assembly code into 
+bunary code for virtual cpu and binary codes for different 
+commands for x86 architecture 
+
+
+

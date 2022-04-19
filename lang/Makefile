@@ -8,6 +8,9 @@ logfile:
 
 .PHONY: asm proc imagesdir procexecute asmexecute noflags
 
+exec: 
+	./temp.exe calc_logs.html txt_files/circle.txt txt_files/trans.txt 
+
 noflags:
 	g++ syntax/*.cpp trans/*.cpp tree_simp/*.cpp tree/*.cpp general/*.cpp text_processing/*.cpp main.cpp logs/*.cpp lang_common/*.cpp lexic/*.cpp -O0 -o temp.exe 
 
@@ -21,7 +24,7 @@ imagesdir:
 	mkdir /tmp/diff_images 
 
 procexecute:
-	./proc/cpu.exe proc/text_files/circle.code proc/text_files/proc_input.txt proc/text_files/proc_output.txt  proc_logs.html
+	./proc/cpu.exe proc/text_files/quadratic.code proc/text_files/proc_input.txt proc/text_files/proc_output.txt  proc_logs.html
 
 asmexecute:
-	./proc/asm.exe proc/text_files/circle.txt proc/text_files/circle.code asm_logs.html proc/text_files/asm_listing.txt
+	./proc/asm.exe proc/text_files/quadratic.txt proc/text_files/quadratic.code asm_logs.html proc/text_files/asm_listing.txt
