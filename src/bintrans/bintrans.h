@@ -44,7 +44,7 @@ struct Binary_input
     FILE* file_ptr;
     unsigned int size;
 
-    const char* buffer;
+    char* buffer;
 };
 
 //===============================================
@@ -62,8 +62,8 @@ struct Trans_entity
 struct Trans_struct
 {
     Trans_entity* entities;
-    unsigned int entities_cap;
-    unsigned int entities_num;
+    unsigned int cap;
+    unsigned int num;
 
     char*        input_buffer;
     unsigned int input_size;
@@ -75,6 +75,8 @@ struct Trans_struct
 int _read_binary_input(Binary_input* binary_input, const char* input_filename 
                                                       FOR_LOGS(, LOG_PARAMS));
 
+int _free_binary_input     (Binary_input* binary_input FOR_LOGS(, LOG_PARAMS));
+
 int _fill_input_buffer     (Binary_input* binary_input FOR_LOGS(, LOG_PARAMS));
 
 int _input_load_to_buffer  (Binary_input* binary_input FOR_LOGS(, LOG_PARAMS));
@@ -84,7 +86,11 @@ int _input_load_to_buffer  (Binary_input* binary_input FOR_LOGS(, LOG_PARAMS));
 int _trans_struct_ctor     (Trans_struct* trans_struct, Binary_input* binary_input 
                                                            FOR_LOGS(, LOG_PARAMS));
 
+int _binary_header_check   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
 int _binary_translate      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _binary_execute        (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _trans_struct_dtor     (Trans_struct* trans_strcut FOR_LOGS(, LOG_PARAMS));
 
@@ -92,8 +98,14 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 //===============================================
 
+#define binary_header_check(trans_struct) \
+       _binary_header_check(trans_struct FOR_LOGS(, LOG_ARGS))
+
 #define read_binary_input(binary_input, filename) \
        _read_binary_input(binary_input, filename FOR_LOGS(, LOG_ARGS)) 
+
+#define free_binary_input(binary_input) \
+       _free_binary_input(binary_input FOR_LOGS(, LOG_ARGS))
 
 #define input_load_to_buffer(binary_input) \
        _input_load_to_buffer(binary_input FOR_LOGS(, LOG_ARGS))
@@ -112,3 +124,6 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 #define binary_translate(trans_struct) \
        _binary_translate(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define binary_execute(trans_struct) \
+       _binary_execute(trans_struct FOR_LOGS(, LOG_ARGS))

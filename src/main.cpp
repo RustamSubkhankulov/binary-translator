@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     int ret_val = 0;
     Binary_input binary_input = { 0 };
 
-    ret_val = read_binary_input(&binary_input, argc[1]);
+    ret_val = read_binary_input(&binary_input, argv[1]);
     if (ret_val == -1) return -1;
 
     Trans_struct trans_struct = { 0 };
@@ -30,7 +30,10 @@ int main(int argc, char* argv[])
 
     // Main actions
 
-    ret_val = binary_translate(&);
+    ret_val = binary_translate(&trans_struct);
+    if (ret_val == -1) return -1;
+
+    ret_val = binary_translate(&trans_struct);
     if (ret_val == -1) return -1;
 
     //Epilogue

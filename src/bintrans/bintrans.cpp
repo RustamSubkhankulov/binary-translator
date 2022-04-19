@@ -1,9 +1,11 @@
 #include <stdlib.h>
+#include <string.h>
 
 //===============================================
 
 #include "bintrans.h"
 #include "../general/general.h"
+#include "../../lang/proc/assembler/processor_general.h"
 
 //===============================================
 
@@ -49,10 +51,10 @@ int _input_load_to_buffer(Binary_input* binary_input FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report(); 
     assert(binary_input);
 
-    unsigned int size = (unsigned int)get_file_size(binary_input->file_ptr);
+    long size = get_file_size(binary_input->file_ptr);
     if (size == -1) return -1;
 
-    binary_input->size = size;
+    binary_input->size = (unsigned int)size;
 
     int ret_val = fill_input_buffer(binary_input);
     if (ret_val == -1) return -1;
@@ -74,8 +76,8 @@ int _fill_input_buffer(Binary_input* binary_input FOR_LOGS(, LOG_PARAMS))
         return -1;
     }
 
-    int ret_val = fread(buffer, sizeof(char), binary_input->size, 
-                                              binary_input->file_ptr);
+    unsigned int ret_val = (unsigned int) fread(buffer, sizeof(char), binary_input->size, 
+                                                                 binary_input->file_ptr);
     if (ret_val != binary_input->size)
     {
         error_report(FREAD_ERR);
@@ -96,8 +98,50 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     int is_ok = trans_struct_validator(trans_struct);
     if (is_ok == -1) return -1;
 
+    is_ok = binary_header_check(trans_struct);
+    if (is_ok == -1) return -1;
+
+    trans_struct->buffer_pos += (unsigned int)sizeof(Header);
+
     return 0;
 }
+
+//-----------------------------------------------
+
+int _binary_header_check(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(input_buffer);
+
+    Header header = { 0 };
+    
+    memcpy(&header, trans_struct->input_buffer, sizeof(Header));
+
+    int err_num = 0;
+
+    if (header.signature != SIGN)
+    {    
+        error_report(HDR_INV_SIGN);
+        err_num++;
+    }
+
+    if (header.version   != VERSION)
+    {
+        error_report(HDR_INV_VERSION);
+        err_num++;
+    }
+
+    if (header.file_size != trans_struct->input_size)
+    { 
+        error_report(HDR_INV_FILE_SIZE);
+        err_num++;
+    }
+
+    if (err_num) return -1;
+
+    return 0;
+}
+
 
 //-----------------------------------------------
 
@@ -126,22 +170,22 @@ int _trans_struct_ctor(Trans_struct* trans_struct, Binary_input* binary_input
     trans_struct->input_size   = binary_input->size; 
     trans_struct->buffer_pos   = 0;
 
-    trans_struct->entities = (Entity*) calloc(Entities_init_cap, sizeof(Entity));
+    trans_struct->entities = (Trans_entity*) calloc(Entities_init_cap, sizeof(Trans_entity));
     if (!trans_struct->entities) 
     {
         error_report(CANNOT_ALLOCATE_MEM);
         return -1;
     }
 
-    trans_struct->entities_cap = Entities_init_cap
-    trans_struct->entities_num = 0;
+    trans_struct->cap = Entities_init_cap;
+    trans_struct->num = 0;
 
     return 0;
 }
 
 //-----------------------------------------------
 
-int _trans_struct_dtor(Trans_struct* trans_strcut FOR_LOGS(, LOG_PARAMS))
+int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
     assert(trans_struct);
@@ -166,7 +210,7 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     int err_num = 0;
 
-    if (!trans_struct->entites)
+    if (!trans_struct->entities)
     {
         error_report(TRANS_STRUCT_NULL_ENTITIES);
         err_num++;
@@ -190,8 +234,7 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         err_num++;
     }
 
-    if (trans_struct->buffer_pos < 0 
-    ||  trans_struct->buffer_pos > trans_struct->input_size)
+    if (trans_struct->buffer_pos > trans_struct->input_size)
     {
         error_report(TRANS_STRUCT_INV_BUFFER_POS);
         err_num++;

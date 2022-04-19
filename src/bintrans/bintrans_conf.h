@@ -14,7 +14,7 @@ static const unsigned int Entities_init_cap = 100;
 
 #ifdef LISTING
 
-    static const char* Listing_filename = "text_files/listing.txt"
+    static const char* Listing_filename = "text_files/listing.txt";
 
 #endif 
 
