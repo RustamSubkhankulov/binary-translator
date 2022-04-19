@@ -144,7 +144,12 @@ const double Precise = 0.000001;
 #define get_hash(base, len) \
         get_hash_(base, len FOR_LOGS(, LOG_ARGS))
 
+#define get_file_size(src) \
+       _get_file_size(src FOR_LOGS9, LOG_ARGS)
+
 //===================================================================
+
+long _get_file_size(FILE* source FOR_LOGS(, LOG_PARAMS));
 
 int _clearstdin(FOR_LOGS(LOG_PARAMS));
 

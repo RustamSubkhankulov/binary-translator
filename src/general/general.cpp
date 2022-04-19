@@ -7,6 +7,24 @@
 
 #include "general.h"
 
+//-----------------------------------------------
+
+long _get_file_size(FILE* source FOR_LOGS(, LOG_PARAMS))
+{
+	general_log_report();
+	assert(source);
+
+	if (fseek(source, 0, SEEK_END) != 0)
+		return -1;
+
+	long size = ftell(source);
+	if (size == -1) return -1;
+
+	rewind(source);
+
+	return size;
+}
+
 //===================================================================
 
 int _clearstdin(FOR_LOGS(LOG_PARAMS)) {

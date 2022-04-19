@@ -15,12 +15,31 @@ int main(int argc, char* argv[])
 
     //-------------------------------------------
 
+    // Prologue
+
     int ret_val = 0;
     Binary_input binary_input = { 0 };
 
+    ret_val = read_binary_input(&binary_input, argc[1]);
+    if (ret_val == -1) return -1;
 
-    ret_val = binary_translate(src_filename);
-    if (ret_val == -1)  return -1;
+    Trans_struct trans_struct = { 0 };
+
+    ret_val = trans_struct_ctor(&trans_struct, &binary_input);
+    if (ret_val == -1) return -1;
+
+    // Main actions
+
+    ret_val = binary_translate(&);
+    if (ret_val == -1) return -1;
+
+    //Epilogue
+
+    ret_val = free_binary_input(&binary_input);
+    if (ret_val == -1) return -1;
+
+    ret_val = trans_struct_dtor(&trans_struct);
+    if (ret_val == -1) return -1;
 
     //-------------------------------------------
 
