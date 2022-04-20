@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
     ret_val = binary_translate(&trans_struct);
     if (ret_val == -1) return -1;
 
-    ret_val = binary_translate(&trans_struct);
+    ret_val = binary_execute(&trans_struct);
     if (ret_val == -1) return -1;
 
     //Epilogue

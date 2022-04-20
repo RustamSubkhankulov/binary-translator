@@ -768,3 +768,9 @@ Null pointer to listing file in trans_struct structure)
 
 DEF_ERR(1210, INPUT_INV_NAME,
 Invalid name of input binary file for translator)
+
+DEF_ERR(1211, MPROTECT_ERR,
+Mprotect error)
+
+DEF_ERR(1212, SYSCONF_ERR,
+Sysconf error)

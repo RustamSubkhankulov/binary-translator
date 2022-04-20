@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
-
+#include <sys/mman.h>
+#include <unistd.h>
 //===============================================
 
 #include "bintrans.h"
@@ -115,7 +116,6 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 int _binary_header_check(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
-    assert(input_buffer);
 
     Header header = { 0 };
     
@@ -154,26 +154,79 @@ int _binary_execute(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    char* call_buf = flush_entities_buf(trans_struct);
-    if (!call_buf) return -1;
+    int ret_val = flush_entities_buf(trans_struct);
+    if (ret_val == -1) return -1;
 
     //call
+
+    // int (*func) (void) = NULL;
+    // func = (int (*)(void)) call_buf;
+
+    // __asm__("int3");
+
+    // int ret_val = func();
+    
+    free(trans_struct->call_buf);
 
     return 0;
 }
 
 //-----------------------------------------------
 
-char* _flush_entities_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+int _flush_entities_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
 
-    char* call_buf = NULL;
+    int pagesize = sysconf(_SC_PAGE_SIZE);
+    if (pagesize == -1)
+    {
+        error_report(SYSCONF_ERR);
+        return -1;
+    }
 
     //
+    printf("\n size of page %d \n", pagesize);
+    //
 
-    return call_buf;
+    trans_struct->call_buf = (unsigned char*) aligned_alloc (pagesize, 4 * sizeof(unsigned char));
+    if (!trans_struct->call_buf) return -1;
+
+    trans_struct->call_buf[0] = 0x48;
+    trans_struct->call_buf[1] = 0x31;
+    trans_struct->call_buf[2] = 0xC0;
+    trans_struct->call_buf[3] = 0xC3;
+
+
+
+    //
+    //trans_struct->call_buf = {0x90, 0x90, 0x53, 0x55, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57, 0x90, 0x90, 0x41, 0x5F, 0x41, 0x5E, 0x41, 0x5D, 0x41, 0x5C, 0x5D, 0x5B, 0x90, 0x90, 0x48, 0x31, 0xC0, 0xC3};
+
+    int (*func) (void) = NULL;
+    func = (int (*)(void)) trans_struct->call_buf;
+
+    #ifdef DEBUG_EXEC
+    
+        __asm__("int3");
+    
+    #endif 
+
+    fprintf(stderr, "\n address of call buf: %p \n", trans_struct->call_buf);
+
+    // int is_ok = mprotect((void*)trans_struct->call_buf, pagesize, PROT_EXEC);
+    // if (is_ok != 0)
+    // {
+    //     error_report(MPROTECT_ERR);
+    //     return -1;
+    // }
+
+
+    // int ret_val = func();
+    // printf("\n Process ended with exit code: %d \n", ret_val);
+
+    
+
+    return 0;
 }
 
 //-----------------------------------------------
@@ -226,7 +279,7 @@ int _init_listing_file(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     trans_struct->listing = listing;
 
-    fprintf(listing, "\t Listing Start ");
+    fprintf(listing, "\t Listing Start: ");
     fprintf(listing, "%s \n", get_time_string());
 
     return 0;
@@ -239,7 +292,7 @@ int _end_listing_file(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report(); 
     assert(trans_struct);
 
-    fprintf(trans_struct->listing, "\t Listing End");
+    fprintf(trans_struct->listing, "\t Listing End: ");
     fprintf(trans_struct->listing, "%s \n", get_time_string());
 
     int ret_val = close_file(trans_struct->listing);
@@ -259,11 +312,11 @@ int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report(); 
     assert(trans_struct);
 
-    if (trans_struct->buffer_pos != trans_struct->input_size)
-    {
-        error_report(TRANS_STRUCT_DTOR_EARLY);
-        return -1;
-    }
+    // if (trans_struct->buffer_pos != trans_struct->input_size)
+    // {
+    //     error_report(TRANS_STRUCT_DTOR_EARLY);
+    //     return -1;
+    // }
 
     free(trans_struct->entities);
 

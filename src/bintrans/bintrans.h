@@ -69,6 +69,8 @@ struct Trans_struct
     unsigned int input_size;
     unsigned int buffer_pos;
 
+    unsigned char* call_buf;
+
     #ifdef BINTRANS_LISTING
 
         FILE* listing;
@@ -102,7 +104,7 @@ int _trans_struct_dtor     (Trans_struct* trans_strcut FOR_LOGS(, LOG_PARAMS));
 
 int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
-char* _flush_entities_buf  (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+int _flush_entities_buf     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 
 #ifdef BINTRANS_LISTING

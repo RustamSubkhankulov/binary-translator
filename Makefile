@@ -2,7 +2,8 @@ CC    = gcc
 
 OBJ   = obj/main.o obj/logs.o obj/general.o obj/bintrans.o
 
-FLAGS = -lubsan -D NDEBUG -g -std=c++14 -fmax-errors=1 				\
+FLAGS = 
+#-lubsan -D NDEBUG -g -std=c++14 -fmax-errors=1 				\
 		-Wall -Wextra -Weffc++ -Waggressive-loop-optimizations  	\
 		-Wc++0x-compat -Wc++11-compat -Wc++14-compat  				\
 		-Wcast-qual -Wchar-subscripts -Wconditionally-supported 	\
