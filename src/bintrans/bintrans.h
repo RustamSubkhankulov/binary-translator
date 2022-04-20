@@ -20,7 +20,7 @@
 
 #ifdef TRANS_STRUCT_VALID_CHECK
 
-    #define TRANS_VALID(trans_struct)                   \
+    #define TRANS_STRUCT_VALID(trans_struct)            \
                                                         \
     do                                                  \
     {                                                   \
@@ -32,7 +32,7 @@
 
 #else
 
-    #define TRANS_VALID(trans_struct)
+    #define TRANS_STRUCT_VALID(trans_struct)
 
 #endif 
 
@@ -68,6 +68,12 @@ struct Trans_struct
     char*        input_buffer;
     unsigned int input_size;
     unsigned int buffer_pos;
+
+    #ifdef BINTRANS_LISTING
+
+        FILE* listing;
+
+    #endif 
 };
 
 //===============================================
@@ -96,7 +102,24 @@ int _trans_struct_dtor     (Trans_struct* trans_strcut FOR_LOGS(, LOG_PARAMS));
 
 int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
+char* _flush_entities_buf  (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+
+#ifdef BINTRANS_LISTING
+
+    int _init_listing_file     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+    int _end_listing_file      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+#endif 
+
 //===============================================
+
+#define init_listing_file(trans_struct) \
+       _init_listing_file(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define end_listing_file(trans_struct) \
+       _end_listing_file(trans_struct FOR_LOGS(, LOG_ARGS))
 
 #define binary_header_check(trans_struct) \
        _binary_header_check(trans_struct FOR_LOGS(, LOG_ARGS))
@@ -127,3 +150,6 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 #define binary_execute(trans_struct) \
        _binary_execute(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define flush_entities_buf(trans_struct) \
+       _flush_entities_buf(trans_struct FOR_LOGS(, LOG_ARGS))

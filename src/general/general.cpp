@@ -9,6 +9,18 @@
 
 //-----------------------------------------------
 
+char* _get_time_string(FOR_LOGS(LOG_PARAMS))
+{
+    general_log_report();
+
+    time_t t;
+    time(&t);
+
+    return ctime(&t);
+}
+
+//-----------------------------------------------
+
 long _get_file_size(FILE* source FOR_LOGS(, LOG_PARAMS))
 {
 	general_log_report();

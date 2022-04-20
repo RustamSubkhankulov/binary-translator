@@ -122,6 +122,9 @@ const double Precise = 0.000001;
 
 //===================================================================
 
+#define get_time_string() \
+       _get_time_string(FOR_LOGS(LOG_ARGS))
+
 #define clearstdin() \
        _clearstdin(FOR_LOGS(LOG_ARGS))
 
@@ -148,6 +151,8 @@ const double Precise = 0.000001;
        _get_file_size(src FOR_LOGS(, LOG_ARGS))
 
 //===================================================================
+
+char* _get_time_string(FOR_LOGS(LOG_PARAMS));
 
 long _get_file_size(FILE* source FOR_LOGS(, LOG_PARAMS));
 

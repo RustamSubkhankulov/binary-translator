@@ -85,5 +85,6 @@ obj/bintrans.o:	$(GLOBAL_DEP) $(BINTRANS_DEP)
 
 cleanup:
 	rm obj/*.o 
+	rm bintrans 
 
 #================================================

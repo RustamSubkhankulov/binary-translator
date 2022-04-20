@@ -15,7 +15,12 @@ int _read_binary_input(Binary_input* binary_input, const char* input_filename
     bintrans_log_report(); 
 
     assert(binary_input);
-    assert(input_filename);
+    
+    if (input_filename == NULL)
+    {
+        error_report(INPUT_INV_NAME);
+        return -1;
+    }
 
     FILE* input_file_ptr = open_file(input_filename, "rb");
     if (input_file_ptr == NULL)
@@ -95,10 +100,9 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report(); 
     assert(trans_struct);
 
-    int is_ok = trans_struct_validator(trans_struct);
-    if (is_ok == -1) return -1;
+    TRANS_STRUCT_VALID(trans_struct);
 
-    is_ok = binary_header_check(trans_struct);
+    int is_ok = binary_header_check(trans_struct);
     if (is_ok == -1) return -1;
 
     trans_struct->buffer_pos += (unsigned int)sizeof(Header);
@@ -150,10 +154,26 @@ int _binary_execute(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    int is_ok = trans_struct_validator(trans_struct);
-    if (is_ok == -1) return -1;
+    char* call_buf = flush_entities_buf(trans_struct);
+    if (!call_buf) return -1;
+
+    //call
 
     return 0;
+}
+
+//-----------------------------------------------
+
+char* _flush_entities_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    char* call_buf = NULL;
+
+    //
+
+    return call_buf;
 }
 
 //-----------------------------------------------
@@ -180,6 +200,55 @@ int _trans_struct_ctor(Trans_struct* trans_struct, Binary_input* binary_input
     trans_struct->cap = Entities_init_cap;
     trans_struct->num = 0;
 
+    #ifdef BINTRANS_LISTING
+
+        int ret_val = init_listing_file(trans_struct);
+        if (ret_val == -1) return -1;
+
+    #endif 
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _init_listing_file(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report(); 
+    assert(trans_struct);
+
+    FILE* listing = open_file(Listing_filename, "ab");
+    if (!listing)
+    {
+        error_report(LISTING_CLOSE_ERR);
+        return -1;
+    }
+
+    trans_struct->listing = listing;
+
+    fprintf(listing, "\t Listing Start ");
+    fprintf(listing, "%s \n", get_time_string());
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _end_listing_file(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report(); 
+    assert(trans_struct);
+
+    fprintf(trans_struct->listing, "\t Listing End");
+    fprintf(trans_struct->listing, "%s \n", get_time_string());
+
+    int ret_val = close_file(trans_struct->listing);
+    if (ret_val == -1)
+    {
+        error_report(LISTING_CLOSE_ERR);
+        return -1;
+    }
+
     return 0;
 }
 
@@ -197,6 +266,13 @@ int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     }
 
     free(trans_struct->entities);
+
+    #ifdef BINTRANS_LISTING
+
+        int ret_val = end_listing_file(trans_struct);
+        if (ret_val == -1) return -1;
+
+    #endif 
 
     return 0;
 }
@@ -239,6 +315,16 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         error_report(TRANS_STRUCT_INV_BUFFER_POS);
         err_num++;
     }
+
+    #ifdef BINTRANS_LISTING
+
+        if (trans_struct->listing == NULL)
+        {
+            error_report(LISTING_NULL_PTR);
+            err_num++;
+        }
+
+    #endif 
 
     if (err_num != 0)
         return -1;

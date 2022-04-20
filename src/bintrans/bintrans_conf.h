@@ -10,11 +10,11 @@ static const unsigned int Entities_init_cap = 100;
 
 //-----------------------------------------------
 
-#define LISTING
+#define BINTRANS_LISTING
 
-#ifdef LISTING
+#ifdef BINTRANS_LISTING
 
-    static const char* Listing_filename = "text_files/listing.txt";
+    static const char* Listing_filename = "listing/listing.txt";
 
 #endif 
 

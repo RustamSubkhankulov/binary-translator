@@ -756,3 +756,15 @@ Null pointer to the input buffer in trans_struct structure)
 
 DEF_ERR(1206, TRANS_STRUCT_INV_BUFFER_POS,
 Invalid buffer position in trans_struct)
+
+DEF_ERR(1207, LISTING_OPEN_ERR,
+Could not open listing file)
+
+DEF_ERR(1208, LISTING_CLOSE_ERR,
+Could not close listing file)
+
+DEF_ERR(1209, LISTING_NULL_PTR,
+Null pointer to listing file in trans_struct structure)
+
+DEF_ERR(1210, INPUT_INV_NAME,
+Invalid name of input binary file for translator)
