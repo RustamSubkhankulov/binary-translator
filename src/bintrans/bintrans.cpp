@@ -154,17 +154,17 @@ int _binary_execute(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    int ret_val = flush_entities_buf(trans_struct);
+    int ret_val = flush_entities_to_buf(trans_struct);
     if (ret_val == -1) return -1;
 
-    //call
+    ret_val = call_buf_change_acc_prot(trans_struct, PROT_EXEC);
+    if (ret_val == -1) return -1;
 
-    // int (*func) (void) = NULL;
-    // func = (int (*)(void)) call_buf;
+    ret_val = call_translated_code(trans_struct);
+    if (ret_val == -1) return -1;
 
-    // __asm__("int3");
-
-    // int ret_val = func();
+    ret_val = call_buf_change_acc_prot(trans_struct, PROT_READ | PROT_WRITE);
+    if (ret_val == -1) return -1;
     
     free(trans_struct->call_buf);
 
@@ -173,7 +173,42 @@ int _binary_execute(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-int _flush_entities_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+int _call_translated_code(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    int (*func) (void) = NULL;
+    func = (int (*)(void)) trans_struct->call_buf;
+
+    int exit_code = func();
+    printf(" Exit code of translated code: %d \n", exit_code);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned int size = trans_struct->call_buf_size;
+
+    int ret_val = mprotect((void*)trans_struct->call_buf, size, prot);
+    if (ret_val != 0)
+    {
+        error_report(MPROTECT_ERR);
+        return -1;
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _call_buf_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
@@ -185,46 +220,36 @@ int _flush_entities_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         return -1;
     }
 
-    //
-    printf("\n size of page %d \n", pagesize);
-    //
+    unsigned int size = trans_struct->call_buf_size;
 
-    trans_struct->call_buf = (unsigned char*) aligned_alloc (pagesize, 4 * sizeof(unsigned char));
+    trans_struct->call_buf = (unsigned char*) aligned_alloc (pagesize,  
+                                        size * sizeof(unsigned char));
     if (!trans_struct->call_buf) return -1;
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _flush_entities_to_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    // count size of translated code 
+    trans_struct->call_buf_size = 4;
+
+    int ret_val = call_buf_allocate(trans_struct);
+    if (ret_val == -1) return -1;
+
+    // flushing
 
     trans_struct->call_buf[0] = 0x48;
     trans_struct->call_buf[1] = 0x31;
     trans_struct->call_buf[2] = 0xC0;
     trans_struct->call_buf[3] = 0xC3;
 
-
-
-    //
-    //trans_struct->call_buf = {0x90, 0x90, 0x53, 0x55, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57, 0x90, 0x90, 0x41, 0x5F, 0x41, 0x5E, 0x41, 0x5D, 0x41, 0x5C, 0x5D, 0x5B, 0x90, 0x90, 0x48, 0x31, 0xC0, 0xC3};
-
-    int (*func) (void) = NULL;
-    func = (int (*)(void)) trans_struct->call_buf;
-
-    #ifdef DEBUG_EXEC
-    
-        __asm__("int3");
-    
-    #endif 
-
-    fprintf(stderr, "\n address of call buf: %p \n", trans_struct->call_buf);
-
-    // int is_ok = mprotect((void*)trans_struct->call_buf, pagesize, PROT_EXEC);
-    // if (is_ok != 0)
-    // {
-    //     error_report(MPROTECT_ERR);
-    //     return -1;
-    // }
-
-
-    // int ret_val = func();
-    // printf("\n Process ended with exit code: %d \n", ret_val);
-
-    
+    // flushing end 
 
     return 0;
 }

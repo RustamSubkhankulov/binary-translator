@@ -70,6 +70,7 @@ struct Trans_struct
     unsigned int buffer_pos;
 
     unsigned char* call_buf;
+    unsigned int   call_buf_size;
 
     #ifdef BINTRANS_LISTING
 
@@ -104,7 +105,13 @@ int _trans_struct_dtor     (Trans_struct* trans_strcut FOR_LOGS(, LOG_PARAMS));
 
 int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
-int _flush_entities_buf     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+int _flush_entities_to_buf (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _call_translated_code  (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _call_buf_allocate     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LOG_PARAMS));
 
 
 #ifdef BINTRANS_LISTING
@@ -116,6 +123,15 @@ int _flush_entities_buf     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 #endif 
 
 //===============================================
+
+#define call_translated_code(trans_struct) \
+       _call_translated_code(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define call_buf_allocate(trans_struct) \
+       _call_buf_allocate(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define call_buf_change_acc_prot(trans_struct, prot) \
+       _call_buf_change_acc_prot(trans_struct, prot FOR_LOGS(, LOG_ARGS))
 
 #define init_listing_file(trans_struct) \
        _init_listing_file(trans_struct FOR_LOGS(, LOG_ARGS))
@@ -153,5 +169,5 @@ int _flush_entities_buf     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 #define binary_execute(trans_struct) \
        _binary_execute(trans_struct FOR_LOGS(, LOG_ARGS))
 
-#define flush_entities_buf(trans_struct) \
-       _flush_entities_buf(trans_struct FOR_LOGS(, LOG_ARGS))
+#define flush_entities_to_buf(trans_struct) \
+       _flush_entities_to_buf(trans_struct FOR_LOGS(, LOG_ARGS))
