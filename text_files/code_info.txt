@@ -2,5 +2,690 @@ Information about convertion my own assembly code into
 bunary code for virtual cpu and binary codes for different 
 commands for x86 architecture 
 
+//-----------------------------------------------
+
+My virtual binary code for instructions:
+
+	HLT  - 0 			JMP  - 24
+ 	ADD  - 1         	JA   - 31
+ 	SUB  - 2 			JAE  - 30
+ 	MUL  - 3 			JB   - 29
+ 	DIV  - 4 			JBE  - 28
+ 	PUSH - 5 			JE   - 27
+ 	POP  - 6 			JNE  - 26
+ 	OUT  - 7 			CALL - 25
+ 	IN   - 8 			
+ 	RET  - 9 			MASKS:
+ 	POW  - 10	        
+ 	EQ   - 11	        Register  - 0x40
+ 	MR   - 12	        Immediate - 0x20
+ 	MRE  - 13	        Ram       - 0x80
+ 	LS   - 14	        
+ 	LSE  - 15	        OPER_CODE_MASK - ~(7 << 5)
+ 	NEQ  - 16	        ASCII_offset(for register names) = 96
+ 	SIN  - 17	        
+ 	COS  - 18	        
+ 	TG   - 19	        
+ 	LN   - 20	        
+ 	ASIN - 21	     	
+ 	ATG  - 22	        
+ 	DRAW - 23	        
+
+//-----------------------------------------------
+
+First unsigned char in binary - op code
+Op_code & OPER_CODE_MASK = one of the codes above
+
+//-----------------------------------------------
+
+Number of registers - 16 
+	(luckly just like in real)
+
+//-----------------------------------------------
+
+PUSH and POP has special flags (listed above)
+
+details:
+
+1) PUSH: (switch oper_code & ~ OPER_CODE_MASK)	
+
+	- reg + ram
+
+		. get char from binary ( number of register)
+		. store value from  memory by index = containment of register
+		. push to stack
+		. == push [rax]
+
+	- reg
+
+		. get char from binary
+		. push value from register 
+		. == push rax
+
+	- imm + ram
+
+		. get value from binary (float)
+		. push value from memory by index
+		. == push word MEMORY_NAME
+
+	- imm
+
+		. get value from binary
+		. push immediate to stack
+		. == push 1
+
+	- imm + reg + ram
+
+		. get char from binary = reg number
+		. get imm value (float) from binary next
+		. push [rax + imm_value]
+
+2) POP - popes from stack to different places 
+
+	- options are the same to push, except poping to imm
+
+//-----------------------------------------------
+
+STACK:
+
+-top-		SUB = second -first
+------
+first       DIV = second / first
+------
+second  	
+------      POW = second ^ (first)
+  ...
+
+//-----------------------------------------------
+
+RET gets float value for binary and jumps by it
+
+//------------------------------------------------
+
+MR == first > second
+
+MRE         >=
+
+LS          <
+
+LSE         <=
+
+NEQ         <>
+
+//------------------------------------------------
+
+All jumps get  dest ip as !!int!! from binary
+
+JA - first > second
+JAE        >=
+
+JB         <
+JBE        <=
+
+JE         ==
+JNE        !=
 
 
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DEF_CMD_(0, HLT, 0, 136272956, 
+{
+    STACK_DESTRUCT(procstruct);
+
+    procstruct->command_ct++;
+
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, ADD, 1, 4089307820,
+{
+    elem_t first_val = 0;
+    GET_ARGUMENT_FROM_STACK(&first_val);
+
+    elem_t second_val = 0;
+    GET_ARGUMENT_FROM_STACK(&second_val);
+
+    elem_t result = first_val + second_val;
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, SUB, 2, 4160544333,
+{
+    elem_t first_val = 0;
+    GET_ARGUMENT_FROM_STACK(&first_val);
+
+    elem_t second_val = 0;
+    GET_ARGUMENT_FROM_STACK(&second_val);
+
+    elem_t result = second_val - first_val;
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, MUL, 3, 4176901080, 
+{
+    elem_t first_val = 0;
+    GET_ARGUMENT_FROM_STACK(&first_val);
+
+    elem_t second_val = 0;
+    GET_ARGUMENT_FROM_STACK(&second_val);
+
+    elem_t result = second_val * first_val;
+
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+
+    MOVE_IP_TO_NEXT_COMMAND(procstruct); 
+})
+
+DEF_CMD_(0, DIV, 4, 98149758, 
+{
+    elem_t divider = 0;
+    GET_ARGUMENT_FROM_STACK(&divider);
+
+    elem_t dividend = 0;
+    GET_ARGUMENT_FROM_STACK(&dividend);
+
+    CHECK_DIVIDER_IS_ZERO(divider);
+    
+    elem_t result = dividend / divider;
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+
+    MOVE_IP_TO_NEXT_COMMAND(procstruct); 
+})
+
+DEF_CMD_(1, PUSH, 5, 1815514390, 
+{
+    procstruct->ip++;
+    PROCSTRUCT_IP_CHECK(procstruct);
+
+    elem_t* value_ptr = get_pointer(procstruct, 
+                                    oper_code);
+
+    PUSH_ARGUMENT_TO_STACK(value_ptr);
+
+    procstruct->command_ct++;
+})
+
+DEF_CMD_(1, POP, 6, 3218261149, 
+{
+    procstruct->ip++;
+    PROCSTRUCT_IP_CHECK(procstruct);
+
+    elem_t* value_ptr = get_pointer(procstruct, 
+                                    oper_code);
+
+    GET_ARGUMENT_FROM_STACK(value_ptr);
+
+    procstruct->command_ct++;
+})
+
+DEF_CMD_(0, OUT, 7, 1023240496, 
+{
+    elem_t value = 0;
+    GET_ARGUMENT_FROM_STACK(&value);
+
+    PRINT_PROC_OUTPUT(value);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct); 
+})
+
+DEF_CMD_(0, IN, 8, 955208603, 
+{
+    elem_t value = 0;
+    GET_ARGUMENT_FROM_PROC_INPUT(&value);
+
+    PUSH_ARGUMENT_TO_STACK(&value);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, RET,  9, 449239908, 
+{
+    elem_t value = 0;
+    GET_ARGUMENT_FROM_STACK(&value);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_DEST((int)value);
+})
+
+DEF_CMD_(0, POW,  10, 3916815338, 
+{
+    elem_t exp = 0;
+    GET_ARGUMENT_FROM_STACK(&exp);
+
+    elem_t base = 0;
+    GET_ARGUMENT_FROM_STACK(&base);
+
+    elem_t result = powf(base, exp);
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, EQ, 11, 2497190062,
+{
+    elem_t first = 0;
+    GET_ARGUMENT_FROM_STACK(&first);
+
+    elem_t second = 0;
+    GET_ARGUMENT_FROM_STACK(&second);
+
+    elem_t result = 0;
+
+    if (IS_EQUAL(first, second))
+        result = 1;
+    
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, MR, 12, 4260295007,
+{
+    elem_t first = 0;
+    GET_ARGUMENT_FROM_STACK(&first);
+
+    elem_t second = 0;
+    GET_ARGUMENT_FROM_STACK(&second);
+
+    elem_t result = 0;
+
+    if (first > second)
+        result = 1;
+    
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, MRE, 13, 2864530677,
+{
+    elem_t first = 0;
+    GET_ARGUMENT_FROM_STACK(&first);
+
+    elem_t second = 0;
+    GET_ARGUMENT_FROM_STACK(&second);
+
+    elem_t result = 0;
+
+    if (first > second || IS_EQUAL(first, second))
+        result = 1;
+    
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, LS, 14, 162631210,
+{
+    elem_t first = 0;
+    GET_ARGUMENT_FROM_STACK(&first);
+
+    elem_t second = 0;
+    GET_ARGUMENT_FROM_STACK(&second);
+
+    elem_t result = 0;
+
+    if (first < second)
+        result = 1;
+    
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, LSE, 15, 273834884,
+{
+    elem_t first = 0;
+    GET_ARGUMENT_FROM_STACK(&first);
+
+    elem_t second = 0;
+    GET_ARGUMENT_FROM_STACK(&second);
+
+    elem_t result = 0;
+
+    if (first < second || IS_EQUAL(first, second))
+        result = 1;
+    
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, NEQ, 16, 3987610013,
+{
+    elem_t first = 0;
+    GET_ARGUMENT_FROM_STACK(&first);
+
+    elem_t second = 0;
+    GET_ARGUMENT_FROM_STACK(&second);
+
+    elem_t result = 0;
+
+    if (!IS_EQUAL(first, second))
+        result = 1;
+    
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, SIN, 17, 3502304637,
+{
+    elem_t arg = 0;
+
+    GET_ARGUMENT_FROM_STACK(&arg);
+
+    elem_t result = sin(arg);
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, COS, 18, 11133052,
+{
+    elem_t arg = 0;
+
+    GET_ARGUMENT_FROM_STACK(&arg);
+
+    elem_t result = cos(arg);
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, TG, 19, 3508519860,
+{
+    elem_t arg = 0;
+
+    GET_ARGUMENT_FROM_STACK(&arg);
+
+    elem_t result = tan(arg);
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, LN, 20, 314398320,
+{
+    elem_t arg = 0;
+
+    GET_ARGUMENT_FROM_STACK(&arg);
+
+    elem_t result = log(arg);
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, ASIN, 21, 2062072772,
+{
+    elem_t arg = 0;
+
+    GET_ARGUMENT_FROM_STACK(&arg);
+
+    elem_t result = asin(arg);
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, ATG, 22, 2174791585,
+{
+    elem_t arg = 0;
+
+    GET_ARGUMENT_FROM_STACK(&arg);
+
+    elem_t result = atan(arg);
+    PUSH_ARGUMENT_TO_STACK(&result);
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+DEF_CMD_(0, DRAW, 23, 316206615,
+{
+    extern FILE* proc_output;
+
+    for (int vid_print_ct = 1; vid_print_ct <= VIDEO_SIZE; vid_print_ct++)
+    {
+        fprintf(proc_output, "%c ", (char)(*(procstruct->video + vid_print_ct - 1)));
+
+        if (vid_print_ct % (FRAME_WIDTH) == 0)
+            fprintf(proc_output, "\n");
+    }
+
+    fflush(proc_output);
+
+    /* for (int vid_print_ct = 1; vid_print_ct <= VIDEO_SIZE; vid_print_ct++)
+    {
+        printf("videa ram [%d] |%d| |%c|",vid_print_ct + VIDEO_MEMORY_ADDRESS - 1, (char)(*(procstruct->video + vid_print_ct - 1)), (char)(*(procstruct->video + vid_print_ct - 1)));
+
+        if (vid_print_ct % (FRAME_WIDTH) == 0)
+            printf("\n");
+    } */
+
+    procstruct->command_ct++;
+    MOVE_IP_TO_NEXT_COMMAND(procstruct);
+})
+
+
+DEF_JMP_(1, JMP,  24, 780006197, 
+{
+    int dest_ip = 0;
+    GET_DESTINATION_IP(&dest_ip);
+
+    MOVE_IP_TO_DEST(dest_ip);
+
+    procstruct->command_ct++;
+})
+
+DEF_JMP_(1, JA,   31, 3413231484, 
+{
+     int dest_ip = 0;
+    GET_DESTINATION_IP(&dest_ip);
+
+    elem_t first_val = 0;
+    GET_ARGUMENT_FROM_STACK(&first_val);
+
+    elem_t second_val = 0;
+    GET_ARGUMENT_FROM_STACK(&second_val);
+
+    if (first_val > second_val)
+
+        MOVE_IP_TO_DEST(dest_ip)
+    
+    else {
+        procstruct->ip += sizeof(int);
+        PROCSTRUCT_IP_CHECK(procstruct);
+    }
+
+    procstruct->command_ct++;   
+})
+
+DEF_JMP_(1, JAE,  30, 469140019, 
+{
+     int dest_ip = 0;
+    GET_DESTINATION_IP(&dest_ip);
+
+    elem_t first_val = 0;
+    GET_ARGUMENT_FROM_STACK(&first_val);
+
+    elem_t second_val = 0;
+    GET_ARGUMENT_FROM_STACK(&second_val);
+
+    if (first_val >= second_val) 
+
+        MOVE_IP_TO_DEST(dest_ip)
+        
+    else {
+        procstruct->ip += sizeof(int);
+        PROCSTRUCT_IP_CHECK(procstruct);
+    }
+
+    procstruct->command_ct++; 
+})
+
+DEF_JMP_(1, JB,   29, 315656441, 
+{
+     int dest_ip = 0;
+    GET_DESTINATION_IP(&dest_ip);
+
+    elem_t first_val = 0;
+    GET_ARGUMENT_FROM_STACK(&first_val);
+
+    elem_t second_val = 0;
+    GET_ARGUMENT_FROM_STACK(&second_val);
+
+    if (first_val < second_val) 
+
+        MOVE_IP_TO_DEST(dest_ip)
+
+    else {
+        procstruct->ip += sizeof(int);
+        PROCSTRUCT_IP_CHECK(procstruct);
+    }
+
+    procstruct->command_ct++; 
+})
+
+DEF_JMP_(1, JBE,  28, 3172396438, 
+{
+     int dest_ip = 0;
+    GET_DESTINATION_IP(&dest_ip);
+
+    elem_t first_val = 0;
+    GET_ARGUMENT_FROM_STACK(&first_val);
+
+    elem_t second_val = 0;
+    GET_ARGUMENT_FROM_STACK(&second_val);
+
+    if (first_val <= second_val) 
+
+        MOVE_IP_TO_DEST(dest_ip)
+
+    else {
+        procstruct->ip += sizeof(int);
+        PROCSTRUCT_IP_CHECK(procstruct);
+    }
+
+    procstruct->command_ct++; 
+})
+
+DEF_JMP_(1, JE,   27, 1310313540, 
+{
+     int dest_ip = 0;
+    GET_DESTINATION_IP(&dest_ip);
+
+    elem_t first_val = 0;
+    GET_ARGUMENT_FROM_STACK(&first_val);
+
+    elem_t second_val = 0;
+    GET_ARGUMENT_FROM_STACK(&second_val);
+
+    if (IS_EQUAL(first_val, second_val)) 
+
+        MOVE_IP_TO_DEST(dest_ip)
+
+    else {
+        procstruct->ip += sizeof(int);
+        PROCSTRUCT_IP_CHECK(procstruct);
+    }
+
+    procstruct->command_ct++; 
+})
+
+DEF_JMP_(1, JNE,  26, 367029121, 
+{
+     int dest_ip = 0;
+    GET_DESTINATION_IP(&dest_ip);
+
+    elem_t first_val = 0;
+    GET_ARGUMENT_FROM_STACK(&first_val);
+
+    elem_t second_val = 0;
+    GET_ARGUMENT_FROM_STACK(&second_val);
+
+    if (IS_EQUAL(first_val, second_val))
+
+        MOVE_IP_TO_DEST(dest_ip)
+
+    else {
+        procstruct->ip += sizeof(int);
+        PROCSTRUCT_IP_CHECK(procstruct);
+    }
+
+    procstruct->command_ct++; 
+})
+
+DEF_JMP_(1, CALL, 25, 1316946032, 
+{
+     int dest_ip = 0;
+    GET_DESTINATION_IP(&dest_ip);
+
+    procstruct->ip += sizeof(int);
+    PROCSTRUCT_IP_CHECK(procstruct);
+
+    elem_t return_ip = (elem_t)(procstruct->ip  
+                             - procstruct->code_array);
+
+    PUSH_ARGUMENT_TO_STACK(&return_ip);
+
+    MOVE_IP_TO_DEST(dest_ip);
+
+    procstruct->command_ct++;
+})

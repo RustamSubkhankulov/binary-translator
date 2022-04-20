@@ -150,7 +150,12 @@ const double Precise = 0.000001;
 #define get_file_size(src) \
        _get_file_size(src FOR_LOGS(, LOG_ARGS))
 
+#define fast_cpy(dest, src, size) \
+       _fast_cpy(dest, src, size FOR_LOGS(, LOG_ARGS))
+
 //===================================================================
+
+int _fast_cpy(void* dest, void* src, unsigned int size FOR_LOGS(, LOG_PARAMS));
 
 char* _get_time_string(FOR_LOGS(LOG_PARAMS));
 

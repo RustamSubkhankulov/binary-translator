@@ -1,5 +1,9 @@
 #include <stdlib.h>
 
+//
+#include <tgmath.h>
+//
+
 #include "global_conf.h"
 #include "bintrans/bintrans.h"
 
@@ -7,6 +11,7 @@
 
 int main(int argc, char* argv[])
 {
+
     #ifdef LOGS
         FILE* logs_file = open_log_file(Logfile_name);
         if (!logs_file)

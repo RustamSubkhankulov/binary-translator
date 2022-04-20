@@ -96,6 +96,16 @@ int _fill_input_buffer(Binary_input* binary_input FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
+int _increase_entities_array(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report(); 
+    assert(trans_struct);
+
+    // realloc 
+}
+
+//-----------------------------------------------
+
 int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
@@ -108,7 +118,39 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     trans_struct->buffer_pos += (unsigned int)sizeof(Header);
 
+    int ret_val = add_initial_entity()
+
     return 0;
+}
+
+//-----------------------------------------------
+
+int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report(); 
+    assert(trans_struct);
+
+    // main cycle
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _add_initial_entity(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report(); 
+    assert(trans_struct);
+
+
+}
+
+//-----------------------------------------------
+
+int _add_final_entity(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report(); 
+    assert(trans_struct);
 }
 
 //-----------------------------------------------

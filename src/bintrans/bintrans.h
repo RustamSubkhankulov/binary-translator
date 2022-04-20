@@ -99,6 +99,12 @@ int _binary_header_check   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _binary_translate      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
+int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _add_initial_entity    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _add_final_entity      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
 int _binary_execute        (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _trans_struct_dtor     (Trans_struct* trans_strcut FOR_LOGS(, LOG_PARAMS));

@@ -100,6 +100,70 @@ int _close_file(FILE* file_ptr FOR_LOGS(, LOG_PARAMS)) {
 
 //===================================================================
 
+int _fast_cpy(void* dest, void* src, unsigned int size FOR_LOGS(, LOG_PARAMS))
+{
+    assert(dest);
+    assert(src);
+
+    if (!size)
+        return 0;
+
+    unsigned char* dest_ptr = (unsigned char*)dest;
+    unsigned char* srce_ptr = (unsigned char*)src;
+
+    while (size >= sizeof(int64_t))
+    {
+        static size64 = sizeof(int64_t);
+
+        *(int64_t*)dest_ptr = *(int64_t*)srce_ptr;
+    
+        dest_ptr += size64;
+        srce_ptr += size64;
+
+        size -= size64;
+    }    
+
+    while (size >= sizeof(int32_t))
+    {
+        static size32 = sizeof(int32_t);
+
+        *(int32_t*)dest_ptr = *(int32_t*)srce_ptr;
+    
+        dest_ptr += size32;
+        srce_ptr += size32;
+
+        size -= size32;
+    }
+
+    while (size >= sizeof(int16_t))
+    {
+        static size16 = sizeof(int16_t);
+
+        *(int16_t*)dest_ptr = *(int16_t*)srce_ptr;
+    
+        dest_ptr += size16;
+        srce_ptr += size16;
+
+        size -= size16;
+    }
+
+    while (size >= sizeof(int8_t))
+    {
+        static size8 = sizeof(int8_t);
+
+        *(int8_t*)dest_ptr = *(int8_t*)srce_ptr;
+    
+        dest_ptr += size8;
+        srce_ptr += size8;
+
+        size -= size8;
+    }
+
+    return 0;
+}
+
+//===================================================================
+
 int my_swap(void* first_, void* second_, size_t size) {
 
 	assert(first_  != NULL);
