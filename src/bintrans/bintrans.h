@@ -51,7 +51,7 @@ struct Binary_input
 
 struct Trans_entity
 {
-    char* data;
+    unsigned char* data;
     unsigned int size;
 
     //type maybe?
@@ -123,6 +123,8 @@ int _flush_entities_to_buf (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _call_translated_code  (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
+int _count_call_buf_size   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
 int _call_buf_allocate     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
@@ -133,9 +135,8 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
 
 int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LOG_PARAMS));
 
-int _init_entity(Trans_struct* trans_struct, unsigned int size, unsigned char* data 
-         
-                                                            FOR_LOGS(, LOG_PARAMS));
+int _init_entity(Trans_entity* trans_entity, unsigned int size, const unsigned char* data 
+                                                                  FOR_LOGS(, LOG_PARAMS));
 #ifdef BINTRANS_LISTING
 
     int _init_listing_file     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
@@ -145,6 +146,9 @@ int _init_entity(Trans_struct* trans_struct, unsigned int size, unsigned char* d
 #endif 
 
 //===============================================
+
+#define count_call_buf_size(trans_struct) \
+       _count_call_buf_size(trans_struct FOR_LOGS(, LOG_ARGS))
 
 #define increase_entities_array(trans_struct) \
        _increase_entities_array(trans_struct FOR_LOGS(, LOG_ARGS))

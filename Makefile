@@ -55,7 +55,8 @@ LOG_DEP 	 	= src/logs/errors_and_logs.cpp		\
 
 BINTRANS_DEP 	= src/bintrans/bintrans.cpp 		\
 				  src/bintrans/bintrans.h 			\
-				  src/bintrans/bintrans_conf.h 
+				  src/bintrans/bintrans_conf.h 		\
+				  src/bintrans/instr.h
 
 #================================================
 

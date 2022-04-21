@@ -7,12 +7,14 @@ done 1. make каркас of the programm
 	done - insert valid check in functions
 	done - try to execute 
 
-3. make загатовочки for translating 
 almost done 4. listing 
 
 done 5. resize of entities
 done 6. init and final entities 
+6,5. integrate list !!!
+6,6. make dump 
 7. table with current values of registers
+8. make загатовочки for translating  as codegenerating 
 
 997. fast cpy sse
 

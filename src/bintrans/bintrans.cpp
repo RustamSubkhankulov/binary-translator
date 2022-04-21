@@ -137,15 +137,24 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
                                Save_regs);
 
     if (ret_val == -1) return -1;
+    trans_struct->num++;
 
-    ret_val = translate_instructions(trans_struct);
-    if (ret_val == -1) return -1;
+    // ret_val = translate_instructions(trans_struct);
+    // if (ret_val == -1) return -1;
 
-    int ret_val = init_entity(&trans_struct->entities[trans_struct->num],
-                               Restore_regs_size, 
-                               Restore_regs);
+    ret_val = init_entity(&trans_struct->entities[trans_struct->num],
+                           Restore_regs_size, 
+                           Restore_regs);
+
+    if (ret_val == -1) return -1;   
+    trans_struct->num++;
+
+    ret_val = init_entity(&trans_struct->entities[trans_struct->num],
+                           Return_size, 
+                           Return);
     
-    if (ret_val == -1) return -1;              
+    if (ret_val == -1) return -1;   
+    trans_struct->num++;
 
     return 0;
 }
@@ -166,7 +175,7 @@ int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         TRANS_STRUCT_VALID(trans_struct);
 
-        if (trans_struct->num == trans_struct->size)
+        if (trans_struct->num == trans_struct->cap)
         {
             ret_val = increase_entities_array(trans_struct);
             if (ret_val == -1) return -1;
@@ -178,18 +187,18 @@ int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-
+//define 
 
 //-----------------------------------------------
 
-int _translate_single_instruction(Trans_struct* trans_struct, FOR_LOGS(, LOG_PARAMS))
+int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
     assert(trans_struct);
 
     Trans_entity* trans_entity = &trans_struct->entities[trans_struct->num];
 
-    
+    //switch 
 
     trans_struct->num++;
 
@@ -198,12 +207,20 @@ int _translate_single_instruction(Trans_struct* trans_struct, FOR_LOGS(, LOG_PAR
 
 //-----------------------------------------------
 
-int _init_entity(Trans_entity* trans_entity, unsigned int size, unsigned char* data FOR_LOGS(, LOG_PARAMS))
+int _init_entity(Trans_entity* trans_entity, unsigned int size, const unsigned char* data 
+                                                                  FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
     assert(trans_entity);
 
     trans_entity->size = size;
+
+    trans_entity->data = (unsigned char*) calloc(size, sizeof(unsigned char));
+    if (!trans_entity->data)
+    {
+        error_report(CANNOT_ALLOCATE_MEM);
+        return -1;
+    }
 
     int ret_val = fast_cpy((void*) trans_entity->data,
                            (void*) data,
@@ -334,25 +351,56 @@ int _call_buf_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
+int _count_call_buf_size(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned int call_buf_size = 0;
+
+    for (unsigned int counter = 0;
+                      counter < trans_struct->num;
+                      counter++)
+    {
+        call_buf_size += trans_struct->entities[counter].size;
+    }
+
+    trans_struct->call_buf_size = call_buf_size;
+
+    printf("\n call buf size %u \n", call_buf_size);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
 int _flush_entities_to_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
 
-    // count size of translated code 
-    trans_struct->call_buf_size = 4;
-
-    int ret_val = call_buf_allocate(trans_struct);
+    int ret_val = count_call_buf_size(trans_struct);
     if (ret_val == -1) return -1;
 
-    // flushing
+    ret_val = call_buf_allocate(trans_struct);
+    if (ret_val == -1) return -1;
 
-    trans_struct->call_buf[0] = 0x48;
-    trans_struct->call_buf[1] = 0x31;
-    trans_struct->call_buf[2] = 0xC0;
-    trans_struct->call_buf[3] = 0xC3;
+    unsigned int call_buf_pos = 0;
 
-    // flushing end 
+    for (unsigned int counter = 0;
+                      counter < trans_struct->num;
+                      counter++)
+    {
+        unsigned int entity_size = trans_struct->entities[counter].size;
+
+        ret_val = fast_cpy((void*)(trans_struct->call_buf + call_buf_pos),
+                           (void*) trans_struct->entities[counter].data,
+                                   entity_size);
+
+        if (ret_val == -1);
+
+        call_buf_pos += entity_size;
+    }
 
     return 0;
 }
@@ -445,6 +493,13 @@ int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     //     error_report(TRANS_STRUCT_DTOR_EARLY);
     //     return -1;
     // }
+
+    for (unsigned int counter = 0;
+                      counter < trans_struct->num;
+                      counter++)
+    {
+        free(trans_struct->entities[counter].data);
+    }
 
     free(trans_struct->entities);
 
