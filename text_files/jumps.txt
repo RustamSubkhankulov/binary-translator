@@ -1,165 +1,47 @@
 DEF_JMP_(1, JMP,  24, 780006197, 
 {
-    int dest_ip = 0;
-    GET_DESTINATION_IP(&dest_ip);
-
-    MOVE_IP_TO_DEST(dest_ip);
-
-    procstruct->command_ct++;
+    int ret_val = trans_jmp(trans_struct);
+    if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JA,   31, 3413231484, 
 {
-     int dest_ip = 0;
-    GET_DESTINATION_IP(&dest_ip);
-
-    elem_t first_val = 0;
-    GET_ARGUMENT_FROM_STACK(&first_val);
-
-    elem_t second_val = 0;
-    GET_ARGUMENT_FROM_STACK(&second_val);
-
-    if (first_val > second_val)
-
-        MOVE_IP_TO_DEST(dest_ip)
-    
-    else {
-        procstruct->ip += sizeof(int);
-        PROCSTRUCT_IP_CHECK(procstruct);
-    }
-
-    procstruct->command_ct++;   
+    int ret_val = trans_ja(trans_struct);
+    if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JAE,  30, 469140019, 
 {
-     int dest_ip = 0;
-    GET_DESTINATION_IP(&dest_ip);
-
-    elem_t first_val = 0;
-    GET_ARGUMENT_FROM_STACK(&first_val);
-
-    elem_t second_val = 0;
-    GET_ARGUMENT_FROM_STACK(&second_val);
-
-    if (first_val >= second_val) 
-
-        MOVE_IP_TO_DEST(dest_ip)
-        
-    else {
-        procstruct->ip += sizeof(int);
-        PROCSTRUCT_IP_CHECK(procstruct);
-    }
-
-    procstruct->command_ct++; 
+    int ret_val = trans_jae(trans_struct);
+    if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JB,   29, 315656441, 
 {
-     int dest_ip = 0;
-    GET_DESTINATION_IP(&dest_ip);
-
-    elem_t first_val = 0;
-    GET_ARGUMENT_FROM_STACK(&first_val);
-
-    elem_t second_val = 0;
-    GET_ARGUMENT_FROM_STACK(&second_val);
-
-    if (first_val < second_val) 
-
-        MOVE_IP_TO_DEST(dest_ip)
-
-    else {
-        procstruct->ip += sizeof(int);
-        PROCSTRUCT_IP_CHECK(procstruct);
-    }
-
-    procstruct->command_ct++; 
+    int ret_val = trans_jb(trans_struct);
+    if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JBE,  28, 3172396438, 
 {
-     int dest_ip = 0;
-    GET_DESTINATION_IP(&dest_ip);
-
-    elem_t first_val = 0;
-    GET_ARGUMENT_FROM_STACK(&first_val);
-
-    elem_t second_val = 0;
-    GET_ARGUMENT_FROM_STACK(&second_val);
-
-    if (first_val <= second_val) 
-
-        MOVE_IP_TO_DEST(dest_ip)
-
-    else {
-        procstruct->ip += sizeof(int);
-        PROCSTRUCT_IP_CHECK(procstruct);
-    }
-
-    procstruct->command_ct++; 
+    int ret_val = trans_jbe(trans_struct);
+    if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JE,   27, 1310313540, 
 {
-     int dest_ip = 0;
-    GET_DESTINATION_IP(&dest_ip);
-
-    elem_t first_val = 0;
-    GET_ARGUMENT_FROM_STACK(&first_val);
-
-    elem_t second_val = 0;
-    GET_ARGUMENT_FROM_STACK(&second_val);
-
-    if (IS_EQUAL(first_val, second_val)) 
-
-        MOVE_IP_TO_DEST(dest_ip)
-
-    else {
-        procstruct->ip += sizeof(int);
-        PROCSTRUCT_IP_CHECK(procstruct);
-    }
-
-    procstruct->command_ct++; 
+    int ret_val = trans_je(trans_struct);
+    if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JNE,  26, 367029121, 
 {
-     int dest_ip = 0;
-    GET_DESTINATION_IP(&dest_ip);
-
-    elem_t first_val = 0;
-    GET_ARGUMENT_FROM_STACK(&first_val);
-
-    elem_t second_val = 0;
-    GET_ARGUMENT_FROM_STACK(&second_val);
-
-    if (IS_EQUAL(first_val, second_val))
-
-        MOVE_IP_TO_DEST(dest_ip)
-
-    else {
-        procstruct->ip += sizeof(int);
-        PROCSTRUCT_IP_CHECK(procstruct);
-    }
-
-    procstruct->command_ct++; 
+    int ret_val = trans_jne(trans_struct);
+    if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, CALL, 25, 1316946032, 
 {
-     int dest_ip = 0;
-    GET_DESTINATION_IP(&dest_ip);
-
-    procstruct->ip += sizeof(int);
-    PROCSTRUCT_IP_CHECK(procstruct);
-
-    elem_t return_ip = (elem_t)(procstruct->ip  
-                             - procstruct->code_array);
-
-    PUSH_ARGUMENT_TO_STACK(&return_ip);
-
-    MOVE_IP_TO_DEST(dest_ip);
-
-    procstruct->command_ct++;
+    int ret_val = trans_call(trans_struct);
+    if (ret_val == -1) return -1;
 })

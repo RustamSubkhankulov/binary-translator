@@ -155,7 +155,23 @@ int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-//define 
+#define DEF_CMD_(arg_num, name, code, hash, instructions)   \
+                                                            \
+    case code:                                              \
+    {                                                       \
+        instructions                                        \
+                                                            \
+        break;                                              \
+    }                                                           
+
+#define DEF_JMP_(arg_num, name, code, hash, instructions)   \
+                                                            \
+    case code:                                              \
+    {                                                       \
+        instructions                                        \
+                                                            \
+        break;                                              \
+    }  
 
 //-----------------------------------------------
 
@@ -164,10 +180,22 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
     bintrans_log_report(); 
     assert(trans_struct);
 
-    //switch 
+    unsigned char oper_code = *(trans_struct->input_buffer 
+                              + trans_struct->buffer_pos);
+
+    switch(oper_code & OPER_CODE_MASK)
+    {
+        #include "../../text_files/commands.txt"
+        #include "../../text_files/jumps.txt"
+    }
 
     return 0;   
 }
+
+//-----------------------------------------------
+
+#undef DEF_CMD_
+#undef DEF_JMP_
 
 //-----------------------------------------------
 
@@ -543,5 +571,257 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
+
+int _trans_add_sub(Trans_struct* trans_struct, unsigned char op_code 
+                                             FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_hlt    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_mul    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_div    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_in     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_ret    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_eq     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_mr     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_mre    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_ls     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_lse    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_neq    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_sin    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_cos    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_tg     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_ln     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_asin   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_atg    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_draw   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_jmp    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_ja     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_jae    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_jb     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_jbe    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_je     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_jne    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
+int _trans_call   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    return 0;
+}
+
 
 //===============================================

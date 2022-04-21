@@ -12,10 +12,11 @@ almost done 4. listing
 done 5. resize of entities
 done 6. init and final entities 
 done 6,5. integrate list !!!
-6,6. make dump 
+done 6,6. make dump 
 6,7. make switch with defines
 7. table with current values of registers
 8. make загатовочки for translating  as codegenerating 
+9. unite some functions of translating 
 
 995. list visiter
 996. list search ( gets function for comparing)

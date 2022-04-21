@@ -99,7 +99,162 @@ int _input_load_to_buffer  (Binary_input* binary_input FOR_LOGS(, LOG_PARAMS));
 
 //-----------------------------------------------
 
-// different functions for trnslating
+int _trans_add_sub(Trans_struct* trans_struct, unsigned char op_code 
+                                            FOR_LOGS(, LOG_PARAMS));
+
+int _trans_hlt    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_mul    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_div    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_in     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_ret    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_eq     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_mr     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_mre    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_ls     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_lse    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_neq    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_sin    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_cos    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_tg     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_ln     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_asin   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_atg    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_draw   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_jmp    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_ja     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_jae    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_jb     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_jbe    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_je     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_jne    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_call   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+
+#define trans_add_sub(struct, op_code) \
+       _trans_add_sub(struct, op_code FOR_LOGS(, LOG_ARGS)) 
+
+#define trans_hlt(struct) \
+       _trans_hlt(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_mul(struct) \
+       _trans_mul(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_div(struct) \
+       _trans_div(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_push(struct) \
+       _trans_push(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_pop(struct) \
+       _trans_pop(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_out(struct) \
+       _trans_out(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_in(struct) \
+       _trans_in(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_ret(struct) \
+       _trans_ret(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_pow(struct) \
+       _trans_pow(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_eq(struct) \
+       _trans_eq(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_mr(struct) \
+       _trans_mr(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_mre(struct) \
+       _trans_mre(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_ls(struct) \
+       _trans_ls(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_lse(struct) \
+       _trans_lse(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_neq(struct) \
+       _trans_neq(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_sin(struct) \
+       _trans_sin(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_cos(struct) \
+       _trans_cos(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_tg(struct) \
+       _trans_tg(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_ln(struct) \
+       _trans_ln(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_asin(struct) \
+       _trans_asin(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_atg(struct) \
+       _trans_atg(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_draw(struct) \
+       _trans_draw(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_jmp(struct) \
+       _trans_jmp(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_ja(struct) \
+       _trans_ja(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_jae(struct) \
+       _trans_jae(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_jb(struct) \
+       _trans_jb(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_jbe(struct) \
+       _trans_jbe(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_je(struct) \
+       _trans_je(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_jne(struct) \
+       _trans_jne(struct FOR_LOGS(, LOG_ARGS))
+
+#define trans_call(struct) \
+       _trans_call(struct FOR_LOGS(, LOG_ARGS))
 
 //-----------------------------------------------
 
