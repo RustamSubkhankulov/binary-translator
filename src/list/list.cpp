@@ -133,8 +133,22 @@ int _list_draw_graph(struct List* list FOR_LOGS(, LOG_PARAMS)) {
         fprintf(graph, " <TR><TD PORT=\"prev\"> PREV = %d</TD>\n",
                                             list->prev[counter]);
 
-        fprintf(graph, " <TD PORT=\"data\"> DATA = " LIST_ELEM_SPEC " </TD>\n", 
-                                                    list->data[counter]);
+        fprintf(graph, " <TD PORT=\"data\"> DATA =  ");
+
+        if (list->data[counter] != NULL)
+
+            for (unsigned int ct = 0;
+                            ct < list->data[counter]->size;
+                            ct++)
+            {
+                fprintf(graph, "%x ", (list->data[counter]->data[ct]));
+            }
+
+        else 
+
+            fprintf(graph, "%p", list->data[counter]);
+
+        fprintf(graph, " </TD>\n");
 
         fprintf(graph, "<TD PORT=\"next\"> NEXT = %d</TD></TR></TABLE>>];\n", 
                                                         list->next[counter]);
@@ -209,8 +223,22 @@ int _list_draw_graph_logical(struct List* list FOR_LOGS(, LOG_PARAMS)) {
         fprintf(graph, " <TR><TD PORT=\"prev\"> PREV = %d</TD>\n",
                                               list->prev[index]);
 
-        fprintf(graph, " <TD PORT=\"data\"> DATA = " LIST_ELEM_SPEC" </TD>\n", 
-                                                      list->data[index]);
+        fprintf(graph, " <TD PORT=\"data\"> DATA =  ");
+
+        if (list->data[index] != NULL)
+
+            for (unsigned int ct = 0;
+                            ct < list->data[index]->size;
+                            ct++)
+            {
+                fprintf(graph, "%x ", (list->data[index]->data[ct]));
+            }
+
+        else 
+
+            fprintf(graph, "%p", list->data[index]);
+
+        fprintf(graph, " </TD>\n");
 
         fprintf(graph, " <TD PORT=\"next\"> NEXT = %d</TD></TR></TABLE>>];\n", 
                                                          list->next[index]);
