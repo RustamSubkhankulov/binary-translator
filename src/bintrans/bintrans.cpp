@@ -5,6 +5,7 @@
 //===============================================
 
 #include "bintrans.h"
+#include "instr.h"
 #include "../general/general.h"
 #include "../../lang/proc/assembler/processor_general.h"
 
@@ -101,7 +102,20 @@ int _increase_entities_array(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report(); 
     assert(trans_struct);
 
-    // realloc 
+    size_t old_cap = (size_t)trans_struct->cap;
+    size_t new_cap = old_cap * 2;
+
+    Trans_entity* old_array = trans_struct->entities;
+    Trans_entity* new_array = (Trans_entity*) 
+                              my_recalloc((void*)old_array, new_cap, 
+                                     old_cap, sizeof(Trans_entity));
+
+    if (!new_array) return -1;
+
+    trans_struct->entities = new_array;
+    trans_struct->cap      = (unsigned int) new_cap;
+
+    return 0;
 }
 
 //-----------------------------------------------
@@ -118,7 +132,20 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     trans_struct->buffer_pos += (unsigned int)sizeof(Header);
 
-    int ret_val = add_initial_entity()
+    int ret_val = init_entity(&trans_struct->entities[trans_struct->num],
+                               Save_regs_size, 
+                               Save_regs);
+
+    if (ret_val == -1) return -1;
+
+    ret_val = translate_instructions(trans_struct);
+    if (ret_val == -1) return -1;
+
+    int ret_val = init_entity(&trans_struct->entities[trans_struct->num],
+                               Restore_regs_size, 
+                               Restore_regs);
+    
+    if (ret_val == -1) return -1;              
 
     return 0;
 }
@@ -130,27 +157,61 @@ int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report(); 
     assert(trans_struct);
 
-    // main cycle
+    int ret_val = 0;
+
+    while (trans_struct->buffer_pos < trans_struct->input_size)
+    {
+        ret_val = translate_single_instruction(trans_struct);
+        if (ret_val == -1) return -1;
+
+        TRANS_STRUCT_VALID(trans_struct);
+
+        if (trans_struct->num == trans_struct->size)
+        {
+            ret_val = increase_entities_array(trans_struct);
+            if (ret_val == -1) return -1;
+        }
+    }
 
     return 0;
 }
 
 //-----------------------------------------------
 
-int _add_initial_entity(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+
+
+//-----------------------------------------------
+
+int _translate_single_instruction(Trans_struct* trans_struct, FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
     assert(trans_struct);
 
+    Trans_entity* trans_entity = &trans_struct->entities[trans_struct->num];
 
+    
+
+    trans_struct->num++;
+
+    return 0;   
 }
 
 //-----------------------------------------------
 
-int _add_final_entity(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+int _init_entity(Trans_entity* trans_entity, unsigned int size, unsigned char* data FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
-    assert(trans_struct);
+    assert(trans_entity);
+
+    trans_entity->size = size;
+
+    int ret_val = fast_cpy((void*) trans_entity->data,
+                           (void*) data,
+                                   size);
+
+    if (ret_val == -1) return -1;
+
+    return 0;
 }
 
 //-----------------------------------------------

@@ -113,7 +113,7 @@ int _fast_cpy(void* dest, void* src, unsigned int size FOR_LOGS(, LOG_PARAMS))
 
     while (size >= sizeof(int64_t))
     {
-        static size64 = sizeof(int64_t);
+        static unsigned int size64 = sizeof(int64_t);
 
         *(int64_t*)dest_ptr = *(int64_t*)srce_ptr;
     
@@ -125,7 +125,7 @@ int _fast_cpy(void* dest, void* src, unsigned int size FOR_LOGS(, LOG_PARAMS))
 
     while (size >= sizeof(int32_t))
     {
-        static size32 = sizeof(int32_t);
+        static unsigned int size32 = sizeof(int32_t);
 
         *(int32_t*)dest_ptr = *(int32_t*)srce_ptr;
     
@@ -137,7 +137,7 @@ int _fast_cpy(void* dest, void* src, unsigned int size FOR_LOGS(, LOG_PARAMS))
 
     while (size >= sizeof(int16_t))
     {
-        static size16 = sizeof(int16_t);
+        static unsigned int size16 = sizeof(int16_t);
 
         *(int16_t*)dest_ptr = *(int16_t*)srce_ptr;
     
@@ -149,7 +149,7 @@ int _fast_cpy(void* dest, void* src, unsigned int size FOR_LOGS(, LOG_PARAMS))
 
     while (size >= sizeof(int8_t))
     {
-        static size8 = sizeof(int8_t);
+        static unsigned int size8 = sizeof(int8_t);
 
         *(int8_t*)dest_ptr = *(int8_t*)srce_ptr;
     

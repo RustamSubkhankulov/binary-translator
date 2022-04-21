@@ -81,6 +81,14 @@ struct Trans_struct
 
 //===============================================
 
+struct Register_info
+{
+    unsigned int register_num;
+    int          register_val;
+};
+
+//===============================================
+
 int _read_binary_input(Binary_input* binary_input, const char* input_filename 
                                                       FOR_LOGS(, LOG_PARAMS));
 
@@ -92,6 +100,10 @@ int _input_load_to_buffer  (Binary_input* binary_input FOR_LOGS(, LOG_PARAMS));
 
 //-----------------------------------------------
 
+// different functions for trnslating
+
+//-----------------------------------------------
+
 int _trans_struct_ctor     (Trans_struct* trans_struct, Binary_input* binary_input 
                                                            FOR_LOGS(, LOG_PARAMS));
 
@@ -100,10 +112,6 @@ int _binary_header_check   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 int _binary_translate      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
-
-int _add_initial_entity    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
-
-int _add_final_entity      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _binary_execute        (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
@@ -117,9 +125,17 @@ int _call_translated_code  (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _call_buf_allocate     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
+int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _increase_entities_array(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
 int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LOG_PARAMS));
 
-
+int _init_entity(Trans_struct* trans_struct, unsigned int size, unsigned char* data 
+         
+                                                            FOR_LOGS(, LOG_PARAMS));
 #ifdef BINTRANS_LISTING
 
     int _init_listing_file     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
@@ -129,6 +145,18 @@ int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LO
 #endif 
 
 //===============================================
+
+#define increase_entities_array(trans_struct) \
+       _increase_entities_array(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define translate_single_instruction(trans_struct) \
+       _translate_single_instruction(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define translate_instructions(trans_struct) \
+       _translate_instructions(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define init_entity(trans_struct, size, data) \
+       _init_entity(trans_struct, size, data FOR_LOGS(, LOG_ARGS))
 
 #define call_translated_code(trans_struct) \
        _call_translated_code(trans_struct FOR_LOGS(, LOG_ARGS))

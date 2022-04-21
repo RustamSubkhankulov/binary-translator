@@ -10,8 +10,11 @@ done 1. make каркас of the programm
 3. make загатовочки for translating 
 almost done 4. listing 
 
-5. resize of entities
-6. init and final entities 
+done 5. resize of entities
+done 6. init and final entities 
+7. table with current values of registers
+
+997. fast cpy sse
 
 998. add types for entities for optimizations 
 	 of last step
