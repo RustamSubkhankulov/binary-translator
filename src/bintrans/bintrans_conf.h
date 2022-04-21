@@ -6,10 +6,6 @@
 
 //===============================================
 
-static const unsigned int Entities_init_cap = 100;
-
-//-----------------------------------------------
-
 #define BINTRANS_LISTING
 
 #ifdef BINTRANS_LISTING

@@ -1,5 +1,6 @@
 #pragma once 
 
+#include "../list/list.h"
 #include "bintrans_conf.h"
 #include "../logs/errors_and_logs.h"
 
@@ -61,9 +62,7 @@ struct Trans_entity
 
 struct Trans_struct
 {
-    Trans_entity* entities;
-    unsigned int cap;
-    unsigned int num;
+    struct List* entities;
 
     char*        input_buffer;
     unsigned int input_size;
@@ -129,14 +128,12 @@ int _call_buf_allocate     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
-int _increase_entities_array(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
-
 int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LOG_PARAMS));
 
-int _init_entity(Trans_entity* trans_entity, unsigned int size, const unsigned char* data 
-                                                                  FOR_LOGS(, LOG_PARAMS));
+int _init_entity(List* entities, unsigned int size, const unsigned char* data 
+                                                      FOR_LOGS(, LOG_PARAMS));
 #ifdef BINTRANS_LISTING
 
     int _init_listing_file     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));

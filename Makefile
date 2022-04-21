@@ -1,6 +1,6 @@
 CC    = gcc 
 
-OBJ   = obj/main.o obj/logs.o obj/general.o obj/bintrans.o
+OBJ   = obj/main.o obj/logs.o obj/general.o obj/bintrans.o obj/list.o
 
 FLAGS = 
 #-lubsan -D NDEBUG -g -std=c++14 -fmax-errors=1 				\
@@ -57,6 +57,9 @@ BINTRANS_DEP 	= src/bintrans/bintrans.cpp 		\
 				  src/bintrans/bintrans.h 			\
 				  src/bintrans/bintrans_conf.h 		\
 				  src/bintrans/instr.h
+LIST_DEP        = src/list/list_config.h			\
+				  src/list/list.cpp					\
+				  src/list/list.h	
 
 #================================================
 
@@ -81,9 +84,15 @@ obj/general.o: 	$(GLOBAL_DEP) $(GLOBAL_DEP)
 obj/bintrans.o:	$(GLOBAL_DEP) $(BINTRANS_DEP) 
 	$(CC) src/bintrans/bintrans.cpp 	-c -o obj/bintrans.o $(FLAGS)
 
+obj/list.o:		$(GLOBAL_DEP) $(LIST_DEP)
+	$(CC) src/list/list.cpp 		    -c -o obj/list.o 	 $(FLAGS)
+
 #================================================
 
-.PNONY: cleanup
+.PNONY: cleanup listimages
+
+listimages:
+	mkdir /tmp/list_images
 
 cleanup:
 	rm obj/*.o 

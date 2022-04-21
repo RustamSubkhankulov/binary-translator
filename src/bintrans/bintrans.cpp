@@ -97,29 +97,6 @@ int _fill_input_buffer(Binary_input* binary_input FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-int _increase_entities_array(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report(); 
-    assert(trans_struct);
-
-    size_t old_cap = (size_t)trans_struct->cap;
-    size_t new_cap = old_cap * 2;
-
-    Trans_entity* old_array = trans_struct->entities;
-    Trans_entity* new_array = (Trans_entity*) 
-                              my_recalloc((void*)old_array, new_cap, 
-                                     old_cap, sizeof(Trans_entity));
-
-    if (!new_array) return -1;
-
-    trans_struct->entities = new_array;
-    trans_struct->cap      = (unsigned int) new_cap;
-
-    return 0;
-}
-
-//-----------------------------------------------
-
 int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
@@ -132,29 +109,26 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     trans_struct->buffer_pos += (unsigned int)sizeof(Header);
 
-    int ret_val = init_entity(&trans_struct->entities[trans_struct->num],
-                               Save_regs_size, 
-                               Save_regs);
+    int ret_val = init_entity(trans_struct->entities,
+                              Save_regs_size, 
+                              Save_regs);
 
     if (ret_val == -1) return -1;
-    trans_struct->num++;
 
     // ret_val = translate_instructions(trans_struct);
     // if (ret_val == -1) return -1;
 
-    ret_val = init_entity(&trans_struct->entities[trans_struct->num],
-                           Restore_regs_size, 
-                           Restore_regs);
+    ret_val = init_entity(trans_struct->entities,
+                          Restore_regs_size, 
+                          Restore_regs);
 
-    if (ret_val == -1) return -1;   
-    trans_struct->num++;
+    if (ret_val == -1) return -1; 
 
-    ret_val = init_entity(&trans_struct->entities[trans_struct->num],
-                           Return_size, 
-                           Return);
+    ret_val = init_entity(trans_struct->entities,
+                          Return_size, 
+                          Return);
     
-    if (ret_val == -1) return -1;   
-    trans_struct->num++;
+    if (ret_val == -1) return -1;
 
     return 0;
 }
@@ -174,12 +148,6 @@ int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         if (ret_val == -1) return -1;
 
         TRANS_STRUCT_VALID(trans_struct);
-
-        if (trans_struct->num == trans_struct->cap)
-        {
-            ret_val = increase_entities_array(trans_struct);
-            if (ret_val == -1) return -1;
-        }
     }
 
     return 0;
@@ -196,24 +164,25 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
     bintrans_log_report(); 
     assert(trans_struct);
 
-    Trans_entity* trans_entity = &trans_struct->entities[trans_struct->num];
-
     //switch 
-
-    trans_struct->num++;
 
     return 0;   
 }
 
 //-----------------------------------------------
 
-int _init_entity(Trans_entity* trans_entity, unsigned int size, const unsigned char* data 
-                                                                  FOR_LOGS(, LOG_PARAMS))
+int _init_entity(List* entities, unsigned int size, const unsigned char* data 
+                                                      FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
-    assert(trans_entity);
+    assert(entities);
 
-    trans_entity->size = size;
+    Trans_entity* trans_entity = (Trans_entity*) calloc(1, sizeof(Trans_entity));
+    if (!trans_entity)
+    {
+        error_report(CANNOT_ALLOCATE_MEM);
+        return -1;
+    }
 
     trans_entity->data = (unsigned char*) calloc(size, sizeof(unsigned char));
     if (!trans_entity->data)
@@ -226,6 +195,11 @@ int _init_entity(Trans_entity* trans_entity, unsigned int size, const unsigned c
                            (void*) data,
                                    size);
 
+    if (ret_val == -1) return -1;
+
+    trans_entity->size = size;
+
+    ret_val = list_push_back(entities, trans_entity);
     if (ret_val == -1) return -1;
 
     return 0;
@@ -358,12 +332,18 @@ int _count_call_buf_size(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     unsigned int call_buf_size = 0;
 
-    for (unsigned int counter = 0;
-                      counter < trans_struct->num;
-                      counter++)
+    List* list = trans_struct->entities;
+    
+    int list_head = list->head;
+    int cur_index = list_head;
+
+    do
     {
-        call_buf_size += trans_struct->entities[counter].size;
-    }
+        call_buf_size += list->data[cur_index]->size;
+
+        cur_index = list->next[cur_index];
+
+    } while (cur_index != 0);
 
     trans_struct->call_buf_size = call_buf_size;
 
@@ -387,20 +367,23 @@ int _flush_entities_to_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     unsigned int call_buf_pos = 0;
 
-    for (unsigned int counter = 0;
-                      counter < trans_struct->num;
-                      counter++)
+    List* list    = trans_struct->entities;
+    int cur_index = list->head;
+
+    do 
     {
-        unsigned int entity_size = trans_struct->entities[counter].size;
+        unsigned int entity_size = list->data[cur_index]->size;
 
         ret_val = fast_cpy((void*)(trans_struct->call_buf + call_buf_pos),
-                           (void*) trans_struct->entities[counter].data,
+                           (void*) list->data[cur_index]->data,
                                    entity_size);
 
         if (ret_val == -1);
 
         call_buf_pos += entity_size;
-    }
+        cur_index    =  list->next[cur_index];
+
+    } while (cur_index != 0);
 
     return 0;
 }
@@ -419,15 +402,17 @@ int _trans_struct_ctor(Trans_struct* trans_struct, Binary_input* binary_input
     trans_struct->input_size   = binary_input->size; 
     trans_struct->buffer_pos   = 0;
 
-    trans_struct->entities = (Trans_entity*) calloc(Entities_init_cap, sizeof(Trans_entity));
-    if (!trans_struct->entities) 
+    List* list = (List*) calloc(1, sizeof(List));
+    if (!list) 
     {
         error_report(CANNOT_ALLOCATE_MEM);
         return -1;
     }
 
-    trans_struct->cap = Entities_init_cap;
-    trans_struct->num = 0;
+    trans_struct->entities = list;
+
+    int is_constr = list_ctor(list);
+    if (is_constr == -1) return -1;
 
     #ifdef BINTRANS_LISTING
 
@@ -488,20 +473,26 @@ int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report(); 
     assert(trans_struct);
 
-    // if (trans_struct->buffer_pos != trans_struct->input_size)
-    // {
-    //     error_report(TRANS_STRUCT_DTOR_EARLY);
-    //     return -1;
-    // }
+    List* list = trans_struct->entities;
 
-    for (unsigned int counter = 0;
-                      counter < trans_struct->num;
-                      counter++)
+    int list_head = list->head;
+    int cur_index = list_head;
+
+    do
     {
-        free(trans_struct->entities[counter].data);
-    }
+        // free unsigned char* data in Trans_entity
+        free(list->data[cur_index]->data);
 
-    free(trans_struct->entities);
+        // free memory, allocated for Trans_entity structure
+        free(list->data[cur_index]);
+
+        cur_index = list->next[cur_index];
+
+    } while (cur_index != 0);
+    
+
+    int is_destr = list_dtor(list);
+    if (is_destr == -1) return -1;
 
     #ifdef BINTRANS_LISTING
 
@@ -520,25 +511,10 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report(); 
     assert(trans_struct);
 
-    int err_num = 0;
+    int err_num = 0;  
 
-    if (!trans_struct->entities)
-    {
-        error_report(TRANS_STRUCT_NULL_ENTITIES);
-        err_num++;
-    }
-
-    if (trans_struct->cap == 0)
-    {
-        error_report(TRANS_STRUCT_ZERO_CAP);
-        err_num++;
-    }    
-
-    if (trans_struct->cap < trans_struct->num)
-    {
-        error_report(TRANS_STRUCT_CAP_LESS_NUM);
-        err_num++;
-    }
+    int list_valid = list_validator(trans_struct->entities);
+    if (list_valid != 0) err_num++;
 
     if (!trans_struct->input_buffer)
     {
