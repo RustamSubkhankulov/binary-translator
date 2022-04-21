@@ -13,16 +13,16 @@ done 5. resize of entities
 done 6. init and final entities 
 done 6,5. integrate list !!!
 done 6,6. make dump 
-6,7. make switch with defines
-7. table with current values of registers
+done 6,7. make switch with defines
+
+7. make plan of translating 
 8. make загатовочки for translating  as codegenerating 
 9. unite some functions of translating 
 
+994. table with current values of registers
 995. list visiter
 996. list search ( gets function for comparing)
-
 997. fast cpy sse
-
 998. add types for entities for optimizations 
 	 of last step
 999. add saving feature 
