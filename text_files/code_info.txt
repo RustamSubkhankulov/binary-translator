@@ -65,17 +65,49 @@ Translating plan:
 
 8) RET -> 	ret 
 
-9) EQ  -> 	
+9) EQ  -> 	movss xmm0, dword [esp + 4]		    
+		    subss xmm0, dword [esp]
 
-10) MR
+		    add esp, 8
+		    	
+		    save regs 
+		    call fabs
+		    restore regs 
 
-11) JMP
+		    pxor xmm13, xmm13
 
-12) JE
+		    movss xmm1, [Epsilon]
+		    comiss xmm0, xmm1
 
-13) JNE
+		    jae .skip
+		    movss xmm13, dword [One]
 
-14) CALL 
+		    .skip:
+		    sub esp, 4
+		    movss dword [esp], xmm13
+
+
+
+10) MR -> 	pxor xmm13, xmm13
+
+			movss xmm0, dword [esp]		    
+		    comiss xmm0, dword [esp + 4]
+
+		    jbe .skip
+		    movss xmm13, dword [One]
+
+		    .skip:
+		    sub esp, 4
+		    movss dword [esp]. xmm13
+
+
+11) JMP -> 
+
+12) JE -> 
+
+13) JNE ->
+
+14) CALL ->
 
 //-----------------------------------------------
 

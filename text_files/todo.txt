@@ -15,8 +15,8 @@ done 6,5. integrate list !!!
 done 6,6. make dump 
 done 6,7. make switch with defines
 
-6,8. cur call_buf_position
-7. make plan of translating 
+done 6,8. cur call_buf_position
+done 7. make plan of translating 
 7,5. make code generating for translating instructions 
 8. make загатовочки for translating  as codegenerating 
 9. unite some functions of translating 

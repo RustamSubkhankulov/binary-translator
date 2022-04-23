@@ -107,9 +107,9 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     int is_ok = binary_header_check(trans_struct);
     if (is_ok == -1) return -1;
 
-    trans_struct->buffer_pos += (unsigned int)sizeof(Header);
+    trans_struct->input_buffer_pos += (unsigned int)sizeof(Header);
 
-    int ret_val = init_entity(trans_struct->entities,
+    int ret_val = init_entity(trans_struct,
                               Save_regs_size, 
                               Save_regs);
 
@@ -118,13 +118,13 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     // ret_val = translate_instructions(trans_struct);
     // if (ret_val == -1) return -1;
 
-    ret_val = init_entity(trans_struct->entities,
+    ret_val = init_entity(trans_struct,
                           Restore_regs_size, 
                           Restore_regs);
 
     if (ret_val == -1) return -1; 
 
-    ret_val = init_entity(trans_struct->entities,
+    ret_val = init_entity(trans_struct,
                           Return_size, 
                           Return);
     
@@ -142,7 +142,7 @@ int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     int ret_val = 0;
 
-    while (trans_struct->buffer_pos < trans_struct->input_size)
+    while (trans_struct->input_buffer_pos < trans_struct->input_size)
     {
         ret_val = translate_single_instruction(trans_struct);
         if (ret_val == -1) return -1;
@@ -181,7 +181,7 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
     assert(trans_struct);
 
     unsigned char oper_code = *(trans_struct->input_buffer 
-                              + trans_struct->buffer_pos);
+                              + trans_struct->input_buffer_pos);
 
     switch(oper_code & OPER_CODE_MASK)
     {
@@ -199,11 +199,13 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
 
 //-----------------------------------------------
 
-int _init_entity(List* entities, unsigned int size, const unsigned char* data 
+int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned char* data 
                                                       FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
-    assert(entities);
+    assert(trans_struct);
+
+    List* entities = trans_struct->entities;
 
     Trans_entity* trans_entity = (Trans_entity*) calloc(1, sizeof(Trans_entity));
     if (!trans_entity)
@@ -226,6 +228,7 @@ int _init_entity(List* entities, unsigned int size, const unsigned char* data
     if (ret_val == -1) return -1;
 
     trans_entity->size = size;
+    trans_struct->cur_call_buf_pos += size;
 
     ret_val = list_push_back(entities, trans_entity);
     if (ret_val == -1) return -1;
@@ -430,7 +433,9 @@ int _trans_struct_ctor(Trans_struct* trans_struct, Binary_input* binary_input
 
     trans_struct->input_buffer = binary_input->buffer;
     trans_struct->input_size   = binary_input->size; 
-    trans_struct->buffer_pos   = 0;
+    
+    trans_struct->input_buffer_pos   = 0;
+    trans_struct->cur_call_buf_pos = 0;
 
     List* list = (List*) calloc(1, sizeof(List));
     if (!list) 
@@ -552,7 +557,7 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         err_num++;
     }
 
-    if (trans_struct->buffer_pos > trans_struct->input_size)
+    if (trans_struct->input_buffer_pos > trans_struct->input_size)
     {
         error_report(TRANS_STRUCT_INV_BUFFER_POS);
         err_num++;

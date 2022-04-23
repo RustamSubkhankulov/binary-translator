@@ -65,12 +65,14 @@ struct Trans_struct
     struct List* entities;
 
     char*        input_buffer;
+    unsigned int input_buffer_pos;
     unsigned int input_size;
-    unsigned int buffer_pos;
 
     unsigned char* call_buf;
     unsigned int   call_buf_size;
     uint64_t       call_buf_addr;
+
+    unsigned int cur_call_buf_pos;
 
     #ifdef BINTRANS_LISTING
 
@@ -288,7 +290,7 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
 
 int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LOG_PARAMS));
 
-int _init_entity(List* entities, unsigned int size, const unsigned char* data 
+int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned char* data 
                                                       FOR_LOGS(, LOG_PARAMS));
 #ifdef BINTRANS_LISTING
 
