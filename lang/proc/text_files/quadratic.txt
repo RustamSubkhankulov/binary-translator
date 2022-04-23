@@ -1,7 +1,7 @@
 CALL: main 
 HLT 
 
-main:                         ;;;
+main:                         ;;
 CALL: get_args
 CALL: solve 
 RET 

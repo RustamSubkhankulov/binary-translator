@@ -348,6 +348,8 @@ int _call_buf_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
                                         size * sizeof(unsigned char));
     if (!trans_struct->call_buf) return -1;
 
+    trans_struct->call_buf_addr = (uint64_t)trans_struct->call_buf;
+
     return 0;
 }
 

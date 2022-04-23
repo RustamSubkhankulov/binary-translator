@@ -4,6 +4,81 @@ commands for x86 architecture
 
 //-----------------------------------------------
 
+//Push xmm0
+sub     esp, 4
+movss  dword [esp], xmm0
+
+//Pop xmm0
+movss  xmm0, dword [esp]
+add     esp, 4
+
+xmm14, xmm15 for arithm
+
+//-----------------------------------------------
+
+Translating plan:
+
+1) HLT -> Restore_args + Ret
+
+2) ADD -> 	movss xmm15, dword [esp + 4]		    
+		    addss xmm15, dword [esp]
+
+		    add esp, 4
+		    movss dword [esp], xmm15
+
+3) SUB -> 	movss xmm15, dword [esp + 4]		    
+		    subss xmm15, dword [esp]
+
+		    add esp, 4
+		    movss dword [esp], xmm15
+
+4) MUL -> 	movss xmm15, dword [esp + 4]		    
+		    subss xmm15, dword [esp]
+
+		    add esp, 4
+		    mulss dword [esp], xmm15
+
+5) DIV -> 	movss xmm15, dword [esp + 4]		    
+		    subss xmm15, dword [esp]
+
+		    add esp, 4
+		    divss dword [esp], xmm15
+
+6) IN -> 	save regs 
+
+			call in functions
+
+			restore regs
+
+			sub esp, 4
+			movss dword [esp], xmm0
+
+7) OUT ->  
+			movss dword [esp], xmm0
+			add esp, 4
+
+			save regs
+
+			call out function
+
+			restore regs 
+
+8) RET -> 	ret 
+
+9) EQ  -> 	
+
+10) MR
+
+11) JMP
+
+12) JE
+
+13) JNE
+
+14) CALL 
+
+//-----------------------------------------------
+
 My virtual binary code for instructions:
 
 	HLT  - 0 			JMP  - 24
@@ -47,14 +122,23 @@ PUSH and POP has special flags (listed above)
 
 details:
 
+r13d, xmm13 used for push and pop
+
+memory - array of float-point values
+
 1) PUSH: (switch oper_code & ~ OPER_CODE_MASK)	
 
 	- reg + ram
 
 		. get char from binary ( number of register)
-		. store value from  memory by index = containment of register
+		. get value from  memory by index = containment of register
 		. push to stack
 		. == push [rax]
+
+		// get number of register (for example rax)
+		sub esp, 4
+		movss xmm13, dword[Start_addr + eax]
+		movss dword [esp], xmm13
 
 	- reg
 
@@ -62,11 +146,28 @@ details:
 		. push value from register 
 		. == push rax
 
+		// get number of reg
+		sub esp, 4
+		cvtsi2ss xmm13, eax
+		movss dword [esp], xmm13
+
 	- imm + ram
 
 		. get value from binary (float)
 		. push value from memory by index
 		. == push word MEMORY_NAME
+
+		// get index in memory array
+
+		push r13d
+		
+		// store in r13 register
+
+		sub esp, 4
+		movss xmm13, dword[Start_addr + r13d]
+		movss dword [esp], xmm13
+
+		pop r13d
 
 	- imm
 
@@ -74,15 +175,83 @@ details:
 		. push immediate to stack
 		. == push 1
 
+		// gwt float point value from bianry code
+		// patch address of it later
+
+		sub esp, 4
+		movss xmm13, dword [Label_for_constant]
+		movss dword [esp], xmm13
+
 	- imm + reg + ram
 
 		. get char from binary = reg number
 		. get imm value (float) from binary next
 		. push [rax + imm_value]
 
+		// get register number - for example eax
+
+		push r13d
+
+		//store index in r13d
+
+		sub esp, 4
+		movss xmm13, dword[eax + r13d + Start_addr]
+		movss dword [esp], xmm13
+
 2) POP - popes from stack to different places 
 
-	- options are the same to push, except poping to imm
+	- reg + ram
+
+		// get reg ( for example eax)
+		movss xmm13, dword[esp]
+		add esp, 4
+
+		movss dword [Start_addr + eax], xmm13
+		
+	- reg
+
+		// get reg ( for example eax)
+
+		movss xmm13, dword[esp]
+		add esp, 4
+
+		cvtss2si eax, xmm13
+
+	- imm + ram
+
+		// get index in ram
+
+		push r13d
+
+		// store index in r13d
+
+		movss xmm13, dword [esp]
+		add esp, 4
+
+		movss dword [Start_addr + r13d], xmm13
+
+		pop r13d
+
+	- imm
+
+		no such
+
+	- imm + reg + ram
+
+		push r13d
+
+		// get index from binary
+
+		//store it in r13d
+
+		// get reg ( eax for example)
+
+		movss xmm13, dword[esp]
+		add esp, 4
+
+		movss dword [Start_addr + r13d + eax], xmm13
+
+		pop r13d 
 
 //-----------------------------------------------
 

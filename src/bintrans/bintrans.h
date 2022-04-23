@@ -70,6 +70,7 @@ struct Trans_struct
 
     unsigned char* call_buf;
     unsigned int   call_buf_size;
+    uint64_t       call_buf_addr;
 
     #ifdef BINTRANS_LISTING
 
