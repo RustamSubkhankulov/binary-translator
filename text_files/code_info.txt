@@ -33,16 +33,16 @@ Translating plan:
 		    movss dword [esp], xmm15
 
 4) MUL -> 	movss xmm15, dword [esp + 4]		    
-		    subss xmm15, dword [esp]
+		    mulss xmm15, dword [esp]
 
 		    add esp, 4
-		    mulss dword [esp], xmm15
+		    movss dword [esp], xmm15
 
 5) DIV -> 	movss xmm15, dword [esp + 4]		    
-		    subss xmm15, dword [esp]
+		    divss xmm15, dword [esp]
 
 		    add esp, 4
-		    divss dword [esp], xmm15
+		    movss dword [esp], xmm15
 
 6) IN -> 	save regs 
 
@@ -328,6 +328,226 @@ JNE        !=
 
 
 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     1                                  ;================================================
+     2                                  ;                        (c) Rustam4ik, 2029 - 7
+     3                                  ;================================================
+     4                                  
+     5                                  extern printf 
+     6                                  
+     7                                  ;================================================
+     8                                  
+     9                                  section .text 
+    10                                  
+    11                                  ;====================Macro=======================
+    12                                  
+    13                                  ;-------------------.EXIT------------------------
+    14                                  
+    15                                  %macro      .EXIT 0                 
+    16                                                                          ; terminates programm
+    17                                              xor rdi, rdi                ; exit code 0
+    18                                              mov rax, 03Ch               ; exit
+    19                                              syscall                 
+    20                                  %endmacro
+    21                                  
+    22                                  ;------------------------------------------------
+    23                                  
+    24                                  ;================================================
+    25                                  
+    26                                  section .text 
+    27                                  
+    28                                  ;==================Main=Body=====================
+    29                                  
+    30                                  count_quad:
+    31 00000000 55                              push    rbp
+    32 00000001 4889E5                          mov     rbp, rsp
+    33 00000004 F30F1145FC                      movss   DWORD [rbp-4], xmm0
+    34 00000009 F30F1045FC                      movss   xmm0, DWORD [rbp-4]
+    35 0000000E F30F59C0                        mulss   xmm0, xmm0
+    36 00000012 5D                              pop     rbp
+    37 00000013 C3                              ret
+    38                                  
+    39                                  ;==================Main=Body=====================
+    40                                  
+    41                                  global _start
+    42                                  
+    43                                  _start:     
+    44                                  
+    45 00000014 90                      nop
+    46 00000015 90                      nop
+    47                                  
+    48                                  
+    49 00000016 67F3440F107C2404                         movss xmm15, dword [esp + 4]                
+    50 0000001E 67F3440F583C24                              addss xmm15, dword [esp]
+    51                                  
+    52 00000025 83C404                                      add esp, 4
+    53 00000028 67F3440F113C24                              movss dword [esp], xmm15
+    54                                  
+    55 0000002F 90                      nop
+    56 00000030 90                      nop
+    57                                  
+    58 00000031 67F3440F107C2404                       movss xmm15, dword [esp + 4]                
+    59 00000039 67F3440F5C3C24                              subss xmm15, dword [esp]
+    60                                  
+    61 00000040 83C404                                      add esp, 4
+    62 00000043 67F3440F113C24                              movss dword [esp], xmm15
+    63                                  
+    64 0000004A 90                      nop
+    65 0000004B 90                      nop
+    66                                  
+    67 0000004C 67F3440F107C2404                      movss xmm15, dword [esp + 4]                
+    68 00000054 67F3440F593C24                              mulss xmm15, dword [esp]
+    69                                  
+    70 0000005B 83C404                                      add esp, 4
+    71 0000005E 67F3440F113C24                              movss dword [esp], xmm15
+    72                                  
+    73 00000065 90                      nop
+    74 00000066 90                      nop
+    75                                  
+    76 00000067 67F3440F107C2404                       movss xmm15, dword [esp + 4]                
+    77 0000006F 67F3440F5E3C24                              divss xmm15, dword [esp]
+    78                                  
+    79 00000076 83C404                                      add esp, 4
+    80 00000079 67F3440F113C24                              movss dword [esp], xmm15
+    81                                  
+    82                                  
+    83 00000080 90                      nop
+    84 00000081 90                      nop
+    85                                  
+    86                                                          ;save regs 
+    87                                  
+    88                                                          ;call in functions
+    89                                  
+    90                                                          ;restore regs
+    91                                  
+    92 00000082 83EC04                                          sub esp, 4
+    93 00000085 67F30F110424                                    movss dword [esp], xmm0
+    94                                  
+    95 0000008B 90                      nop
+    96 0000008C 90                      nop
+    97                                  
+    98 0000008D 67F30F110424                                    movss dword [esp], xmm0
+    99 00000093 83C404                                          add esp, 4
+   100                                  
+   101                                                          ;save regs
+   102                                  
+   103                                                          ;call out function
+   104                                  
+   105                                                          ;restore regs 
+   106                                  
+   107                                  
+   108 00000096 90                      nop
+   109 00000097 90                      nop
+   110                                  
+   111 00000098 67F30F10442404                        movss xmm0, dword [esp + 4]                 
+   112 0000009F 67F30F5C0424                                subss xmm0, dword [esp]
+   113                                  
+   114 000000A5 83C408                                      add esp, 8
+   115                                                          
+   116                                                      ;save regs 
+   117                                                      ;call fabs
+   118                                                      ;restore regs 
+   119                                  
+   120 000000A8 66450FEFED                                  pxor xmm13, xmm13
+   121                                  
+   122 000000AD F30F100C25-                                 movss xmm1, [Epsilon]
+   122 000000B2 [00000000]         
+   123 000000B6 0F2FC1                                      comiss xmm0, xmm1
+   124                                  
+   125 000000B9 730A                                        jae .skip
+   126 000000BB F3440F102C25-                               movss xmm13, dword [One]
+   126 000000C1 [04000000]         
+   127                                  
+   128                                                      .skip:
+   129 000000C5 83EC04                                      sub esp, 4
+   130 000000C8 67F3440F112C24                              movss dword [esp], xmm13
+   131                                  
+   132                                  
+   133 000000CF 90                      nop
+   134 000000D0 90                      nop
+   135                                          
+   136 000000D1 66450FEFED                             pxor xmm13, xmm13
+   137                                  
+   138 000000D6 67F30F100424                            movss xmm0, dword [esp]             
+   139 000000DC 670F2F442404                                comiss xmm0, dword [esp + 4]
+   140                                  
+   141 000000E2 760A                                        jbe .skip2
+   142 000000E4 F3440F102C25-                               movss xmm13, dword [One]
+   142 000000EA [04000000]         
+   143                                  
+   144                                                      .skip2:
+   145 000000EE 83EC04                                      sub esp, 4
+   146 000000F1 67F3440F112C24                              movss dword [esp], xmm13
+   147                                  
+   148                                  
+   149 000000F8 90                      nop
+   150 000000F9 90                      nop
+   151                                          .EXIT
+   151                              <1> 
+   151 000000FA 4831FF              <1>  xor rdi, rdi
+   151 000000FD B83C000000          <1>  mov rax, 03Ch
+   151 00000102 0F05                <1>  syscall
+   152                                  
+   153                                  ;================================================
+   154                                  
+   155                                  section .data 
+   156                                  
+   157                                  Epsilon:
+   158                                  
+   159 00000000 3333F33F                        dd 1072902963 
+   160                                  
+   161                                  One:
+   162 00000004 3333F33F                        dd 1072902963
+   163                                  
+   164                                  LC0:
+   165 00000008 3333F33F                        dd   1072902963
+   166                                  LC1:
+   167 0000000C 33331340                        dd   1075000115
+   168                                  
+   169 00000010 48656C6C6F20776F72-     FormatStr       db "Hello world ", 0
+   169 00000019 6C642000           
+   170                                  
+   171                                  ;================================================
+   172                                  
+
+
+
+
+
+
+
+
+
+
+
 
 
 
