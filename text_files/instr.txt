@@ -1,0 +1,50 @@
+//DEF_INSTR(Name, Values_array, Size)
+
+//-----------------------------------------------
+
+// two nops '0x90'
+
+DEF_INSTR(Two_nops, { 0x90, 0x90 }, 
+sizeof(Two_nops) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// push rbx, rbp, r12, r13, r14, r15
+
+DEF_INSTR(Save_regs, { 0x53, 0x55, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57},
+sizeof(Save_regs) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// pop r15, r14, r13, r12, rbp, rbx
+
+DEF_INSTR(Restore_regs, { 0x41, 0x5F, 0x41, 0x5E, 0x41, 0x5D, 0x41, 0x5C, 0x5D, 0x5B},
+sizeof(Restore_regs) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// ret '0xC3' 
+
+DEF_INSTR(Return, { 0xC3 }, 
+sizeof(Return) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// Get first argument from stack 
+// movss xmm15, 
+
+//-----------------------------------------------
+
+// add esp, 4
+
+
+
+//-----------------------------------------------
+
+// sub esp, 4
+
+
+
+//-----------------------------------------------
+
+// store dword xmm15 in stack

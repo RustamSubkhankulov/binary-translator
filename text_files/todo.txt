@@ -23,6 +23,8 @@ done 7. make plan of translating
 10. addressinf for memory - address of start of array + index (?)
 11. patch entity function ( replace particual bytes in array with arguments) ( two version for byte and several bytes)
 
+12. remove rsp from possible registers for using
+
 994. table with current values of registers
 995. list visiter
 996. list search ( gets function for comparing)
