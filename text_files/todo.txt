@@ -26,6 +26,8 @@ done 7,94. Renew code_info
 7,95. make stdlib for various functions  
 7,96. make  заголовочки для вызовов функций 
 7,97. deal with constant and addresses 
+(pushing constant values to xmm registets using regular regs) 
+
 
 8. make загатовочки for translating JUMPS as codegenerating 
 9. unite some functions of translating 
