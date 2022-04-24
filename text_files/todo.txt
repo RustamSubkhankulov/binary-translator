@@ -20,9 +20,12 @@ done 7. make plan of translating
 done 7,5. make code generating for translating instructions
 done 7,9. make загатовочки for translating arithm as codegenerating
 
-7,94. Renew code_info
-
-7,95. make stdlib for various functions   
+done 7,94. Renew code_info
+7,945. renew заголовочки
+7,946. fill registers with zero's 
+7,95. make stdlib for various functions  
+7,96. make  заголовочки для вызовов функций 
+7,97. deal with constant and addresses 
 
 8. make загатовочки for translating JUMPS as codegenerating 
 9. unite some functions of translating 

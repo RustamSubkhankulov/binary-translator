@@ -80,6 +80,7 @@ after : movd xmm15, r15d
 			movss dword [rsp], xmm0
 
 7) OUT ->  
+
 			movss xmm0, dword [rsp]
 			add rsp, 8
 
@@ -364,6 +365,68 @@ JNE        !=
 
 
 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

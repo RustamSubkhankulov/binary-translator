@@ -1,155 +1,161 @@
-//DEF_INSTR(Name, Values_array, Size)
+//DEF_INSTR(Name, Values_array)
 
 //-----------------------------------------------
 
 // two nops '0x90'
 
-DEF_INSTR(Two_nops, { 0x90, 0x90 }, 
-sizeof(Two_nops) / sizeof(unsigned char))
-
-//-----------------------------------------------
-
-// push rdi, rsi, rdx, rcx, r8, r9
-
-DEF_INSTR(Push_arg_regs, { 0x57, 0x56, 0x52, 0x51, 0x41, 0x50, 0x41, 0x51})
-
-//-----------------------------------------------
-
-// pop r9, r8, rcx, rdx, rsi, rdi
-
-DEF_INSTR(Pop_arg_regs, { 0x41, 0x59, 0x41, 0x58, 0x59, 0x5A, 0x5E, 0x5F})
+DEF_INSTR(Two_nops, 0x90, 0x90 )
 
 //-----------------------------------------------
 
 // push rax 
 
-DEF_INSTR(Push_rax, { 0x50 })
+DEF_INSTR(Push_rax, 0x50 )
 
 //-----------------------------------------------
 
 // pop rax 
 
-DEF_INSTR(Pop_rax, { 0x58 })
+DEF_INSTR(Pop_rax, 0x58 )
 
 //-----------------------------------------------
 
 // push rbx, rbp, r12, r13, r14, r15
 
-DEF_INSTR(Save_regs, { 0x53, 0x55, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57})
+DEF_INSTR(Save_regs, 0x53, \
+                     0x55, \
+                     0x41, 0x54, \
+                     0x41, 0x55, \
+                     0x41, 0x56, \
+                     0x41, 0x57 )
 
 //-----------------------------------------------
 
 // pop r15, r14, r13, r12, rbp, rbx
 
-DEF_INSTR(Restore_regs, { 0x41, 0x5F, 0x41, 0x5E, 0x41, 0x5D, 0x41, 0x5C, 0x5D, 0x5B})
+DEF_INSTR(Restore_regs, 0x41, 0x5F, \
+                        0x41, 0x5E, \
+                        0x41, 0x5D, \
+                        0x41, 0x5C, \
+                        0x5D, \
+                        0x5B )
 
 //-----------------------------------------------
 
 // ret '0xC3' 
 
-DEF_INSTR(Return, { 0xC3 })
+DEF_INSTR(Return, 0xC3 )
 
 //-----------------------------------------------
 
 // Get first argument from stack 
-// movss xmm15, dword [esp + 4]
+// movss xmm15, dword [esp + 8]
 
-DEF_INSTR(First_arg_to_xmm15, { 0x67, 0xF3, 0x44, 0x0F, 0x10, 0x7C, 0x24, 0x04})
+DEF_INSTR(First_arg_to_xmm15, 0xF3, 0x44, 0x0F, 0x10, 0x7C, 0x24, 0x08 )
 
 //-----------------------------------------------
 
 // Add with second arg from stack
-// addss xmm15, dword [esp]
+// addss xmm15, dword [rsp]
 
-DEF_INSTR(Addss_xmm15_stack, { 0x67, 0xF3, 0x44, 0x0F, 0x58, 0x3C, 0x24})
+DEF_INSTR(Addss_xmm15_stack, 0xF3, 0x44, 0x0F, 0x58, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
 // Sub with second arg from stack
-// addss xmm15, dword [esp]
+// subss xmm15, dword [rsp]
 
-DEF_INSTR(Addss_xmm15_stack, { 0x67, 0xF3, 0x44, 0x0F, 0x5C, 0x3C, 0x24})
+DEF_INSTR(Subss_xmm15_stack, 0xF3, 0x44, 0x0F, 0x5C, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
 // Mul with second arg from stack
-// addss xmm15, dword [esp]
+// mulss xmm15, dword [rsp]
 
-DEF_INSTR(Mulss_xmm15_stack, { 0x67, 0xF3, 0x44, 0x0F, 0x59, 0x3C, 0x24})
+DEF_INSTR(Mulss_xmm15_stack, 0xF3, 0x44, 0x0F, 0x59, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
 // Div with second arg from stack
-// addss xmm15, dword [esp]
+// divss xmm15, dword [rsp]
 
-DEF_INSTR(Divss_xmm15_stack, { 0x67, 0xF3, 0x44, 0x0F, 0x5E, 0x3C, 0x24})
-
-//-----------------------------------------------
-
-// add esp, 4
-
-DEF_INSTR(Add_esp_4, { 0x83, 0xC4, 0x04})
+DEF_INSTR(Divss_xmm15_stack, 0xF3, 0x44, 0x0F, 0x5E, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
-// add esp, 8
+// Save xmm15 dword value in r15d
+// movd r15d, xmm15
 
-DEF_INSTR(Add_esp_8, { 0x83, 0xC4, 0x08})
-
-//-----------------------------------------------
-
-// sub esp, 8
-
-DEF_INSTR(Sub_esp_8, { 0x83, 0xEC, 0x08})
+DEF_INSTR(Movd_r15d_xmm15, 0x66, 0x45, 0x0F, 0x7E, 0xFF)
 
 //-----------------------------------------------
 
-// sub esp, 4
+// Restore xmm15 dword value from r15d
+// movd xmm15, r15d
 
-DEF_INSTR(Sub_esp_4, { 0x83, 0xEC, 0x04})
-
-//-----------------------------------------------
-
-// push dword xmm0 in stack
-
-// sub esp, 4
-// movss dword[esp], xmm0
-
-DEF_INSTR(Push_dword_xmm0, { 0x83, 0xEC, 0x04, 0x67, 0xF3, 0x0F, 0x11, 0x04, 0x24})
+DEF_INSTR(Movd_xmm15_r15d, 0x66, 0x45, 0x0F, 0x6E, 0xFF)
 
 //-----------------------------------------------
 
-// store dword xmm13 in stack
+// add rsp, 8
 
-// sub esp, 4
-// movss dword[esp], xmm13
-
-DEF_INSTR(Push_dword_xmm13, { 0x83, 0xEC, 0x04, 0x67, 0xF3, 0x44, 0x0F, 0x11, 0x2C, 0x24})
+DEF_INSTR(Add_rsp_8, 0x48, 0x83, 0xC4, 0x08 )
 
 //-----------------------------------------------
 
-// Mov dword xmm15 to [esp]
+// add rsp, 16
 
-// movss dword[esp], xmm15
+DEF_INSTR(Add_rsp_16, 0x48, 0x83, 0xC4, 0x10 )
 
-DEF_INSTR(Mov_xmm15_by_esp, { 0x67, 0xF3, 0x44, 0x0F, 0x11, 0x3C, 0x24})
+//-----------------------------------------------
+
+// sub rsp, 8
+
+DEF_INSTR(Sub_rsp_8, 0x48, 0x83, 0xEC, 0x08 )
+
+//-----------------------------------------------
+
+// sub rsp, 16
+
+DEF_INSTR(Sub_rsp_16, 0x48, 0x83, 0xEC, 0x10 )
+
+//-----------------------------------------------
+
+// push dword xmm0 to stack
+
+// sub rsp, 8
+// movss dword[rsp], xmm0
+
+DEF_INSTR(Push_dword_xmm0, 0x48, 0x83, 0xEC, 0x08, \
+                           0xF3, 0x0F, 0x11, 0x04, 0x24 )
+
+//-----------------------------------------------
+
+// push dword xmm13 to stack
+
+// sub rsp, 8
+// movss dword[rsp], xmm13
+
+DEF_INSTR(Push_dword_xmm13, 0x48, 0x83, 0xEC, 0x08, \
+                            0xF3, 0x44, 0x0F, 0x11, 0x2C, 0x24 )
+
+//-----------------------------------------------
+
+// Mov dword xmm15 to [rsp]
+
+// movss dword[rsp], xmm15
+
+DEF_INSTR(Mov_dword_xmm15_to_rsp, 0xF3, 0x44, 0x0F, 0x11, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
 // pop dword from stack to xmm0
 
-// movss xmm0, dword [esp]
-// add esp, 4
+// movss xmm0, dword [rsp]
+// add rsp, 8
 
-DEF_INSTR(Pop_word_xmm0, { 0x67, 0xF3, 0x0F, 0x10, 0x04, 0x24, 0x83, 0xC4, 0x04})
-
-//-----------------------------------------------
-
-// Mov 0 to xmm13
-
-// pxor xmm13, xmm13 
-
-DEF_INSTR(Mov_xmm13_0, { 0x66, 0x45, 0x0F, 0xEF, 0xED})
+DEF_INSTR(Pop_dword_xmm0, 0xF3, 0x0F, 0x10, 0x04, 0x24, \
+                          0x48, 0x83, 0xC4, 0x08 )
 
 //-----------------------------------------------
 
@@ -158,7 +164,8 @@ DEF_INSTR(Mov_xmm13_0, { 0x66, 0x45, 0x0F, 0xEF, 0xED})
 
 // movss xmm1, [0]
 
-DEF_INSTR(Mov_xmm1_mem, { 0xF3, 0x0F, 0x10, 0x0C, 0x25})
+DEF_INSTR(Mov_xmm1_mem, 0xF3, 0x0F, 0x10, 0x0C, 0x25\
+                        0x00, 0x00, 0x00, 0x00)
 
 //-----------------------------------------------
 
@@ -167,14 +174,14 @@ DEF_INSTR(Mov_xmm1_mem, { 0xF3, 0x0F, 0x10, 0x0C, 0x25})
 
 // movss xmm13, [0]
 
-DEF_INSTR(Mov_xmm13_mem, { 0xF3, 0x44, 0x0F, 0x10, 0x2C, 0x25})
+DEF_INSTR(Mov_xmm13_mem, 0xF3, 0x44, 0x0F, 0x10, 0x2C, 0x25 )
 
 //-----------------------------------------------
 
 // Compare xmm0, xmm1
 // comiss xmm0, xmm1
 
-DEF_INSTR(Cmp_xmm0_xmm1, { 0x0F, 0x2F, 0xC1})
+DEF_INSTR(Cmp_xmm0_xmm1, 0x0F, 0x2F, 0xC1 )
 
 //-----------------------------------------------
 
@@ -183,7 +190,7 @@ DEF_INSTR(Cmp_xmm0_xmm1, { 0x0F, 0x2F, 0xC1})
 
 // WARNING: Instruction must be patched
 
-DEF_INSTR(Jbe_ahead_N, { 0x76, 0x00})
+DEF_INSTR(Jbe_ahead_N, 0x76, 0x00 )
 
 //-----------------------------------------------
 
@@ -192,7 +199,7 @@ DEF_INSTR(Jbe_ahead_N, { 0x76, 0x00})
 
 // WARNING: Instruction must be patched
 
-DEF_INSTR(Jb_ahead_N, { 0x72, 0x00})
+DEF_INSTR(Jb_ahead_N, 0x72, 0x00 )
 
 //-----------------------------------------------
 
@@ -201,7 +208,7 @@ DEF_INSTR(Jb_ahead_N, { 0x72, 0x00})
 
 // WARNING: Instruction must be patched
 
-DEF_INSTR(Ja_ahead_N, { 0x77, 0x00})
+DEF_INSTR(Ja_ahead_N, 0x77, 0x00 )
 
 //-----------------------------------------------
 
@@ -210,4 +217,84 @@ DEF_INSTR(Ja_ahead_N, { 0x77, 0x00})
 
 // WARNING: Instruction must be patched
 
-DEF_INSTR(Jae_ahead_N, { 0x73, 0x00})
+DEF_INSTR(Jae_ahead_N, 0x73, 0x00 )
+
+//-----------------------------------------------
+
+// Null xmm's
+
+// pxor xmm(i), xmm(i) ; 0 <= i <=15 
+
+DEF_INSTR(Null_xmms, 0x66, 0x0F, 0xEF, 0xC0, \
+                     0x66, 0x0F, 0xEF, 0xC9, \
+                     0x66, 0x0F, 0xEF, 0xD2, \
+                     0x66, 0x0F, 0xEF, 0xDB, \
+                     0x66, 0x0F, 0xEF, 0xE4, \
+                     0x66, 0x0F, 0xEF, 0xED, \
+                     0x66, 0x0F, 0xEF, 0xF6, \
+                     0x66, 0x0F, 0xEF, 0xFF, \
+                     0x66, 0x45, 0x0F, 0xEF, 0xC0, \
+                     0x66, 0x45, 0x0F, 0xEF, 0xC9, \
+                     0x66, 0x45, 0x0F, 0xEF, 0xD2, \
+                     0x66, 0x45, 0x0F, 0xEF, 0xDB, \
+                     0x66, 0x45, 0x0F, 0xEF, 0xE4, \
+                     0x66, 0x45, 0x0F, 0xEF, 0xED, \
+                     0x66, 0x45, 0x0F, 0xEF, 0xF6, \
+                     0x66, 0x45, 0x0F, 0xEF, 0xFF  ) 
+
+//-----------------------------------------------
+
+// Null xmm13
+
+// pxor xmm13, xmm13 
+
+DEF_INSTR(Null_xmm13, 0x66, 0x45, 0x0F, 0xEF, 0xED )
+
+//-----------------------------------------------
+
+// Push xmm0 - xmm7
+
+// sub rsp 64
+//movss dword [rsp + 0 ], xmm0
+//movss dword [rsp + 8 ], xmm1
+//movss dword [rsp + 16], xmm2
+//movss dword [rsp + 24], xmm3
+//movss dword [rsp + 32], xmm4
+//movss dword [rsp + 40], xmm5
+//movss dword [rsp + 48], xmm6
+//movss dword [rsp + 56], xmm7
+
+//DEF_INSTR(Push_parameter_xmms, 0x48, 0x83, 0xEC, 0x40, \
+                                 0xF3, 0x0F, 0x11, 0x04, 0x24, \
+                                 0xF3, 0x0F, 0x11, 0x4C, 0x24, 0x08, \
+                                 0xF3, 0x0F, 0x11, 0x54, 0x24, 0x10, \
+                                 0xF3, 0x0F, 0x11, 0x5C, 0x24, 0x18, \
+                                 0xF3, 0x0F, 0x11, 0x64, 0x24, 0x20, \
+                                 0xF3, 0x0F, 0x11, 0x6C, 0x24, 0x28, \
+                                 0xF3, 0x0F, 0x11, 0x74, 0x24, 0x30, \
+                                 0xF3, 0x0F, 0x11, 0x7C, 0x24, 0x38  )
+
+//-----------------------------------------------
+
+// Pop xmm0 - xmm7
+
+//movss xmm0, dword [rsp + 0 ]
+//movss xmm1, dword [rsp + 8 ]
+//movss xmm2, dword [rsp + 16]
+//movss xmm3, dword [rsp + 24]
+//movss xmm4, dword [rsp + 32]
+//movss xmm5, dword [rsp + 40]
+//movss xmm6, dword [rsp + 48]
+//movss xmm7, dword [rsp + 54]
+
+//add rsp, 64
+
+DEF_INSTR(Pop_parameter_xmms, 0xF3, 0x0F, 0x10, 0x04, 0x24, \
+                              0xF3, 0x0F, 0x10, 0x4C, 0x24, 0x08, \
+                              0xF3, 0x0F, 0x10, 0x54, 0x24, 0x10, \
+                              0xF3, 0x0F, 0x10, 0x5C, 0x24, 0x18, \
+                              0xF3, 0x0F, 0x10, 0x64, 0x24, 0x20, \
+                              0xF3, 0x0F, 0x10, 0x6C, 0x24, 0x28, \
+                              0xF3, 0x0F, 0x10, 0x74, 0x24, 0x30, \
+                              0xF3, 0x0F, 0x10, 0x7C, 0x24, 0x38,
+                              0x48, 0x83, 0xC4, 0x40 )
