@@ -31,20 +31,146 @@ sizeof(Return) / sizeof(unsigned char))
 //-----------------------------------------------
 
 // Get first argument from stack 
-// movss xmm15, 
+// movss xmm15, dword [esp + 4]
+
+DEF_INSTR(First_arg_to_xmm15, {0x67, 0xF3, 0x44, 0x0F, 0x10, 0x7C, 0x24, 0x04},
+sizeof(First_arg_to_xmm15 / sizeof(unsigned char)))
+
+//-----------------------------------------------
+
+// Add with second arg from stack
+// addss xmm15, dword [esp]
+
+DEF_INSTR(Addss_xmm15_stack, {0x67, 0xF3, 0x44, 0x0F, 0x58, 0x3C, 0x24},
+sizeof(Addss_xmm15_stack) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// Sub with second arg from stack
+// addss xmm15, dword [esp]
+
+DEF_INSTR(Addss_xmm15_stack, {0x67, 0xF3, 0x44, 0x0F, 0x5C, 0x3C, 0x24},
+sizeof(Subss_xmm15_stack) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// Mul with second arg from stack
+// addss xmm15, dword [esp]
+
+DEF_INSTR(Mulss_xmm15_stack, {0x67, 0xF3, 0x44, 0x0F, 0x59, 0x3C, 0x24},
+sizeof(Mulss_xmm15_stack) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// Div with second arg from stack
+// addss xmm15, dword [esp]
+
+DEF_INSTR(Divss_xmm15_stack, {0x67, 0xF3, 0x44, 0x0F, 0x5E, 0x3C, 0x24},
+sizeof(Divss_xmm15_stack) / sizeof(unsigned char))
 
 //-----------------------------------------------
 
 // add esp, 4
 
+DEF_INSTR(Add_esp_4, {0x83, 0xC4, 0x04},
+sizeof(Add_esp_4) / sizeof(unsigned char))
 
+//-----------------------------------------------
+
+// add esp, 8
+
+DEF_INSTR(Add_esp_8, {0x83, 0xC4, 0x08},
+sizeof(Add_esp_8) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// sub esp, 8
+
+DEF_INSTR(Sub_esp_8, {0x83, 0xEC, 0x08},
+sizeof(Add_esp_8) / sizeof(unsigned char))
 
 //-----------------------------------------------
 
 // sub esp, 4
 
+DEF_INSTR(Sub_esp_4, {0x83, 0xEC, 0x04},
+sizeof(Sub_esp_4) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// store dword xmm0 in stack
+
+// sub esp, 4
+// movss dword[esp], xmm0
+
+DEF_INSTR(Push_dword_xmm0, {0x83, 0xEC, 0x04, 0x67, 0xF3, 0x0F, 0x11, 0x04, 0x24},
+sizeof(Push_dword_xmm0) / sizeof(unsigned char))
+//-----------------------------------------------
+
+// store dword xmm13 in stack
+
+// sub esp, 4
+// movss dword[esp], xmm13
+
+DEF_INSTR(Push_dword_xmm13, {0x83, 0xEC, 0x04, 0x67, 0xF3, 0x44, 0x0F, 0x11, 0x2C, 0x24},
+sizeof(Push_dword_xmm13) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// Mov dword xmm15 to [esp]
+
+// movss dword[esp], xmm15
+
+DEF_INSTR(Mov_xmm15_by_esp, {0x67, 0xF3, 0x44, 0x0F, 0x11, 0x3C, 0x24},
+sizeof(Mov_xmm15_by_esp) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// pop dword from stack to xmm0
+
+// movss xmm0, dword [esp]
+// add esp, 4
+
+DEF_INSTR(Pop_word_xmm0, {0x67, 0xF3, 0x0F, 0x11, 0x04, 0x24, 0x83, 0xC4, 0x04},
+sizeof(Pop_dword_xmm0) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// Mov 0 to xmm13
+
+// pxor xmm13, xmm13 
+
+DEF_INSTR(Mov_xmm13_0, {0x66, 0x45, 0x0F, 0xEF, 0xED},
+sizeof(Mov_xmm13_0) / sizeof(unsigned char))
 
 
 //-----------------------------------------------
 
-// store dword xmm15 in stack
+// Mov to xmm1 from data memory address
+// WARNING: this instruction must be parched with address
+
+// movss xmm1, [0]
+
+DEF_INSTR(Mov_xmm1_mem, {0xF3, 0x0F, 0x10, 0x0C, 0x25},
+sizeof(Mov_xmm1_mem) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// Mov to xmm13 from data memory address
+// WARNING: this instruction must be parched with address
+
+// movss xmm13, [0]
+
+DEF_INSTR(Mov_xmm13_mem, {0xF3, 0x44, 0x0F, 0x10, 0x2C, 0x25},
+sizeof(Mov_xmm13_mem) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
+// Compare xmm0, xmm1
+// comiss xmm0, xmm1
+
+DEF_INSTR(Cmp_xmm0_xmm1, {0x0F, 0x2F, 0xC1},
+sizeof(Cmp_xmm0_xmm1) / sizeof(unsigned char))
+
+//-----------------------------------------------
+
