@@ -774,3 +774,15 @@ Mprotect error)
 
 DEF_ERR(1212, SYSCONF_ERR,
 Sysconf error)
+
+DEF_ERR(1213, JIT_FILE_OUT_ERR,
+Error occured with file output)
+
+DEF_ERR(1214, JIT_FILE_IN_ERR,
+Error occured with file input and in value set to 0 default value)
+
+DEF_ERR(1213, JIT_OUT_ERR,
+Error occured with output)
+
+DEF_ERR(1214, JIT_IN_ERR,
+Error occured with input and in value set to 0 default value)

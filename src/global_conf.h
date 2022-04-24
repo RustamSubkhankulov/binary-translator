@@ -10,4 +10,8 @@
 
 static const char* Logfile_name = "trans.html";
 
+// Turns on file input / output for jit
+
+#define FILE_IO
+
 //===============================================

@@ -4,75 +4,107 @@ commands for x86 architecture
 
 //-----------------------------------------------
 
+My registers ==> XMM ( 0 - 15 )
+
 //Push xmm0
-sub     esp, 4
-movss  dword [esp], xmm0
+sub     rsp, 8
+movss  dword [rsp], xmm0
 
 //Pop xmm0
-movss  xmm0, dword [esp]
-add     esp, 4
+movss  xmm0, dword [rsp]
+add     rsp, 8
 
 xmm14, xmm15 for arithm
 
+saving in r13, r14, r15
+
 //-----------------------------------------------
+
+SAVE XMM 0 - 7 : - !!! DIVIDE in SAVE XMM0 and other 
+
+  sub rsp 64
+  movss dword [rsp + 0 ], xmm0
+  movss dword [rsp + 8 ], xmm1
+  movss dword [rsp + 16], xmm2
+  movss dword [rsp + 24], xmm3
+  movss dword [rsp + 32], xmm4
+  movss dword [rsp + 40], xmm5
+  movss dword [rsp + 48], xmm6
+  movss dword [rsp + 56], xmm7
+
+RESTORE XMM 0 - 7: 
+
+  movss xmm0, dword [rsp + 0 ]
+  movss xmm1, dword [rsp + 8 ]
+  movss xmm2, dword [rsp + 16]
+  movss xmm3, dword [rsp + 24]
+  movss xmm4, dword [rsp + 32]
+  movss xmm5, dword [rsp + 40]
+  movss xmm6, dword [rsp + 48]
+  movss xmm7, dword [rsp + 54]
+
+  add rsp, 64
 
 Translating plan:
 
 1) HLT -> Restore_args + Ret
 
-2) ADD -> 	movss xmm15, dword [esp + 4]		    
-		    addss xmm15, dword [esp]
+Before : movd r15d, xmm15
 
-		    add esp, 4
-		    movss dword [esp], xmm15
+2) ADD -> 	
+        movss xmm15, dword [rsp + 8]		    
+		    addss xmm15, dword [rsp + 0]
 
-3) SUB -> 	movss xmm15, dword [esp + 4]		    
-		    subss xmm15, dword [esp]
+        add rsp, 8
+		    movss dword [rsp], xmm15
 
-		    add esp, 4
-		    movss dword [esp], xmm15
+3) SUB -> 	
 
-4) MUL -> 	movss xmm15, dword [esp + 4]		    
-		    mulss xmm15, dword [esp]
+4) MUL -> 	as ADD 
 
-		    add esp, 4
-		    movss dword [esp], xmm15
+5) DIV -> 	
 
-5) DIV -> 	movss xmm15, dword [esp + 4]		    
-		    divss xmm15, dword [esp]
+after : movd xmm15, r15d
 
-		    add esp, 4
-		    movss dword [esp], xmm15
+//-----------------------------------------------
 
-6) IN -> 	save regs 
+6) IN -> 	
+
+      save xmm regs 1-7
 
 			call in functions
 
-			restore regs
+      restore xmm regs 1-7
 
-			sub esp, 4
-			movss dword [esp], xmm0
+			sub rsp, 8
+			movss dword [rsp], xmm0
 
 7) OUT ->  
-			movss dword [esp], xmm0
-			add esp, 4
+			movss xmm0, dword [rsp]
+			add rsp, 8
 
-			save regs
+			save regs 1-7
 
 			call out function
 
-			restore regs 
+      restore regs 1-7
 
 8) RET -> 	ret 
 
-9) EQ  -> 	movss xmm0, dword [esp + 4]		    
-		    subss xmm0, dword [esp]
+9) EQ  -> 	
 
-		    add esp, 8
+        movd r15d, xmm0
+        movd r14d, xmm1
+        movd r13d, xmm13                     
+
+        movss xmm0, dword [rsp + 8]		    
+		    subss xmm0, dword [rsp]
+
+		    add rsp, 16
 		    	
-		    save regs 
+		    save xmm 1-7
 		    call fabs
-		    restore regs 
+		    restore xmm 1-7 
 
 		    pxor xmm13, xmm13
 
@@ -83,22 +115,32 @@ Translating plan:
 		    movss xmm13, dword [One]
 
 		    .skip:
-		    sub esp, 4
-		    movss dword [esp], xmm13
+		    sub rsp, 8
+		    movss dword [rsp], xmm13
 
+        movd xmm0,  r15d
+        movd xmm1,  r14d
+        movd xmm13, r13d
 
+10) MR -> 	
 
-10) MR -> 	pxor xmm13, xmm13
+        movd r13d, xmm13
+        movd r15d, xmm0
 
-			movss xmm0, dword [esp]		    
-		    comiss xmm0, dword [esp + 4]
+        pxor xmm13, xmm13
+
+			  movss xmm0, dword [rsp]		    
+		    comiss xmm0, dword [rsp + 8]
 
 		    jbe .skip
 		    movss xmm13, dword [One]
 
 		    .skip:
-		    sub esp, 4
-		    movss dword [esp]. xmm13
+		    sub rsp, 8
+		    movss dword [rsp]. xmm13
+
+        movd xmm13, r13d
+        movd xmm0,  r15d
 
 
 11) JMP -> 
@@ -109,12 +151,14 @@ Translating plan:
 
 14) CALL ->
 
+17) SIN -> 
+
 //-----------------------------------------------
 
 My virtual binary code for instructions:
 
 	HLT  - 0 			JMP  - 24
- 	ADD  - 1         	JA   - 31
+ 	ADD  - 1      JA   - 31
  	SUB  - 2 			JAE  - 30
  	MUL  - 3 			JB   - 29
  	DIV  - 4 			JBE  - 28
@@ -167,21 +211,19 @@ memory - array of float-point values
 		. push to stack
 		. == push [rax]
 
-		// get number of register (for example rax)
-		sub esp, 4
-		movss xmm13, dword[Start_addr + eax]
-		movss dword [esp], xmm13
+		// get number of register (for example xmm0)
+
+
+    cvtss2si r13d, xmm0
+		push qword[Start_addr + r13d]
+
 
 	- reg
 
-		. get char from binary
-		. push value from register 
-		. == push rax
+		// get number of reg (xmm0 for example)
 
-		// get number of reg
-		sub esp, 4
-		cvtsi2ss xmm13, eax
-		movss dword [esp], xmm13
+		sub rsp, 8
+		movss dword [rsp], xmm0
 
 	- imm + ram
 
@@ -189,17 +231,12 @@ memory - array of float-point values
 		. push value from memory by index
 		. == push word MEMORY_NAME
 
-		// get index in memory array
+		// get index in memory array ( for example 1)
 
-		push r13d
-		
-		// store in r13 register
+    mov r13d, 1
 
-		sub esp, 4
-		movss xmm13, dword[Start_addr + r13d]
-		movss dword [esp], xmm13
-
-		pop r13d
+		sub rsp, 8
+		push qword[Start_addr + r13d]
 
 	- imm
 
@@ -210,9 +247,7 @@ memory - array of float-point values
 		// gwt float point value from bianry code
 		// patch address of it later
 
-		sub esp, 4
-		movss xmm13, dword [Label_for_constant]
-		movss dword [esp], xmm13
+		push qword [Label_for_constant]
 
 	- imm + reg + ram
 
@@ -220,49 +255,49 @@ memory - array of float-point values
 		. get imm value (float) from binary next
 		. push [rax + imm_value]
 
-		// get register number - for example eax
+		// get register number - for example xmm0
 
-		push r13d
+    cvtss2si r14d, xmm0
 
 		//store index in r13d
 
-		sub esp, 4
-		movss xmm13, dword[eax + r13d + Start_addr]
-		movss dword [esp], xmm13
+		push qword[r13d + r14d + Start_addr]
 
 2) POP - popes from stack to different places 
 
 	- reg + ram
 
-		// get reg ( for example eax)
-		movss xmm13, dword[esp]
-		add esp, 4
+		// get reg ( for example xmm0)
 
+    movd r13d, xmm13
+
+    cvtss2si r14d, xmm0
+    movss xmm13, dword [rsp]
+    add rsp, 8
 		movss dword [Start_addr + eax], xmm13
 		
+    movd xmm13, r13d
+
 	- reg
 
-		// get reg ( for example eax)
+		// get reg ( for example xmm0)
 
-		movss xmm13, dword[esp]
-		add esp, 4
-
-		cvtss2si eax, xmm13
+		movss xmm0, dword[rsp]
+		add rsp, 8
 
 	- imm + ram
 
+    movd r13d, xmm13
+
 		// get index in ram
-
-		push r13d
-
 		// store index in r13d
 
-		movss xmm13, dword [esp]
-		add esp, 4
+		movss xmm13, dword [rsp]
+		add rsp, 8
 
 		movss dword [Start_addr + r13d], xmm13
 
-		pop r13d
+    movd xmm13, r13d		
 
 	- imm
 
@@ -270,20 +305,21 @@ memory - array of float-point values
 
 	- imm + reg + ram
 
-		push r13d
+    movd r13d, xmm13
 
 		// get index from binary
+		// store it in r15d
 
-		//store it in r13d
+		// get reg ( xmm0 for example)
 
-		// get reg ( eax for example)
+    cvtss2si r14d, xmm0
 
-		movss xmm13, dword[esp]
-		add esp, 4
+		movss xmm13, dword[rsp]
+		add rsp, 8
 
-		movss dword [Start_addr + r13d + eax], xmm13
+		movss dword [Start_addr + r14d + r15d], xmm13
 
-		pop r13d 
+    movd xmm13, r13d
 
 //-----------------------------------------------
 
@@ -405,38 +441,38 @@ JNE        !=
     46 00000015 90                      nop
     47                                  
     48                                  
-    49 00000016 67F3440F107C2404                         movss xmm15, dword [esp + 4]                
-    50 0000001E 67F3440F583C24                              addss xmm15, dword [esp]
+    49 00000016 67F3440F107C2404                         movss xmm15, dword [rsp + 4]                
+    50 0000001E 67F3440F583C24                              addss xmm15, dword [rsp]
     51                                  
-    52 00000025 83C404                                      add esp, 4
-    53 00000028 67F3440F113C24                              movss dword [esp], xmm15
+    52 00000025 83C404                                      add rsp, 4
+    53 00000028 67F3440F113C24                              movss dword [rsp], xmm15
     54                                  
     55 0000002F 90                      nop
     56 00000030 90                      nop
     57                                  
-    58 00000031 67F3440F107C2404                       movss xmm15, dword [esp + 4]                
-    59 00000039 67F3440F5C3C24                              subss xmm15, dword [esp]
+    58 00000031 67F3440F107C2404                       movss xmm15, dword [rsp + 4]                
+    59 00000039 67F3440F5C3C24                              subss xmm15, dword [rsp]
     60                                  
-    61 00000040 83C404                                      add esp, 4
-    62 00000043 67F3440F113C24                              movss dword [esp], xmm15
+    61 00000040 83C404                                      add rsp, 4
+    62 00000043 67F3440F113C24                              movss dword [rsp], xmm15
     63                                  
     64 0000004A 90                      nop
     65 0000004B 90                      nop
     66                                  
-    67 0000004C 67F3440F107C2404                      movss xmm15, dword [esp + 4]                
-    68 00000054 67F3440F593C24                              mulss xmm15, dword [esp]
+    67 0000004C 67F3440F107C2404                      movss xmm15, dword [rsp + 4]                
+    68 00000054 67F3440F593C24                              mulss xmm15, dword [rsp]
     69                                  
-    70 0000005B 83C404                                      add esp, 4
-    71 0000005E 67F3440F113C24                              movss dword [esp], xmm15
+    70 0000005B 83C404                                      add rsp, 4
+    71 0000005E 67F3440F113C24                              movss dword [rsp], xmm15
     72                                  
     73 00000065 90                      nop
     74 00000066 90                      nop
     75                                  
-    76 00000067 67F3440F107C2404                       movss xmm15, dword [esp + 4]                
-    77 0000006F 67F3440F5E3C24                              divss xmm15, dword [esp]
+    76 00000067 67F3440F107C2404                       movss xmm15, dword [rsp + 4]                
+    77 0000006F 67F3440F5E3C24                              divss xmm15, dword [rsp]
     78                                  
-    79 00000076 83C404                                      add esp, 4
-    80 00000079 67F3440F113C24                              movss dword [esp], xmm15
+    79 00000076 83C404                                      add rsp, 4
+    80 00000079 67F3440F113C24                              movss dword [rsp], xmm15
     81                                  
     82                                  
     83 00000080 90                      nop
@@ -448,14 +484,14 @@ JNE        !=
     89                                  
     90                                                          ;restore regs
     91                                  
-    92 00000082 83EC04                                          sub esp, 4
-    93 00000085 67F30F110424                                    movss dword [esp], xmm0
+    92 00000082 83EC04                                          sub rsp, 4
+    93 00000085 67F30F110424                                    movss dword [rsp], xmm0
     94                                  
     95 0000008B 90                      nop
     96 0000008C 90                      nop
     97                                  
-    98 0000008D 67F30F110424                                    movss dword [esp], xmm0
-    99 00000093 83C404                                          add esp, 4
+    98 0000008D 67F30F110424                                    movss dword [rsp], xmm0
+    99 00000093 83C404                                          add rsp, 4
    100                                  
    101                                                          ;save regs
    102                                  
@@ -467,10 +503,10 @@ JNE        !=
    108 00000096 90                      nop
    109 00000097 90                      nop
    110                                  
-   111 00000098 67F30F10442404                        movss xmm0, dword [esp + 4]                 
-   112 0000009F 67F30F5C0424                                subss xmm0, dword [esp]
+   111 00000098 67F30F10442404                        movss xmm0, dword [rsp + 4]                 
+   112 0000009F 67F30F5C0424                                subss xmm0, dword [rsp]
    113                                  
-   114 000000A5 83C408                                      add esp, 8
+   114 000000A5 83C408                                      add rsp, 8
    115                                                          
    116                                                      ;save regs 
    117                                                      ;call fabs
@@ -487,8 +523,8 @@ JNE        !=
    126 000000C1 [04000000]         
    127                                  
    128                                                      .skip:
-   129 000000C5 83EC04                                      sub esp, 4
-   130 000000C8 67F3440F112C24                              movss dword [esp], xmm13
+   129 000000C5 83EC04                                      sub rsp, 4
+   130 000000C8 67F3440F112C24                              movss dword [rsp], xmm13
    131                                  
    132                                  
    133 000000CF 90                      nop
@@ -496,16 +532,16 @@ JNE        !=
    135                                          
    136 000000D1 66450FEFED                             pxor xmm13, xmm13
    137                                  
-   138 000000D6 67F30F100424                            movss xmm0, dword [esp]             
-   139 000000DC 670F2F442404                                comiss xmm0, dword [esp + 4]
+   138 000000D6 67F30F100424                            movss xmm0, dword [rsp]             
+   139 000000DC 670F2F442404                                comiss xmm0, dword [rsp + 4]
    140                                  
    141 000000E2 760A                                        jbe .skip2
    142 000000E4 F3440F102C25-                               movss xmm13, dword [One]
    142 000000EA [04000000]         
    143                                  
    144                                                      .skip2:
-   145 000000EE 83EC04                                      sub esp, 4
-   146 000000F1 67F3440F112C24                              movss dword [esp], xmm13
+   145 000000EE 83EC04                                      sub rsp, 4
+   146 000000F1 67F3440F112C24                              movss dword [rsp], xmm13
    147                                  
    148                                  
    149 000000F8 90                      nop

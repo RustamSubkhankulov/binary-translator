@@ -9,102 +9,114 @@ sizeof(Two_nops) / sizeof(unsigned char))
 
 //-----------------------------------------------
 
+// push rdi, rsi, rdx, rcx, r8, r9
+
+DEF_INSTR(Push_arg_regs, { 0x57, 0x56, 0x52, 0x51, 0x41, 0x50, 0x41, 0x51})
+
+//-----------------------------------------------
+
+// pop r9, r8, rcx, rdx, rsi, rdi
+
+DEF_INSTR(Pop_arg_regs, { 0x41, 0x59, 0x41, 0x58, 0x59, 0x5A, 0x5E, 0x5F})
+
+//-----------------------------------------------
+
+// push rax 
+
+DEF_INSTR(Push_rax, { 0x50 })
+
+//-----------------------------------------------
+
+// pop rax 
+
+DEF_INSTR(Pop_rax, { 0x58 })
+
+//-----------------------------------------------
+
 // push rbx, rbp, r12, r13, r14, r15
 
-DEF_INSTR(Save_regs, { 0x53, 0x55, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57},
-sizeof(Save_regs) / sizeof(unsigned char))
+DEF_INSTR(Save_regs, { 0x53, 0x55, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57})
 
 //-----------------------------------------------
 
 // pop r15, r14, r13, r12, rbp, rbx
 
-DEF_INSTR(Restore_regs, { 0x41, 0x5F, 0x41, 0x5E, 0x41, 0x5D, 0x41, 0x5C, 0x5D, 0x5B},
-sizeof(Restore_regs) / sizeof(unsigned char))
+DEF_INSTR(Restore_regs, { 0x41, 0x5F, 0x41, 0x5E, 0x41, 0x5D, 0x41, 0x5C, 0x5D, 0x5B})
 
 //-----------------------------------------------
 
 // ret '0xC3' 
 
-DEF_INSTR(Return, { 0xC3 }, 
-sizeof(Return) / sizeof(unsigned char))
+DEF_INSTR(Return, { 0xC3 })
 
 //-----------------------------------------------
 
 // Get first argument from stack 
 // movss xmm15, dword [esp + 4]
 
-DEF_INSTR(First_arg_to_xmm15, {0x67, 0xF3, 0x44, 0x0F, 0x10, 0x7C, 0x24, 0x04},
-sizeof(First_arg_to_xmm15 / sizeof(unsigned char)))
+DEF_INSTR(First_arg_to_xmm15, { 0x67, 0xF3, 0x44, 0x0F, 0x10, 0x7C, 0x24, 0x04})
 
 //-----------------------------------------------
 
 // Add with second arg from stack
 // addss xmm15, dword [esp]
 
-DEF_INSTR(Addss_xmm15_stack, {0x67, 0xF3, 0x44, 0x0F, 0x58, 0x3C, 0x24},
-sizeof(Addss_xmm15_stack) / sizeof(unsigned char))
+DEF_INSTR(Addss_xmm15_stack, { 0x67, 0xF3, 0x44, 0x0F, 0x58, 0x3C, 0x24})
 
 //-----------------------------------------------
 
 // Sub with second arg from stack
 // addss xmm15, dword [esp]
 
-DEF_INSTR(Addss_xmm15_stack, {0x67, 0xF3, 0x44, 0x0F, 0x5C, 0x3C, 0x24},
-sizeof(Subss_xmm15_stack) / sizeof(unsigned char))
+DEF_INSTR(Addss_xmm15_stack, { 0x67, 0xF3, 0x44, 0x0F, 0x5C, 0x3C, 0x24})
 
 //-----------------------------------------------
 
 // Mul with second arg from stack
 // addss xmm15, dword [esp]
 
-DEF_INSTR(Mulss_xmm15_stack, {0x67, 0xF3, 0x44, 0x0F, 0x59, 0x3C, 0x24},
-sizeof(Mulss_xmm15_stack) / sizeof(unsigned char))
+DEF_INSTR(Mulss_xmm15_stack, { 0x67, 0xF3, 0x44, 0x0F, 0x59, 0x3C, 0x24})
 
 //-----------------------------------------------
 
 // Div with second arg from stack
 // addss xmm15, dword [esp]
 
-DEF_INSTR(Divss_xmm15_stack, {0x67, 0xF3, 0x44, 0x0F, 0x5E, 0x3C, 0x24},
-sizeof(Divss_xmm15_stack) / sizeof(unsigned char))
+DEF_INSTR(Divss_xmm15_stack, { 0x67, 0xF3, 0x44, 0x0F, 0x5E, 0x3C, 0x24})
 
 //-----------------------------------------------
 
 // add esp, 4
 
-DEF_INSTR(Add_esp_4, {0x83, 0xC4, 0x04},
-sizeof(Add_esp_4) / sizeof(unsigned char))
+DEF_INSTR(Add_esp_4, { 0x83, 0xC4, 0x04})
 
 //-----------------------------------------------
 
 // add esp, 8
 
-DEF_INSTR(Add_esp_8, {0x83, 0xC4, 0x08},
-sizeof(Add_esp_8) / sizeof(unsigned char))
+DEF_INSTR(Add_esp_8, { 0x83, 0xC4, 0x08})
 
 //-----------------------------------------------
 
 // sub esp, 8
 
-DEF_INSTR(Sub_esp_8, {0x83, 0xEC, 0x08},
-sizeof(Add_esp_8) / sizeof(unsigned char))
+DEF_INSTR(Sub_esp_8, { 0x83, 0xEC, 0x08})
 
 //-----------------------------------------------
 
 // sub esp, 4
 
-DEF_INSTR(Sub_esp_4, {0x83, 0xEC, 0x04},
-sizeof(Sub_esp_4) / sizeof(unsigned char))
+DEF_INSTR(Sub_esp_4, { 0x83, 0xEC, 0x04})
 
 //-----------------------------------------------
 
-// store dword xmm0 in stack
+// push dword xmm0 in stack
 
 // sub esp, 4
 // movss dword[esp], xmm0
 
-DEF_INSTR(Push_dword_xmm0, {0x83, 0xEC, 0x04, 0x67, 0xF3, 0x0F, 0x11, 0x04, 0x24},
-sizeof(Push_dword_xmm0) / sizeof(unsigned char))
+DEF_INSTR(Push_dword_xmm0, { 0x83, 0xEC, 0x04, 0x67, 0xF3, 0x0F, 0x11, 0x04, 0x24})
+
 //-----------------------------------------------
 
 // store dword xmm13 in stack
@@ -112,8 +124,7 @@ sizeof(Push_dword_xmm0) / sizeof(unsigned char))
 // sub esp, 4
 // movss dword[esp], xmm13
 
-DEF_INSTR(Push_dword_xmm13, {0x83, 0xEC, 0x04, 0x67, 0xF3, 0x44, 0x0F, 0x11, 0x2C, 0x24},
-sizeof(Push_dword_xmm13) / sizeof(unsigned char))
+DEF_INSTR(Push_dword_xmm13, { 0x83, 0xEC, 0x04, 0x67, 0xF3, 0x44, 0x0F, 0x11, 0x2C, 0x24})
 
 //-----------------------------------------------
 
@@ -121,8 +132,7 @@ sizeof(Push_dword_xmm13) / sizeof(unsigned char))
 
 // movss dword[esp], xmm15
 
-DEF_INSTR(Mov_xmm15_by_esp, {0x67, 0xF3, 0x44, 0x0F, 0x11, 0x3C, 0x24},
-sizeof(Mov_xmm15_by_esp) / sizeof(unsigned char))
+DEF_INSTR(Mov_xmm15_by_esp, { 0x67, 0xF3, 0x44, 0x0F, 0x11, 0x3C, 0x24})
 
 //-----------------------------------------------
 
@@ -131,8 +141,7 @@ sizeof(Mov_xmm15_by_esp) / sizeof(unsigned char))
 // movss xmm0, dword [esp]
 // add esp, 4
 
-DEF_INSTR(Pop_word_xmm0, {0x67, 0xF3, 0x0F, 0x11, 0x04, 0x24, 0x83, 0xC4, 0x04},
-sizeof(Pop_dword_xmm0) / sizeof(unsigned char))
+DEF_INSTR(Pop_word_xmm0, { 0x67, 0xF3, 0x0F, 0x10, 0x04, 0x24, 0x83, 0xC4, 0x04})
 
 //-----------------------------------------------
 
@@ -140,9 +149,7 @@ sizeof(Pop_dword_xmm0) / sizeof(unsigned char))
 
 // pxor xmm13, xmm13 
 
-DEF_INSTR(Mov_xmm13_0, {0x66, 0x45, 0x0F, 0xEF, 0xED},
-sizeof(Mov_xmm13_0) / sizeof(unsigned char))
-
+DEF_INSTR(Mov_xmm13_0, { 0x66, 0x45, 0x0F, 0xEF, 0xED})
 
 //-----------------------------------------------
 
@@ -151,8 +158,7 @@ sizeof(Mov_xmm13_0) / sizeof(unsigned char))
 
 // movss xmm1, [0]
 
-DEF_INSTR(Mov_xmm1_mem, {0xF3, 0x0F, 0x10, 0x0C, 0x25},
-sizeof(Mov_xmm1_mem) / sizeof(unsigned char))
+DEF_INSTR(Mov_xmm1_mem, { 0xF3, 0x0F, 0x10, 0x0C, 0x25})
 
 //-----------------------------------------------
 
@@ -161,16 +167,47 @@ sizeof(Mov_xmm1_mem) / sizeof(unsigned char))
 
 // movss xmm13, [0]
 
-DEF_INSTR(Mov_xmm13_mem, {0xF3, 0x44, 0x0F, 0x10, 0x2C, 0x25},
-sizeof(Mov_xmm13_mem) / sizeof(unsigned char))
+DEF_INSTR(Mov_xmm13_mem, { 0xF3, 0x44, 0x0F, 0x10, 0x2C, 0x25})
 
 //-----------------------------------------------
 
 // Compare xmm0, xmm1
 // comiss xmm0, xmm1
 
-DEF_INSTR(Cmp_xmm0_xmm1, {0x0F, 0x2F, 0xC1},
-sizeof(Cmp_xmm0_xmm1) / sizeof(unsigned char))
+DEF_INSTR(Cmp_xmm0_xmm1, { 0x0F, 0x2F, 0xC1})
 
 //-----------------------------------------------
 
+// Conditional jump 'jbe' N bytes ahead from this instruction
+// jbe $ + N
+
+// WARNING: Instruction must be patched
+
+DEF_INSTR(Jbe_ahead_N, { 0x76, 0x00})
+
+//-----------------------------------------------
+
+// Conditional jump 'jb' N bytes ahead from this instruction
+// jb $ + N
+
+// WARNING: Instruction must be patched
+
+DEF_INSTR(Jb_ahead_N, { 0x72, 0x00})
+
+//-----------------------------------------------
+
+// Conditional jump 'ja' N bytes ahead from this instruction
+// ja $ + N
+
+// WARNING: Instruction must be patched
+
+DEF_INSTR(Ja_ahead_N, { 0x77, 0x00})
+
+//-----------------------------------------------
+
+// Conditional jump 'jae' N bytes ahead from this instruction
+// jae $ + N
+
+// WARNING: Instruction must be patched
+
+DEF_INSTR(Jae_ahead_N, { 0x73, 0x00})
