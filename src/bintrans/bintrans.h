@@ -39,6 +39,21 @@
 
 //===============================================
 
+#define INIT_ENTITY(trans_struct_ptr, Name)             \
+                                                        \
+    do                                                  \
+    {                                                   \
+                                                        \
+        if (init_entity(trans_struct_ptr,               \
+                        Name##_size, Name) == -1)       \
+        {                                               \
+            return -1;                                  \
+        }                                               \
+                                                        \
+    } while(0);
+
+//===============================================
+
 struct Binary_input 
 {
 

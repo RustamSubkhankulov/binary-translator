@@ -109,26 +109,13 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     trans_struct->input_buffer_pos += (unsigned int)sizeof(Header);
 
-    int ret_val = init_entity(trans_struct,
-                              Save_regs_size, 
-                              Save_regs);
-
-    if (ret_val == -1) return -1;
+    INIT_ENTITY(trans_struct, Save_regs);
 
     // ret_val = translate_instructions(trans_struct);
     // if (ret_val == -1) return -1;
 
-    ret_val = init_entity(trans_struct,
-                          Restore_regs_size, 
-                          Restore_regs);
-
-    if (ret_val == -1) return -1; 
-
-    ret_val = init_entity(trans_struct,
-                          Return_size, 
-                          Return);
-    
-    if (ret_val == -1) return -1;
+    INIT_ENTITY(trans_struct, Restore_regs);
+    INIT_ENTITY(trans_struct, Return);
 
     return 0;
 }
