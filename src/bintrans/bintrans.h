@@ -39,18 +39,64 @@
 
 //===============================================
 
-#define INIT_ENTITY(trans_struct_ptr, Name)             \
-                                                        \
-    do                                                  \
-    {                                                   \
-                                                        \
-        if (init_entity(trans_struct_ptr,               \
-                        Name##_size, Name) == -1)       \
-        {                                               \
-            return -1;                                  \
-        }                                               \
-                                                        \
-    } while(0);
+#ifdef ENTITY_ADD_NAME_STR
+
+    #define FOR_LIST_DUMP(...) __VA_ARGS__ 
+
+#else
+
+    #define FOR_LIST_DUMP(...)
+
+#endif 
+
+//===============================================
+
+#ifndef ENTITY_ADD_NAME_STR
+
+    #define INIT_ENTITY(trans_struct_ptr, Name)             \
+                                                            \
+        do                                                  \
+        {                                                   \
+                                                            \
+            if (init_entity(trans_struct_ptr,               \
+                            Name##_size, Name) == -1)       \
+            {                                               \
+                return -1;                                  \
+            }                                               \
+                                                            \
+        } while(0);
+
+#else 
+
+    #define INIT_ENTITY(trans_struct_ptr, Name)             \
+                                                            \
+        do                                                  \
+        {                                                   \
+                                                            \
+            if (init_entity(trans_struct_ptr,               \
+                     Name##_size, Name, #Name) == -1)       \
+            {                                               \
+                return -1;                                  \
+            }                                               \
+                                                            \
+        } while(0);
+
+#endif 
+
+//-----------------------------------------------
+
+#define PATCH_ENTITY(trans_entity, pos, size, data)         \
+                                                            \
+    do                                                      \
+    {                                                       \
+                                                            \
+        if (patch_entity(trans_entity, pos,                 \
+                                size, data) == -1)          \
+        {                                                   \
+            return -1;                                      \
+        }                                                   \
+                                                            \
+    } while (0);
 
 //===============================================
 
@@ -68,10 +114,16 @@ struct Binary_input
 struct Trans_entity
 {
     unsigned char* data;
-    unsigned int size;
+    unsigned int   size;
 
+    #ifdef ENTITY_ADD_NAME_STR
+
+        char* name_str;
+
+    #endif 
     //type maybe?
 };
+
 
 //===============================================
 
@@ -88,10 +140,10 @@ struct Result
 {
     unsigned char* buffer;
     unsigned int   size;
-    uint64_t       address;
+    uint64_t       buffer_addr;
 
     unsigned int   cur_pos;
-}
+};
 
 //===============================================
 
@@ -99,15 +151,10 @@ struct Trans_struct
 {
     struct List* entities;
 
-    char*        input_buffer;
-    unsigned int input_buffer_pos;
-    unsigned int input_size;
+    struct Input  input;
+    struct Result result;
 
-    unsigned char* call_buf;
-    unsigned int   call_buf_size;
-    uint64_t       call_buf_addr;
-
-    unsigned int cur_call_buf_pos;
+    float reg_values[16];
 
     #ifdef BINTRANS_LISTING
 
@@ -137,8 +184,9 @@ int _input_load_to_buffer  (Binary_input* binary_input FOR_LOGS(, LOG_PARAMS));
 
 //-----------------------------------------------
 
-int _trans_add_sub(Trans_struct* trans_struct, unsigned char op_code 
-                                            FOR_LOGS(, LOG_PARAMS));
+int _trans_sub    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _trans_add    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _trans_hlt    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
@@ -201,8 +249,11 @@ int _trans_jne    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 int _trans_call   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 
-#define trans_add_sub(struct, op_code) \
-       _trans_add_sub(struct, op_code FOR_LOGS(, LOG_ARGS)) 
+#define trans_add(struct, op_code) \
+       _trans_add(struct, op_code FOR_LOGS(, LOG_ARGS)) 
+
+#define trans_sub(struct, op_code) \
+       _trans_sub(struct, op_code FOR_LOGS(, LOG_ARGS))
 
 #define trans_hlt(struct) \
        _trans_hlt(struct FOR_LOGS(, LOG_ARGS))
@@ -324,7 +375,16 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
 int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LOG_PARAMS));
 
 int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned char* data 
-                                                      FOR_LOGS(, LOG_PARAMS));
+                            FOR_LIST_DUMP(, const char* name_str) FOR_LOGS(, LOG_PARAMS));
+ 
+int _patch_entity(Trans_entity* trans_entity, unsigned int   patch_pos, unsigned int  patch_size,
+                                              unsigned char* patch_data FOR_LOGS(, LOG_PARAMS));
+
+int _write_listing(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _listing_message(Trans_entity* trans_entity, unsigned int res_buf_pos, 
+                                    FILE* listing FOR_LOGS(, LOG_PARAMS));
+
 #ifdef BINTRANS_LISTING
 
     int _init_listing_file     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
@@ -347,9 +407,6 @@ int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned c
 #define translate_instructions(trans_struct) \
        _translate_instructions(trans_struct FOR_LOGS(, LOG_ARGS))
 
-#define init_entity(trans_struct, size, data) \
-       _init_entity(trans_struct, size, data FOR_LOGS(, LOG_ARGS))
-
 #define call_translated_code(trans_struct) \
        _call_translated_code(trans_struct FOR_LOGS(, LOG_ARGS))
 
@@ -364,6 +421,12 @@ int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned c
 
 #define end_listing_file(trans_struct) \
        _end_listing_file(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define write_listing(trans_struct) \
+       _write_listing(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define listing_message(trans_entity, res_buf_pos, listing) \
+       _listing_message(trans_entity, res_buf_pos, listing FOR_LOGS(, LOG_ARGS))
 
 #define binary_header_check(trans_struct) \
        _binary_header_check(trans_struct FOR_LOGS(, LOG_ARGS))
@@ -397,3 +460,18 @@ int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned c
 
 #define flush_entities_to_buf(trans_struct) \
        _flush_entities_to_buf(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define patch_entity(entity, pos, size, data) \
+       _patch_entity(entity, pos, size, data FOR_LOGS(, LOG_ARGS))
+
+#ifdef ENTITY_ADD_NAME_STR
+
+    #define init_entity(trans_struct, size, data, name_str) \
+           _init_entity(trans_struct, size, data, name_str FOR_LOGS(, LOG_ARGS))
+
+#else
+
+    #define init_entity(trans_struct, size, data) \
+           _init_entity(trans_struct, size, data FOR_LOGS(, LOG_ARGS))
+
+#endif 

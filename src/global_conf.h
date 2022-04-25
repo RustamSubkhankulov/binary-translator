@@ -14,4 +14,6 @@ static const char* Logfile_name = "trans.html";
 
 #define FILE_IO
 
+#define ENTITY_ADD_NAME_STR
+
 //===============================================

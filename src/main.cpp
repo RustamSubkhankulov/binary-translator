@@ -7,11 +7,15 @@
 #include "global_conf.h"
 #include "bintrans/bintrans.h"
 
+//
+#include "bintrans/standard.h"
+//
+
 //===============================================
 
 int main(int argc, char* argv[])
 {
-
+    
     #ifdef LOGS
         FILE* logs_file = open_log_file(Logfile_name);
         if (!logs_file)
@@ -23,6 +27,7 @@ int main(int argc, char* argv[])
     // Prologue
 
     int ret_val = 0;
+
     Binary_input binary_input = { 0 };
 
     ret_val = read_binary_input(&binary_input, argv[1]);

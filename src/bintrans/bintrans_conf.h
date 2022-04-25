@@ -28,7 +28,7 @@
 
 // Places 'int 3' interrupt just before executing translated code
 
-//#define DEBUG_EXEC
+#define DEBUG_EXEC
 
 //-----------------------------------------------
 

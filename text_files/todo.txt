@@ -7,7 +7,7 @@ done 1. make каркас of the programm
 	done - insert valid check in functions
 	done - try to execute 
 
-4. listing 
+done 4. listing 
 
 done 5. resize of entities
 done 6. init and final entities 
@@ -22,10 +22,13 @@ done 7,9. make загатовочки for translating arithm as codegenerating
 
 done 7,94. Renew code_info
 done 7,945. renew заголовочки
-7,946. fill registers with zero's 
-7,95. make stdlib for various functions  
-7,96. make  заголовочки для вызовов функций 
-7,97. deal with constant and addresses 
+done 7,946. fill registers with zero's
+done 7,947. add name of entity in list_dump 
+done 7,95. make stdlib for various functions  
+done 7,96. make  заголовочки для вызовов функций 
+7,96. deal with constant and addresses 
+7,965. reduce amount of code 
+7,97. try to use trigonometric from math.h  directly
 --(pushing constant values to xmm registets using regular regs)-- 
 8. make загатовочки for translating JUMPS as codegenerating 
 

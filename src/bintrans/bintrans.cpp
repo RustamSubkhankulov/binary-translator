@@ -8,6 +8,11 @@
 #include "instr.h"
 #include "../general/general.h"
 #include "../../lang/proc/assembler/processor_general.h"
+#include "standard.h"
+
+//===============================================
+
+#define LAST_ENTITY trans_struct->entities->data[trans_struct->entities->tail] 
 
 //===============================================
 
@@ -107,15 +112,19 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     int is_ok = binary_header_check(trans_struct);
     if (is_ok == -1) return -1;
 
-    trans_struct->input_buffer_pos += (unsigned int)sizeof(Header);
+    trans_struct->input.pos += (unsigned int)sizeof(Header);
 
     INIT_ENTITY(trans_struct, Save_regs);
+    INIT_ENTITY(trans_struct, Null_xmms);
 
     // ret_val = translate_instructions(trans_struct);
     // if (ret_val == -1) return -1;
 
     INIT_ENTITY(trans_struct, Restore_regs);
     INIT_ENTITY(trans_struct, Return);
+
+    int ret_val = write_listing(trans_struct);
+    if (ret_val == -1) return -1;
 
     return 0;
 }
@@ -129,7 +138,7 @@ int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     int ret_val = 0;
 
-    while (trans_struct->input_buffer_pos < trans_struct->input_size)
+    while (trans_struct->input.pos < trans_struct->input.size)
     {
         ret_val = translate_single_instruction(trans_struct);
         if (ret_val == -1) return -1;
@@ -167,13 +176,19 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
     bintrans_log_report(); 
     assert(trans_struct);
 
-    unsigned char oper_code = *(trans_struct->input_buffer 
-                              + trans_struct->input_buffer_pos);
+    unsigned char oper_code = *(trans_struct->input.buffer 
+                              + trans_struct->input.pos);
 
     switch(oper_code & OPER_CODE_MASK)
     {
         #include "../../text_files/commands.txt"
         #include "../../text_files/jumps.txt"
+
+        default:
+        {
+            error_report(JIT_INV_OP_CODE);
+            return -1;
+        }
     }
 
     return 0;   
@@ -187,8 +202,8 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
 //-----------------------------------------------
 
 int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned char* data 
-                                                      FOR_LOGS(, LOG_PARAMS))
-{
+                            FOR_LIST_DUMP(, const char* name_str) FOR_LOGS(, LOG_PARAMS))
+ {
     bintrans_log_report(); 
     assert(trans_struct);
 
@@ -214,8 +229,29 @@ int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned c
 
     if (ret_val == -1) return -1;
 
+    #ifdef ENTITY_ADD_NAME_STR
+
+        assert(name_str);
+
+        unsigned int name_len = (unsigned int) strlen(name_str);
+
+        trans_entity->name_str = (char*) calloc(name_len, sizeof(char));
+        if (!trans_entity->name_str)
+        {
+            error_report(CANNOT_ALLOCATE_MEM);
+            return -1;
+        }
+
+        ret_val = fast_cpy((void*) trans_entity->name_str,
+                           (void*) name_str,
+                                   name_len);
+
+        if (ret_val == -1) return -1;
+
+    #endif 
+
     trans_entity->size = size;
-    trans_struct->cur_call_buf_pos += size;
+    trans_struct->result.cur_pos += size;
 
     ret_val = list_push_back(entities, trans_entity);
     if (ret_val == -1) return -1;
@@ -231,7 +267,7 @@ int _binary_header_check(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     Header header = { 0 };
     
-    memcpy(&header, trans_struct->input_buffer, sizeof(Header));
+    memcpy(&header, trans_struct->input.buffer, sizeof(Header));
 
     int err_num = 0;
 
@@ -247,7 +283,7 @@ int _binary_header_check(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         err_num++;
     }
 
-    if (header.file_size != trans_struct->input_size)
+    if (header.file_size != trans_struct->input.size)
     { 
         error_report(HDR_INV_FILE_SIZE);
         err_num++;
@@ -278,7 +314,7 @@ int _binary_execute(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     ret_val = call_buf_change_acc_prot(trans_struct, PROT_READ | PROT_WRITE);
     if (ret_val == -1) return -1;
     
-    free(trans_struct->call_buf);
+    free(trans_struct->result.buffer);
 
     return 0;
 }
@@ -291,7 +327,7 @@ int _call_translated_code(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     assert(trans_struct);
 
     int (*func) (void) = NULL;
-    func = (int (*)(void)) trans_struct->call_buf;
+    func = (int (*)(void)) trans_struct->result.buffer;
 
     int exit_code = func();
     printf(" Exit code of translated code: %d \n", exit_code);
@@ -306,9 +342,9 @@ int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LO
     bintrans_log_report();
     assert(trans_struct);
 
-    unsigned int size = trans_struct->call_buf_size;
+    unsigned int size = trans_struct->result.size;
 
-    int ret_val = mprotect((void*)trans_struct->call_buf, size, prot);
+    int ret_val = mprotect((void*)trans_struct->result.buffer, size, prot);
     if (ret_val != 0)
     {
         error_report(MPROTECT_ERR);
@@ -325,20 +361,20 @@ int _call_buf_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    int pagesize = sysconf(_SC_PAGE_SIZE);
+    int pagesize = (int) sysconf(_SC_PAGE_SIZE);
     if (pagesize == -1)
     {
         error_report(SYSCONF_ERR);
         return -1;
     }
 
-    unsigned int size = trans_struct->call_buf_size;
+    unsigned int size = trans_struct->result.size;
 
-    trans_struct->call_buf = (unsigned char*) aligned_alloc (pagesize,  
-                                        size * sizeof(unsigned char));
-    if (!trans_struct->call_buf) return -1;
+    trans_struct->result.buffer = (unsigned char*) aligned_alloc ((size_t)pagesize,  
+                                                     size * sizeof(unsigned char));
+    if (!trans_struct->result.buffer) return -1;
 
-    trans_struct->call_buf_addr = (uint64_t)trans_struct->call_buf;
+    trans_struct->result.buffer_addr = (uint64_t)trans_struct->result.buffer;
 
     return 0;
 }
@@ -354,8 +390,7 @@ int _count_call_buf_size(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     List* list = trans_struct->entities;
     
-    int list_head = list->head;
-    int cur_index = list_head;
+    int cur_index = (int)list->head;
 
     do
     {
@@ -365,7 +400,7 @@ int _count_call_buf_size(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     } while (cur_index != 0);
 
-    trans_struct->call_buf_size = call_buf_size;
+    trans_struct->result.size = call_buf_size;
 
     printf("\n call buf size %u \n", call_buf_size);
 
@@ -388,17 +423,17 @@ int _flush_entities_to_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     unsigned int call_buf_pos = 0;
 
     List* list    = trans_struct->entities;
-    int cur_index = list->head;
+    int cur_index = (int) list->head;
 
     do 
     {
         unsigned int entity_size = list->data[cur_index]->size;
 
-        ret_val = fast_cpy((void*)(trans_struct->call_buf + call_buf_pos),
+        ret_val = fast_cpy((void*)(trans_struct->result.buffer + call_buf_pos),
                            (void*) list->data[cur_index]->data,
                                    entity_size);
 
-        if (ret_val == -1);
+        if (ret_val == -1) return -1;
 
         call_buf_pos += entity_size;
         cur_index    =  list->next[cur_index];
@@ -418,11 +453,11 @@ int _trans_struct_ctor(Trans_struct* trans_struct, Binary_input* binary_input
     assert(trans_struct);
     assert(binary_input);
 
-    trans_struct->input_buffer = binary_input->buffer;
-    trans_struct->input_size   = binary_input->size; 
+    trans_struct->input.buffer = (unsigned char*) binary_input->buffer;
+    trans_struct->input.size   =                  binary_input->size; 
     
-    trans_struct->input_buffer_pos   = 0;
-    trans_struct->cur_call_buf_pos = 0;
+    trans_struct->input.pos   = 0;
+    trans_struct->result.cur_pos = 0;
 
     List* list = (List*) calloc(1, sizeof(List));
     if (!list) 
@@ -490,6 +525,67 @@ int _end_listing_file(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
+int _write_listing(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned int res_buf_pos = 0;
+
+    List* list    = trans_struct->entities;
+    FILE* listing = trans_struct->listing;
+    
+    int cur_index = (int)list->head;
+    int ret_val   = 0; 
+    do
+    {
+        ret_val = listing_message(list->data[cur_index], res_buf_pos, listing);
+        if (ret_val == -1) return -1;
+
+        res_buf_pos += list->data[cur_index]->size;
+        cur_index    = list->next[cur_index];
+
+    } while (cur_index != 0);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _listing_message(Trans_entity* trans_entity, unsigned int res_buf_pos, FILE* listing FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+
+    assert(trans_entity);
+    assert(listing);
+
+    unsigned int size = trans_entity->size;
+
+    fprintf(listing, "Pos: %08xh | Size: %02d | ", res_buf_pos, size);
+    
+    for (unsigned int counter = 1;
+                      counter <= size;
+                      counter++)
+    {
+        fprintf(listing, "%02x ", trans_entity->data[counter - 1]);
+
+        if ((counter  % 8) == 0)
+            fprintf(listing, "\n                            ");
+    }
+
+    fprintf(listing, "\n\n");
+
+    #ifdef ENTITY_ADD_NAME_STR
+
+        fprintf(listing, "\nEntity name: %s \n\n\n", trans_entity->name_str);
+
+    #endif 
+
+    return 0;
+}
+
+//-----------------------------------------------
+
 int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
@@ -497,14 +593,19 @@ int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     List* list = trans_struct->entities;
 
-    int list_head = list->head;
-    int cur_index = list_head;
+    int cur_index = (int) list->head;
 
     do
     {
         // free unsigned char* data in Trans_entity
         free(list->data[cur_index]->data);
 
+        #ifdef ENTITY_ADD_NAME_STR
+
+            // free char* name_str in Trans_entity
+            free(list->data[cur_index]->name_str);
+
+        #endif 
         // free memory, allocated for Trans_entity structure
         free(list->data[cur_index]);
 
@@ -538,13 +639,13 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     int list_valid = list_validator(trans_struct->entities);
     if (list_valid != 0) err_num++;
 
-    if (!trans_struct->input_buffer)
+    if (!trans_struct->input.buffer)
     {
         error_report(TRANS_STRUCT_NULL_INPUT_BUFFER);
         err_num++;
     }
 
-    if (trans_struct->input_buffer_pos > trans_struct->input_size)
+    if (trans_struct->input.pos > trans_struct->input.size)
     {
         error_report(TRANS_STRUCT_INV_BUFFER_POS);
         err_num++;
@@ -568,54 +669,402 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-int _trans_add_sub(Trans_struct* trans_struct, unsigned char op_code 
-                                             FOR_LOGS(, LOG_PARAMS))
+int _patch_entity(Trans_entity* trans_entity, unsigned int   patch_pos, unsigned int  patch_size,
+                                              unsigned char* patch_data FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+
+    assert(trans_entity);
+    assert(patch_data);
+
+    if (patch_size == 0)
+    {
+        error_report(JIT_ZERO_PATCH_SIZE);
+        return -1;
+    }
+
+    if (patch_pos > trans_entity->size)
+    {
+        error_report(JIT_INV_PATCH_POS);
+        return -1;
+    }
+
+    unsigned char* destn_data = trans_entity->data + patch_pos;
+
+    int ret_val = fast_cpy((void*)destn_data,
+                           (void*)patch_data,
+                           patch_size);
+    
+    if (ret_val == -1) return -1;
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _trans_add(Trans_struct* trans_struct, unsigned char op_code 
+                                         FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
 
+    // Save xmm15 value in r15d
+    INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
+
+    // Get first value
+    INIT_ENTITY(trans_struct, Movss_xmm15_rsp_plus_8);
+    // Add with second
+    INIT_ENTITY(trans_struct, Addss_xmm15_dword_rsp);
+
+    INIT_ENTITY(trans_struct, Add_rsp_8);
+
+    // Store result in stack
+    INIT_ENTITY(trans_struct, Movss_dword_rsp_xmm15);
+
+    // Restore xmm15 value
+    INIT_ENTITY(trans_struct, Movd_xmm15_r15d);
+
+    trans_struct->input.pos += 1;
+
     return 0;
 }
+
+//-----------------------------------------------
+
+int _trans_sub(Trans_struct* trans_struct, unsigned char op_code 
+                                         FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    // Save xmm15 value in r15d
+    INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
+
+    // Get first value
+    INIT_ENTITY(trans_struct, Movss_xmm15_rsp_plus_8);
+    // Sub second
+    INIT_ENTITY(trans_struct, Subss_xmm15_dword_rsp);
+
+    INIT_ENTITY(trans_struct, Add_rsp_8);
+
+    // Store result in stack
+    INIT_ENTITY(trans_struct, Movss_dword_rsp_xmm15);
+
+    // Restore xmm15 value
+    INIT_ENTITY(trans_struct, Movd_xmm15_r15d);
+
+    trans_struct->input.pos += 1;
+
+    return 0;
+}
+
+//-----------------------------------------------
 
 int _trans_hlt    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
 
+    // xor rdi, rdi; mov rax, 3Ch; syscall
+    INIT_ENTITY(trans_struct, Exit);
+
+    trans_struct->input.pos += 1;
+
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_mul    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
 
+    // Save xmm15 value in r15d
+    INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
+
+    // Get first value
+    INIT_ENTITY(trans_struct, Movss_xmm15_rsp_plus_8);
+    // Mul with second
+    INIT_ENTITY(trans_struct, Mulss_xmm15_dword_rsp);
+
+    INIT_ENTITY(trans_struct, Add_rsp_8);
+
+    // Store result in stack
+    INIT_ENTITY(trans_struct, Movss_dword_rsp_xmm15);
+
+    // Restore xmm15 value
+    INIT_ENTITY(trans_struct, Movd_xmm15_r15d);
+
+    trans_struct->input.pos += 1;
+
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_div    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
 
+    // Save xmm15 value in r15d
+    INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
+
+    // Get first value
+    INIT_ENTITY(trans_struct, Movss_xmm15_rsp_plus_8);
+    // Div by second
+    INIT_ENTITY(trans_struct, Divss_xmm15_dword_rsp);
+
+    INIT_ENTITY(trans_struct, Add_rsp_8);
+
+    // Store result in stack
+    INIT_ENTITY(trans_struct, Movss_dword_rsp_xmm15);
+
+    // Restore xmm15 value
+    INIT_ENTITY(trans_struct, Movd_xmm15_r15d);
+
+    trans_struct->input.pos += 1;
+
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
 
+    unsigned char oper_code = * (trans_struct->input.buffer 
+                              +  trans_struct->input.pos);
+
+    trans_struct->input.pos += 1;
+
+    switch (oper_code & ~ OPER_CODE_MASK)
+    {
+        case REGISTER_MASK | RAM_MASK:
+        {
+            unsigned char reg_number = * (trans_struct->input.buffer_addr
+                                       +  trans_struct->input.pos);
+            
+            trans_struct->input.pos += 1; 
+
+            INIT_ENTITY(trans_struct, Cvtss2si_r13d_xmmi);
+
+            unsigned char patch_byte = (reg_number > 7)? 0x45: 0x44;
+            unsigned int  patch_pos  = 1;
+            unsigned int  patch_size = 1;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+            patch_byte = 0xE8 + ( (reg_number > 7)? reg_number - 8: reg_number);
+            patch_pos  = 4;
+            patch_size = 1;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+            INIT_ENTITY(trans_struct, Push_qword_r13d_plus_ADDR);
+            // needs to be patched
+
+            break;
+        }
+
+        case REGISTER_MASK:
+        {
+            unsigned char reg_number = * (trans_struct->input.buffer_addr
+                                       +  trans_struct->input.pos);
+            
+            trans_struct->input.pos += 1; 
+
+            if (reg_number > 7)
+                INIT_ENTITY(trans_struct, Push_xmmi_h);
+            else
+                INIT_ENTITY(trans_struct, Push_xmmi_l);
+
+            unsigned char patch_byte = 0x04 + 0x08 * ( (reg_number > 7)? reg_number - 8 : reg_number);
+            unsigned int  patch_pos  = (reg_number > 7)? 8: 7;
+            unsigned int  patch_size = 1;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+            break;
+        }
+
+        case IMM_MASK | RAM_MASK:
+        {
+            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer_addr
+                                                             +  trans_struct->input.pos); 
+
+            trans_struct->input.pos += sizeof(float);
+
+            INIT_ENTITY(trans_struct, Mov_r13d_0);
+
+            unsigned char* patch_data = ram_index;
+            unsigned int   patch_pos  = 2;
+            unsigned int   patch_size = 4;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, patch_data);
+
+            INIT_ENTITY(trans_struct, Push_qword_r13d_plus_ADDR);
+            // needs to be patched
+
+            break;
+        }
+
+        case IMM_MASK:
+        {
+            unsigned int imm_value  = (unsigned int) * (float*) (trans_struct->input.buffer_addr
+                                                             +  trans_struct->input.pos); 
+
+            trans_struct->input.pos += sizeof(float);
+
+            INIT_ENTITY(trans_struct, Push_qword_ADDR);
+            //needs to be patched
+
+            break;
+        }
+
+        case IMM_MASK | REGISTER_MASK | RAM_MASK:
+        {
+            unsigned char reg_number = * (trans_struct->input.buffer_addr
+                                       +  trans_struct->input.pos);
+            
+            trans_struct->input.pos += 1; 
+
+            INIT_ENTITY(trans_struct, Cvtss2si_r13d_xmmi);
+
+            unsigned char patch_byte = (reg_number > 7)? 0x45: 0x44;
+            unsigned int  patch_pos  = 1;
+            unsigned int  patch_size = 1;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+            patch_byte = 0xE8 + ( (reg_number > 7)? reg_number - 8: reg_number);
+            patch_pos  = 4;
+            patch_size = 1;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer_addr
+                                                             +  trans_struct->input.pos); 
+
+            trans_struct->input.pos += sizeof(float);
+
+            INIT_ENTITY(trans_struct, Mov_r14d_0);
+
+            patch_data = ram_index;
+            patch_pos  = 2;
+            patch_size = 4;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, patch_data);
+
+            INIT_ENTITY(trans_struct, Push_qword_r13d_plus_r14d_plus_ADDR);
+            // needs to be patched
+
+            break;
+        }
+
+        default:
+        {
+            error_report(JIT_INV_OPER_CODE);
+            return -1;
+        }
+    }
+
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
 
+    unsigned char oper_code = * (trans_struct->input.buffer 
+                              +  trans_struct->input.pos);
+
+    trans_struct->input.pos += 1;
+
+    switch (oper_code & ~ OPER_CODE_MASK)
+    {
+        case REGISTER_MASK | RAM_MASK:
+        {
+            unsigned char reg_number = * (trans_struct->input.buffer_addr
+                                       +  trans_struct->input.pos);
+            
+            trans_struct->input.pos += 1; 
+
+            INIT_ENTITY(trans_struct, Cvtss2si_r13d_xmmi);
+
+            unsigned char patch_byte = (reg_number > 7)? 0x45: 0x44;
+            unsigned int  patch_pos  = 1;
+            unsigned int  patch_size = 1;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+            patch_byte = 0xE8 + ( (reg_number > 7)? reg_number - 8: reg_number);
+            patch_pos  = 4;
+            patch_size = 1;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+            INIT_ENTITY(trans_struct, Pop_r14);
+
+            INIT_ENTITY(trans_struct, Mov_dword_ADDR_plus_r13d_r14d);
+            // needs to be patched
+
+            break;
+        }
+
+        case REGISTER_MASK:
+        {
+            unsigned char reg_number = * (trans_struct->input.buffer_addr
+                                       +  trans_struct->input.pos);
+            
+            trans_struct->input.pos += 1; 
+
+            if (reg_number > 7)
+                INIT_ENTITY(trans_struct, Pop_xmmi_h);
+            else
+                INIT_ENTITY(trans_struct, Pop_xmmi_l);
+
+            unsigned char patch_byte = 0x04 + 0x08 * ( (reg_number > 7)? reg_number - 8 : reg_number);
+            unsigned int  patch_pos  = (reg_number > 7)? 4: 3;
+            unsigned int  patch_size = 1;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+            break;            
+        }
+
+        case IMM_MASK | RAM_MASK:
+        {
+            break;
+        }
+
+        case IMM_MASK:
+        {
+            break;
+        }
+
+        case IMM_MASK | REGISTER_MASK | RAM_MASK:
+        {
+            break;
+        }
+
+        default:
+        {
+            error_report(JIT_INV_OPER_CODE);
+            return -1;
+        }
+    }
+
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -625,6 +1074,8 @@ int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_in     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -632,6 +1083,8 @@ int _trans_in     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_ret    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -641,6 +1094,8 @@ int _trans_ret    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -648,6 +1103,8 @@ int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_eq     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -657,6 +1114,8 @@ int _trans_eq     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_mr     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -664,6 +1123,8 @@ int _trans_mr     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_mre    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -673,6 +1134,8 @@ int _trans_mre    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_ls     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -680,6 +1143,8 @@ int _trans_ls     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_lse    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -689,6 +1154,8 @@ int _trans_lse    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_neq    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -696,6 +1163,8 @@ int _trans_neq    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_sin    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -705,6 +1174,8 @@ int _trans_sin    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_cos    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -712,6 +1183,8 @@ int _trans_cos    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_tg     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -721,6 +1194,8 @@ int _trans_tg     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_ln     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -728,6 +1203,8 @@ int _trans_ln     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_asin   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -737,6 +1214,8 @@ int _trans_asin   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_atg    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -744,6 +1223,8 @@ int _trans_atg    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_draw   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -753,6 +1234,8 @@ int _trans_draw   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_jmp    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -760,6 +1243,8 @@ int _trans_jmp    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_ja     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -769,6 +1254,8 @@ int _trans_ja     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_jae    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -776,6 +1263,8 @@ int _trans_jae    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_jb     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -785,6 +1274,8 @@ int _trans_jb     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_jbe    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -792,6 +1283,8 @@ int _trans_jbe    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 int _trans_je     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
@@ -801,6 +1294,8 @@ int _trans_je     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_jne    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -809,6 +1304,8 @@ int _trans_jne    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     return 0;
 }
 
+//-----------------------------------------------
+
 int _trans_call   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -816,6 +1313,5 @@ int _trans_call   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
-
 
 //===============================================

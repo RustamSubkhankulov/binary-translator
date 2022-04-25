@@ -786,3 +786,12 @@ Error occured with output)
 
 DEF_ERR(1216, JIT_IN_ERR,
 Error occured with input and in value set to 0 default value)
+
+DEF_ERR(1217, JIT_INV_OP_CODE,
+Invalid operation code in input binary code)
+
+DEF_ERR(1218, JIT_ZERO_PATCH_SIZE,
+Zero size of patch in _patch_entity function)
+
+DEF_ERR(1219, JIT_INV_PATCH_POS,
+Patch position is more than entity size)

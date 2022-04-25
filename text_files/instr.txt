@@ -48,10 +48,22 @@ DEF_INSTR(Return, 0xC3 )
 
 //-----------------------------------------------
 
+// HLT 'analogue'
+
+// xor rdi, rdi
+// mov rax, 3Ch
+// syscall
+
+DEF_INSTR(Exit, 0x48, 0x31, 0xFF, \
+                0xB8, 0x3C, 0x00, 0x00, 0x00, \
+                0x0F, 0x05 )
+
+//-----------------------------------------------
+
 // Get first argument from stack to xmm15
 // movss xmm15, dword [rsp + 8]
 
-DEF_INSTR(Movss_xmm15_dword_esp_plus_8, 0xF3, 0x44, 0x0F, 0x10, 0x7C, 0x24, 0x08 )
+DEF_INSTR(Movss_xmm15_dword_rsp_plus_8, 0xF3, 0x44, 0x0F, 0x10, 0x7C, 0x24, 0x08 )
 
 //-----------------------------------------------
 
@@ -148,7 +160,7 @@ DEF_INSTR(Push_dword_xmm0, 0x48, 0x83, 0xEC, 0x08, \
 
 // movss dword[rsp], xmm15
 
-DEF_INSTR(Mov_dword_rsp_xmm15, 0xF3, 0x44, 0x0F, 0x11, 0x3C, 0x24 )
+DEF_INSTR(Movss_dword_rsp_xmm15, 0xF3, 0x44, 0x0F, 0x11, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
@@ -539,5 +551,8 @@ DEF_INSTR(Pop_xmmi_h, 0xF3, 0x44, 0x0F, 0x10, 0x00, 0x24, \
 
 //-----------------------------------------------
 
+// Rel call 
 
+// WARNING: needs to be patched
 
+DEF_INSTR(Rel_call, 0xE8, 0x00, 0x00, 0x00, 0x00 )

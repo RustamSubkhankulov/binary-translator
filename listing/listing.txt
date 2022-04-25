@@ -1,16 +1,39 @@
-	 Listing Start: Thu Apr 21 22:47:28 2022
+	 Listing Start: Tue Apr 26 00:16:18 2022
  
-	 Listing End: Thu Apr 21 22:47:28 2022
- 
-	 Listing Start: Thu Apr 21 23:44:34 2022
- 
-	 Listing End: Thu Apr 21 23:44:35 2022
- 
-	 Listing Start: Fri Apr 22 00:24:01 2022
- 
-	 Listing End: Fri Apr 22 00:24:01 2022
- 
-	 Listing Start: Fri Apr 22 00:26:37 2022
- 
-	 Listing End: Fri Apr 22 00:26:37 2022
+Pos: 00000000h | Size: 10 | 53 55 41 54 41 55 41 56 
+                            41 57 
+
+
+Entity name: Save_regs 
+
+
+Pos: 0000000ah | Size: 72 | 66 0f ef c0 66 0f ef c9 
+                            66 0f ef d2 66 0f ef db 
+                            66 0f ef e4 66 0f ef ed 
+                            66 0f ef f6 66 0f ef ff 
+                            66 45 0f ef c0 66 45 0f 
+                            ef c9 66 45 0f ef d2 66 
+                            45 0f ef db 66 45 0f ef 
+                            e4 66 45 0f ef ed 66 45 
+                            0f ef f6 66 45 0f ef ff 
+                            
+
+
+Entity name: Null_xmms 
+
+
+Pos: 00000052h | Size: 10 | 41 5f 41 5e 41 5d 41 5c 
+                            5d 5b 
+
+
+Entity name: Restore_regs 
+
+
+Pos: 0000005ch | Size: 01 | c3 
+
+
+Entity name: Return 
+
+
+	 Listing End: Tue Apr 26 00:16:19 2022
  
