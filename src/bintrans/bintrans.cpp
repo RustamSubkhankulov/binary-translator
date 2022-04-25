@@ -702,8 +702,7 @@ int _patch_entity(Trans_entity* trans_entity, unsigned int   patch_pos, unsigned
 
 //-----------------------------------------------
 
-int _trans_add(Trans_struct* trans_struct, unsigned char op_code 
-                                         FOR_LOGS(, LOG_PARAMS))
+int _trans_add(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
@@ -712,7 +711,7 @@ int _trans_add(Trans_struct* trans_struct, unsigned char op_code
     INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
 
     // Get first value
-    INIT_ENTITY(trans_struct, Movss_xmm15_rsp_plus_8);
+    INIT_ENTITY(trans_struct, Movss_xmm15_dword_rsp_plus_8);
     // Add with second
     INIT_ENTITY(trans_struct, Addss_xmm15_dword_rsp);
 
@@ -731,8 +730,7 @@ int _trans_add(Trans_struct* trans_struct, unsigned char op_code
 
 //-----------------------------------------------
 
-int _trans_sub(Trans_struct* trans_struct, unsigned char op_code 
-                                         FOR_LOGS(, LOG_PARAMS))
+int _trans_sub(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
@@ -741,7 +739,7 @@ int _trans_sub(Trans_struct* trans_struct, unsigned char op_code
     INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
 
     // Get first value
-    INIT_ENTITY(trans_struct, Movss_xmm15_rsp_plus_8);
+    INIT_ENTITY(trans_struct, Movss_xmm15_dword_rsp_plus_8);
     // Sub second
     INIT_ENTITY(trans_struct, Subss_xmm15_dword_rsp);
 
@@ -784,7 +782,7 @@ int _trans_mul    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
 
     // Get first value
-    INIT_ENTITY(trans_struct, Movss_xmm15_rsp_plus_8);
+    INIT_ENTITY(trans_struct, Movss_xmm15_dword_rsp_plus_8);
     // Mul with second
     INIT_ENTITY(trans_struct, Mulss_xmm15_dword_rsp);
 
@@ -812,7 +810,7 @@ int _trans_div    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
 
     // Get first value
-    INIT_ENTITY(trans_struct, Movss_xmm15_rsp_plus_8);
+    INIT_ENTITY(trans_struct, Movss_xmm15_dword_rsp_plus_8);
     // Div by second
     INIT_ENTITY(trans_struct, Divss_xmm15_dword_rsp);
 
@@ -845,7 +843,7 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     {
         case REGISTER_MASK | RAM_MASK:
         {
-            unsigned char reg_number = * (trans_struct->input.buffer_addr
+            unsigned char reg_number = * (trans_struct->input.buffer
                                        +  trans_struct->input.pos);
             
             trans_struct->input.pos += 1; 
@@ -872,13 +870,13 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         case REGISTER_MASK:
         {
-            unsigned char reg_number = * (trans_struct->input.buffer_addr
+            unsigned char reg_number = * (trans_struct->input.buffer
                                        +  trans_struct->input.pos);
             
             trans_struct->input.pos += 1; 
 
             if (reg_number > 7)
-                INIT_ENTITY(trans_struct, Push_xmmi_h);
+                INIT_ENTITY(trans_struct, Push_xmmi_h)
             else
                 INIT_ENTITY(trans_struct, Push_xmmi_l);
 
@@ -893,14 +891,14 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         case IMM_MASK | RAM_MASK:
         {
-            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer_addr
+            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer
                                                              +  trans_struct->input.pos); 
 
             trans_struct->input.pos += sizeof(float);
 
             INIT_ENTITY(trans_struct, Mov_r13d_0);
 
-            unsigned char* patch_data = ram_index;
+            unsigned char* patch_data = (unsigned char*)&ram_index;
             unsigned int   patch_pos  = 2;
             unsigned int   patch_size = 4;
 
@@ -914,7 +912,7 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         case IMM_MASK:
         {
-            unsigned int imm_value  = (unsigned int) * (float*) (trans_struct->input.buffer_addr
+            unsigned int imm_value  = (unsigned int) * (float*) (trans_struct->input.buffer
                                                              +  trans_struct->input.pos); 
 
             trans_struct->input.pos += sizeof(float);
@@ -927,7 +925,7 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         case IMM_MASK | REGISTER_MASK | RAM_MASK:
         {
-            unsigned char reg_number = * (trans_struct->input.buffer_addr
+            unsigned char reg_number = * (trans_struct->input.buffer
                                        +  trans_struct->input.pos);
             
             trans_struct->input.pos += 1; 
@@ -946,14 +944,14 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
             PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
 
-            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer_addr
+            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer
                                                              +  trans_struct->input.pos); 
 
             trans_struct->input.pos += sizeof(float);
 
             INIT_ENTITY(trans_struct, Mov_r14d_0);
 
-            patch_data = ram_index;
+            unsigned char* patch_data = (unsigned char*) &ram_index;
             patch_pos  = 2;
             patch_size = 4;
 
@@ -967,7 +965,7 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         default:
         {
-            error_report(JIT_INV_OPER_CODE);
+            error_report(JIT_INV_OP_CODE);
             return -1;
         }
     }
@@ -982,7 +980,7 @@ int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    unsigned char oper_code = * (trans_struct->input.buffer 
+    unsigned char oper_code = * (trans_struct->input.buffer
                               +  trans_struct->input.pos);
 
     trans_struct->input.pos += 1;
@@ -991,7 +989,7 @@ int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     {
         case REGISTER_MASK | RAM_MASK:
         {
-            unsigned char reg_number = * (trans_struct->input.buffer_addr
+            unsigned char reg_number = * (trans_struct->input.buffer
                                        +  trans_struct->input.pos);
             
             trans_struct->input.pos += 1; 
@@ -1020,13 +1018,13 @@ int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         case REGISTER_MASK:
         {
-            unsigned char reg_number = * (trans_struct->input.buffer_addr
+            unsigned char reg_number = * (trans_struct->input.buffer
                                        +  trans_struct->input.pos);
             
             trans_struct->input.pos += 1; 
 
             if (reg_number > 7)
-                INIT_ENTITY(trans_struct, Pop_xmmi_h);
+                INIT_ENTITY(trans_struct, Pop_xmmi_h)
             else
                 INIT_ENTITY(trans_struct, Pop_xmmi_l);
 
@@ -1041,22 +1039,73 @@ int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         case IMM_MASK | RAM_MASK:
         {
-            break;
-        }
+            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer
+                                                             +  trans_struct->input.pos); 
 
-        case IMM_MASK:
-        {
+            trans_struct->input.pos += sizeof(float);
+
+            INIT_ENTITY(trans_struct, Mov_r13d_0);
+
+            unsigned char* patch_data = (unsigned char*)&ram_index;
+            unsigned int   patch_pos  = 2;
+            unsigned int   patch_size = 4;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, patch_data);
+
+            INIT_ENTITY(trans_struct, Pop_r14);
+
+            INIT_ENTITY(trans_struct, Mov_dword_ADDR_plus_r13d_r14d);
+            // needs to be patched
+
             break;
         }
 
         case IMM_MASK | REGISTER_MASK | RAM_MASK:
         {
+
+            unsigned char reg_number = * (trans_struct->input.buffer
+                                       +  trans_struct->input.pos);
+            
+            trans_struct->input.pos += 1; 
+
+            INIT_ENTITY(trans_struct, Cvtss2si_r13d_xmmi);
+
+            unsigned char patch_byte = (reg_number > 7)? 0x45: 0x44;
+            unsigned int  patch_pos  = 1;
+            unsigned int  patch_size = 1;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+            patch_byte = 0xE8 + ( (reg_number > 7)? reg_number - 8: reg_number);
+            patch_pos  = 4;
+            patch_size = 1;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer
+                                                             +  trans_struct->input.pos); 
+
+            trans_struct->input.pos += sizeof(float);
+
+            INIT_ENTITY(trans_struct, Mov_r15d_0);
+
+            unsigned char* patch_data = (unsigned char*)&ram_index;
+            patch_pos  = 2;
+            patch_size = 4;
+
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, patch_data);
+
+            INIT_ENTITY(trans_struct, Pop_r14);
+
+            INIT_ENTITY(trans_struct, Mov_dword_ADDR_plus_r13d_plus_r15d_r14d);
+            // needs to be patched
+
             break;
         }
 
         default:
         {
-            error_report(JIT_INV_OPER_CODE);
+            error_report(JIT_INV_OP_CODE);
             return -1;
         }
     }

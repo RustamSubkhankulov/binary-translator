@@ -288,7 +288,7 @@ memory - array of float-point values
 
 		pop r14
     mov r13d, index
-		movss dword [Start_addr + r13d], r14d
+		mov dword [Start_addr + r13d], r14d
 	
 
 	- imm

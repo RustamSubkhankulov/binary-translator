@@ -249,11 +249,11 @@ int _trans_jne    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 int _trans_call   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 
-#define trans_add(struct, op_code) \
-       _trans_add(struct, op_code FOR_LOGS(, LOG_ARGS)) 
+#define trans_add(struct) \
+       _trans_add(struct FOR_LOGS(, LOG_ARGS)) 
 
-#define trans_sub(struct, op_code) \
-       _trans_sub(struct, op_code FOR_LOGS(, LOG_ARGS))
+#define trans_sub(struct) \
+       _trans_sub(struct FOR_LOGS(, LOG_ARGS))
 
 #define trans_hlt(struct) \
        _trans_hlt(struct FOR_LOGS(, LOG_ARGS))

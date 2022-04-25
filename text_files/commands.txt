@@ -6,13 +6,13 @@ DEF_CMD_(0, HLT, 0, 136272956,
 
 DEF_CMD_(0, ADD, 1, 4089307820,
 {
-    int ret_val = trans_add(trans_struct, 1);
+    int ret_val = trans_add(trans_struct);
     if (ret_val == -1) return -1; 
 })
 
 DEF_CMD_(0, SUB, 2, 4160544333,
 {
-    int ret_val = trans_sub(trans_struct, 2);
+    int ret_val = trans_sub(trans_struct);
     if (ret_val == -1) return -1;
 })
 
