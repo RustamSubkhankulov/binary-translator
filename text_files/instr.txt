@@ -48,38 +48,51 @@ DEF_INSTR(Return, 0xC3 )
 
 //-----------------------------------------------
 
-// Get first argument from stack 
-// movss xmm15, dword [esp + 8]
+// Get first argument from stack to xmm15
+// movss xmm15, dword [rsp + 8]
 
-DEF_INSTR(First_arg_to_xmm15, 0xF3, 0x44, 0x0F, 0x10, 0x7C, 0x24, 0x08 )
+DEF_INSTR(Movss_xmm15_dword_esp_plus_8, 0xF3, 0x44, 0x0F, 0x10, 0x7C, 0x24, 0x08 )
+
+//-----------------------------------------------
+
+// Get first argument from stack to xmm0
+// movss xmm0, dword [rsp + 8]
+
+DEF_INSTR(Movss_xmm0_dword_rsp_plus_8, 0xF3, 0x0F, 0x10, 0x44, 0x24, 0x08)
+
+//-----------------------------------------------
+
+// subss xmm0, dword[rsp]
+
+DEF_INSTR(Subss_xmm0_dword_rsp, 0xF3, 0x0F, 0x5C, 0x04, 0x24)
 
 //-----------------------------------------------
 
 // Add with second arg from stack
 // addss xmm15, dword [rsp]
 
-DEF_INSTR(Addss_xmm15_stack, 0xF3, 0x44, 0x0F, 0x58, 0x3C, 0x24 )
+DEF_INSTR(Addss_xmm15_dword_rsp, 0xF3, 0x44, 0x0F, 0x58, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
 // Sub with second arg from stack
 // subss xmm15, dword [rsp]
 
-DEF_INSTR(Subss_xmm15_stack, 0xF3, 0x44, 0x0F, 0x5C, 0x3C, 0x24 )
+DEF_INSTR(Subss_xmm15_dword_rsp, 0xF3, 0x44, 0x0F, 0x5C, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
 // Mul with second arg from stack
 // mulss xmm15, dword [rsp]
 
-DEF_INSTR(Mulss_xmm15_stack, 0xF3, 0x44, 0x0F, 0x59, 0x3C, 0x24 )
+DEF_INSTR(Mulss_xmm15_dword_rsp, 0xF3, 0x44, 0x0F, 0x59, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
 // Div with second arg from stack
 // divss xmm15, dword [rsp]
 
-DEF_INSTR(Divss_xmm15_stack, 0xF3, 0x44, 0x0F, 0x5E, 0x3C, 0x24 )
+DEF_INSTR(Divss_xmm15_dword_rsp, 0xF3, 0x44, 0x0F, 0x5E, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
@@ -131,21 +144,11 @@ DEF_INSTR(Push_dword_xmm0, 0x48, 0x83, 0xEC, 0x08, \
 
 //-----------------------------------------------
 
-// push dword xmm13 to stack
-
-// sub rsp, 8
-// movss dword[rsp], xmm13
-
-DEF_INSTR(Push_dword_xmm13, 0x48, 0x83, 0xEC, 0x08, \
-                            0xF3, 0x44, 0x0F, 0x11, 0x2C, 0x24 )
-
-//-----------------------------------------------
-
 // Mov dword xmm15 to [rsp]
 
 // movss dword[rsp], xmm15
 
-DEF_INSTR(Mov_dword_xmm15_to_rsp, 0xF3, 0x44, 0x0F, 0x11, 0x3C, 0x24 )
+DEF_INSTR(Mov_dword_rsp_xmm15, 0xF3, 0x44, 0x0F, 0x11, 0x3C, 0x24 )
 
 //-----------------------------------------------
 
@@ -164,7 +167,7 @@ DEF_INSTR(Pop_dword_xmm0, 0xF3, 0x0F, 0x10, 0x04, 0x24, \
 
 // movss xmm1, [0]
 
-DEF_INSTR(Mov_xmm1_mem, 0xF3, 0x0F, 0x10, 0x0C, 0x25\
+DEF_INSTR(Mov_xmm1_mem, 0xF3, 0x0F, 0x10, 0x0C, 0x25, \
                         0x00, 0x00, 0x00, 0x00)
 
 //-----------------------------------------------
@@ -174,14 +177,22 @@ DEF_INSTR(Mov_xmm1_mem, 0xF3, 0x0F, 0x10, 0x0C, 0x25\
 
 // movss xmm13, [0]
 
-DEF_INSTR(Mov_xmm13_mem, 0xF3, 0x44, 0x0F, 0x10, 0x2C, 0x25 )
+DEF_INSTR(Mov_xmm13_mem, 0xF3, 0x44, 0x0F, 0x10, 0x2C, 0x25,
+                         0x00, 0x00, 0x00, 0x00)
 
 //-----------------------------------------------
 
 // Compare xmm0, xmm1
 // comiss xmm0, xmm1
 
-DEF_INSTR(Cmp_xmm0_xmm1, 0x0F, 0x2F, 0xC1 )
+DEF_INSTR(Comiss_xmm0_xmm1, 0x0F, 0x2F, 0xC1 )
+
+//-----------------------------------------------
+
+// Compare xmm0 with second arg dword [rsp + 8]
+// comiss xmm0, dword [rsp + 8]
+
+DEF_INSTR(Comiss_xmm0_dword_rsp_plus_8, 0x0F, 0x2F, 0x44, 0x24, 0x08)
 
 //-----------------------------------------------
 
@@ -298,3 +309,96 @@ DEF_INSTR(Pop_parameter_xmms, 0xF3, 0x0F, 0x10, 0x04, 0x24, \
                               0xF3, 0x0F, 0x10, 0x74, 0x24, 0x30, \
                               0xF3, 0x0F, 0x10, 0x7C, 0x24, 0x38,
                               0x48, 0x83, 0xC4, 0x40 )
+
+//-----------------------------------------------
+
+// movd r15d, xmm0
+
+DEF_INSTR(Movd_r15d_xmm0, 0x66, 0x41, 0x0F, 0x7E, 0xC7)
+
+//-----------------------------------------------
+
+// movd r14d, xmm1
+
+DEF_INSTR(Movd_r14d_xmm1, 0x66, 0x41, 0x0F, 0x7E, 0xCE)
+
+//-----------------------------------------------
+
+// movd r13d, r13
+
+DEF_INSTR(Movd_r13d_xmm13, 0x66, 0x45, 0x0F, 0x7E, 0xED)
+
+//-----------------------------------------------
+
+// Push dword xmm13 
+
+// sub rsp, 8
+// movss dword [rsp],  xmm13
+
+DEF_INSTR(Push_dword_xmm13, 0x48, 0x83, 0xEC, 0x08, \
+                            0xF3, 0x44, 0x0F, 0x11, 0x2C, 0x24 )
+
+//-----------------------------------------------
+
+// movd xmm0, r15d
+
+DEF_INSTR(Movd_xmm0_r15d, 0x66, 0x41, 0x0F, 0x6E, 0xC7)
+
+//-----------------------------------------------
+
+// movd xmm1, r14d
+
+DEF_INSTR(Movd_xmm1_r14d, 0x66, 0x41, 0x0F, 0x6E, 0xCE)
+
+//-----------------------------------------------
+
+// movd xmm13, r13d
+
+DEF_INSTR(Movd_xmm13, r13d, 0x66, 0x41, 0x0F, 0x6E, 0xED)
+
+//-----------------------------------------------
+
+// (short) jmp 0x00
+// WARNING: this instruction must be patched!
+
+DEF_INSTR(Short_jmp_N, 0xE8, 0x00)
+
+//-----------------------------------------------
+
+// (near) jmp 0x00000000 (relative to next instruction)
+// WARNING: this instruction must be patched!
+
+DEF_INSTR(Near_rel_jmp_N, 0xE9, 0x00, 0x00, 0x00, 0x00)
+
+//------------------------------------------------
+
+// (near) jmp [0x00000000] 
+// WARNING: this instruction must be patched!
+
+DEF_INSTR(Near_abs_jmp_ADDR, 0xFF, 0x24, 0x24, \
+                             0x00, 0x00, 0x00, 0x00)
+
+//-----------------------------------------------
+
+// Convert xmm(i) float value to int value in r13d
+// WARNING: need to be patched
+// PATCH INSTR: 
+
+    // DEF_INSTR->array[1] = (i > 7)? 0x45: 0x44
+    // DEF_INSTR->array[4] = 0xE8 + ( (i > 7)? (i - 8): i ) 
+
+DEF_INSTR(Cvtss2si_r13d_xmmi, 0xF3, 0x00, 0x0F, 0x2D, 0x00)
+
+//-----------------------------------------------
+
+// Push in stack qword from [0xAddress + r13d]
+// WARNING: need to be patched
+
+// push qword [0xAddress + r13d]
+
+DEF_INSTR(Push_qword_addr_plus_r13d, 0x67, 0x41, 0xFF, 0xB5, \
+                                     0x00, 0x00, 0x00, 0x00)
+
+//-----------------------------------------------
+
+// Push to stack xmm(i) 
