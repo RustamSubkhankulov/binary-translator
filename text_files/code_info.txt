@@ -283,17 +283,13 @@ memory - array of float-point values
 
 	- imm + ram
 
-    movd r13d, xmm13
-
 		// get index in ram
 		// store index in r13d
 
-		movss xmm13, dword [rsp]
-		add rsp, 8
-
-		movss dword [Start_addr + r13d], xmm13
-
-    movd xmm13, r13d		
+		pop r14
+    mov r13d, index
+		movss dword [Start_addr + r13d], r14d
+	
 
 	- imm
 
@@ -301,21 +297,17 @@ memory - array of float-point values
 
 	- imm + reg + ram
 
-    movd r13d, xmm13
-
 		// get index from binary
 		// store it in r15d
 
 		// get reg ( xmm0 for example)
 
-    cvtss2si r14d, xmm0
+    mov r15d, index
+    cvtss2si r13d, xmm0
+    pop r14
 
-		movss xmm13, dword[rsp]
-		add rsp, 8
+		movss dword [Start_addr + r13d + r15d], r14d
 
-		movss dword [Start_addr + r14d + r15d], xmm13
-
-    movd xmm13, r13d
 
 //-----------------------------------------------
 

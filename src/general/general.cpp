@@ -102,6 +102,8 @@ int _close_file(FILE* file_ptr FOR_LOGS(, LOG_PARAMS)) {
 
 int _fast_cpy(void* dest, void* src, unsigned int size FOR_LOGS(, LOG_PARAMS))
 {
+    general_log_report();
+
     assert(dest);
     assert(src);
 

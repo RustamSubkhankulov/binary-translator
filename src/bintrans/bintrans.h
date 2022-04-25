@@ -75,6 +75,26 @@ struct Trans_entity
 
 //===============================================
 
+struct Input
+{
+    unsigned char* buffer;
+    unsigned int   pos;
+    unsigned int   size;
+};
+
+//===============================================
+
+struct Result
+{
+    unsigned char* buffer;
+    unsigned int   size;
+    uint64_t       address;
+
+    unsigned int   cur_pos;
+}
+
+//===============================================
+
 struct Trans_struct
 {
     struct List* entities;
@@ -282,8 +302,6 @@ int _trans_struct_ctor     (Trans_struct* trans_struct, Binary_input* binary_inp
 int _binary_header_check   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _binary_translate      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
-
-int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _binary_execute        (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
