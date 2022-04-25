@@ -40,6 +40,7 @@ in aims above make jumps and calls only relative
 
 12. remove rsp from possible registers for using
 
+993. check what instructions are faster ( push/ pop xmm(i) using R(i)X)
 994. table with current values of registers
 995. list visiter
 996. list search ( gets function for comparing)
