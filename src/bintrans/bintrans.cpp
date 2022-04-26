@@ -1120,6 +1120,19 @@ int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
+    // push xmm0 - xmm7 to stack
+    INIT_ENTITY(trans_struct, Push_parameter_xmms);
+
+    // movss xmm0, dword[rsp]; add rsp, 8;
+    INIT_ENTITY(trans_struct, Pop_dword_xmm0);
+    INIT_ENTITY(trans_struct, Rel_call);
+    // needs to be patched
+
+    // rpop xmm0 - xmm7
+    INIT_ENTITY(trans_struct, Pop_parameter_xmms);
+
+    trans_struct->input.pos += 1;
+
     return 0;
 }
 
@@ -1129,6 +1142,20 @@ int _trans_in     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
+
+    // push xmm0 - xmm7
+    INIT_ENTITY(trans_struct, Push_parameter_xmms);
+
+    INIT_ENTITY(trans_struct, Rel_call);
+    // needs to be patched
+
+    // sub rsp, 8; movss dword [rsp], xmm0
+    INIT_ENTITY(trans_struct, Push_dword_xmm0);
+    
+    // pop xmm0 - xmm7
+    INIT_ENTITY(trans_struct, Pop_parameter_xmms);
+
+    trans_struct->input.pos += 1;
 
     return 0;
 }
@@ -1150,6 +1177,32 @@ int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
+    // save xmm0, xmm1 values 
+    INIT_ENTITY(trans_struct, Movd_r15d_xmm0);
+    INIT_ENTITY(trans_struct, Movd_r14d_xmm1);
+
+    // xmm0 = base; xmm1 = exp;
+    INIT_ENTITY(trans_struct, Movss_xmm0_dword_rsp_plus_8);
+    INIT_ENTITY(trans_struct, Movss_xmm1_dword_rsp);
+
+    INIT_ENTITY(trans_struct, Add_rsp_16);
+
+    // push xmm0 - xmm7
+    INIT_ENTITY(trans_struct, Push_argument_xmms);
+
+    INIT_ENTITY(trans_struct, Rel_call);
+    // needs to be patched
+    INIT_ENTITY(trans_struct, Push_dword_xmm0);
+
+    // pop xmm0 - xmm7
+    INIT_ENTITY(trans_struct, Pop_argument_xmms);
+
+    // restore 
+    INIT_ENTITY(trans_struct, Movd_xmm0_r15d);
+    INIT_ENTITY(trans_struct, Movd_xmm1_r14d);
+
+    trans_struct->input.pos += 1;
+
     return 0;
 }
 
@@ -1160,6 +1213,54 @@ int _trans_eq     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
+    // Save xmm0, xmm1, xmm13 values
+    INIT_ENTITY(trans_struct, Movd_r15d_xmm0);
+    INIT_ENTITY(trans_struct, Movd_r14d_xmm1);
+    INIT_ENTITY(trans_struct, Movd_r13d_xmm13);
+
+    // Get first arg in xmm0
+    INIT_ENTITY(trans_struct, Movss_xmm0_dword_rsp_plus_8);
+    // Sub second from first
+    INIT_ENTITY(trans_struct, Subss_xmm0_dword_rsp);
+
+    INIT_ENTITY(trans_struct, Add_rsp_16);
+
+    // push xmm1 - xmm7
+    INIT_ENTITY(trans_struct, Push_xmms_1_7);
+
+    INIT_ENTITY(trans_struct, Rel_call);
+    // needs to be patched
+
+    // pop xmm1 -xmm7
+    INIT_ENTITY(trans_struct, Pop_xmms_1_7);
+
+    INIT_ENTITY(trans_struct, Null_xmm13);
+
+    INIT_ENTITY(trans_struct, Movss_xmm1_ADDR);
+    // needs to be patched
+
+    INIT_ENTITY(trans_struct, Comiss_xmm0_xmm1);
+
+    INIT_ENTITY(trans_struct, Jae_ahead_N);
+
+    unsigned int patch_byte = 0x0A;
+    unsigned int patch_pos  = 1;
+    unsigned int patch_size = 1;
+
+    PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+    INIT_ENTITY(trans_struct, Movss_xmm13_ADDR);
+    // needs to be patched
+
+    INIT_ENTITY(trans_struct, Push_dword_xmm13);
+
+    // Save xmm0, xmm1, xmm13 values
+    INIT_ENTITY(trans_struct, Movd_xmm0_r15d);
+    INIT_ENTITY(trans_struct, Movd_xmm1_r14d);
+    INIT_ENTITY(trans_struct, Movd_xmm13_r13d);
+
+    trans_struct->input.pos += 1;
+
     return 0;
 }
 
@@ -1169,6 +1270,37 @@ int _trans_mr     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
+
+    // Save xmm0, xmm13 values
+    INIT_ENTITY(trans_struct, Movd_r15d_xmm0);
+    INIT_ENTITY(trans_struct, Movd_r13d_xmm13);
+
+    // Get first arg in xmm0
+    INIT_ENTITY(trans_struct, Movss_xmm0_dword_rsp_plus_8);
+    INIT_ENTITY(trans_struct, Comiss_xmm0_dword_rsp_plus_8);
+
+    INIT_ENTITY(trans_struct, Add_rsp_16);
+
+    INIT_ENTITY(trans_struct, Null_xmm13);
+
+    INIT_ENTITY(trans_struct, Jbe_ahead_N);
+
+    unsigned int patch_byte = 0x0A;
+    unsigned int patch_pos  = 1;
+    unsigned int patch_size = 1;
+
+    PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+    INIT_ENTITY(trans_struct, Movss_xmm13_ADDR);
+    // needs to be patched
+
+    INIT_ENTITY(trans_struct, Push_dword_xmm13);
+
+    // Save xmm0, xmm1, xmm13 values
+    INIT_ENTITY(trans_struct, Movd_xmm0_r15d);
+    INIT_ENTITY(trans_struct, Movd_xmm13_r13d);
+
+    trans_struct->input.pos += 1;
 
     return 0;
 }

@@ -70,11 +70,11 @@ after : movd xmm15, r15d
 
 6) IN -> 	
 
-      save xmm regs 1-7
+      save xmm regs 0-7
 
 			call in functions
 
-      restore xmm regs 1-7
+      restore xmm regs 0-7
 
 			sub rsp, 8
 			movss dword [rsp], xmm0
@@ -84,11 +84,11 @@ after : movd xmm15, r15d
 			movss xmm0, dword [rsp]
 			add rsp, 8
 
-			save regs 1-7
+			save regs 0-7
 
 			call out function
 
-      restore regs 1-7
+      restore regs 0-7
 
 8) RET -> 	ret 
 
@@ -132,6 +132,8 @@ after : movd xmm15, r15d
 
 			  movss xmm0, dword [rsp]		    
 		    comiss xmm0, dword [rsp + 8]
+
+            add rsp, 16
 
 		    jbe .skip
 		    movss xmm13, dword [One]
@@ -182,6 +184,11 @@ My virtual binary code for instructions:
  	ASIN - 21	     	
  	ATG  - 22	        
  	DRAW - 23	        
+
+    first  = exp
+    second = base
+
+    POW -> 
 
 //-----------------------------------------------
 
