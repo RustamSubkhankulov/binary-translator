@@ -777,7 +777,148 @@ int _trans_hlt    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-int _init_and_patch_cvtss2si()
+int _init_and_patch_cvtss2si(Trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned char reg_number = get_unsigned_char_from_input(trans_struct);
+
+    INIT_ENTITY(trans_struct, Cvtss2si_r13d_xmmi);
+
+    unsigned char patch_byte = (reg_number > 7)? 0x45: 0x44;
+    unsigned int  patch_pos  = 1;
+    unsigned int  patch_size = 1;
+
+    PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+    patch_byte = 0xE8 + ( (reg_number > 7)? reg_number - 8: reg_number);
+    patch_pos  = 4;
+    patch_size = 1;
+
+    PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _init_and_patch_push_xmmi(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned char reg_number = get_unsigned_char_from_input(trans_struct); 
+
+    if (reg_number > 7)
+        INIT_ENTITY(trans_struct, Push_xmmi_h)
+    else
+        INIT_ENTITY(trans_struct, Push_xmmi_l);
+
+    unsigned char patch_byte = 0x04 + 0x08 * ( (reg_number > 7)? reg_number - 8 : reg_number);
+    unsigned int  patch_pos  = (reg_number > 7)? 8: 7;
+    unsigned int  patch_size = 1;
+
+    PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _init_and_patch_pop_xmmi(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned char reg_number = get_unsigned_char_from_input(trans_struct);
+
+    if (reg_number > 7)
+        INIT_ENTITY(trans_struct, Pop_xmmi_h)
+    else
+        INIT_ENTITY(trans_struct, Pop_xmmi_l);
+
+    unsigned char patch_byte = 0x04 + 0x08 * ( (reg_number > 7)? reg_number - 8 : reg_number);
+    unsigned int  patch_pos  = (reg_number > 7)? 4: 3;
+    unsigned int  patch_size = 1;
+
+    PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _init_and_patch_mov_r13d_0(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned int ram_index = (unsigned int) get_float_from_input(trans_struct);
+
+    INIT_ENTITY(trans_struct, Mov_r13d_0);
+
+    unsigned char* patch_data = (unsigned char*)&ram_index;
+    unsigned int   patch_pos  = 2;
+    unsigned int   patch_size = 4;
+
+    PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, patch_data);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+unsigned char _get_unsigned_char_from_input(Trans_sturct* trans_struct
+                                               FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned char value = 0;
+
+    value = * (trans_struct->input.buffer
+            +  trans_struct->input.pos);
+
+    trans_struct->input.pos += 1;
+
+    return value;
+}
+
+//-----------------------------------------------
+
+float _get_float_from_input(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    float value = 0;
+
+    value = * (float*) (trans_struct->input.buffer
+                     +  trans_struct->input.pos); 
+
+    trans_struct->input.pos += sizeof(float);
+
+    return value;
+}
+
+//-----------------------------------------------
+
+unsigned int _get_unsigned_int_from_input(Trans_struct* trans_struct 
+                                             FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned int value = 0;
+
+    value = * (unsigned int*) (trans_struct->input.buffer
+                            +  trans_struct->input.pos); 
+
+    trans_struct->input.pos += sizeof(unsigned int);
+
+    return value;
+}
 
 //-----------------------------------------------
 
@@ -786,33 +927,14 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    unsigned char oper_code = * (trans_struct->input.buffer 
-                              +  trans_struct->input.pos);
-
-    trans_struct->input.pos += 1;
+    unsigned char oper_code = get_unsigned_char_from_input(trans_struct);
 
     switch (oper_code & ~ OPER_CODE_MASK)
     {
         case REGISTER_MASK | RAM_MASK:
         {
-            unsigned char reg_number = * (trans_struct->input.buffer
-                                       +  trans_struct->input.pos);
-            
-            trans_struct->input.pos += 1; 
-
-            INIT_ENTITY(trans_struct, Cvtss2si_r13d_xmmi);
-
-            unsigned char patch_byte = (reg_number > 7)? 0x45: 0x44;
-            unsigned int  patch_pos  = 1;
-            unsigned int  patch_size = 1;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
-
-            patch_byte = 0xE8 + ( (reg_number > 7)? reg_number - 8: reg_number);
-            patch_pos  = 4;
-            patch_size = 1;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+            int ret_val = init_and_patch_cvtss2si(trans_struct);
+            if (ret_val == -1) return -1;
 
             INIT_ENTITY(trans_struct, Push_qword_r13d_plus_ADDR);
             // needs to be patched
@@ -822,39 +944,16 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         case REGISTER_MASK:
         {
-            unsigned char reg_number = * (trans_struct->input.buffer
-                                       +  trans_struct->input.pos);
-            
-            trans_struct->input.pos += 1; 
-
-            if (reg_number > 7)
-                INIT_ENTITY(trans_struct, Push_xmmi_h)
-            else
-                INIT_ENTITY(trans_struct, Push_xmmi_l);
-
-            unsigned char patch_byte = 0x04 + 0x08 * ( (reg_number > 7)? reg_number - 8 : reg_number);
-            unsigned int  patch_pos  = (reg_number > 7)? 8: 7;
-            unsigned int  patch_size = 1;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+            int ret_val = init_and_patch_push_xmmi(trans_struct);
+            if (ret_val == -1) return -1;
 
             break;
         }
 
         case IMM_MASK | RAM_MASK:
         {
-            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer
-                                                             +  trans_struct->input.pos); 
-
-            trans_struct->input.pos += sizeof(float);
-
-            INIT_ENTITY(trans_struct, Mov_r13d_0);
-
-            unsigned char* patch_data = (unsigned char*)&ram_index;
-            unsigned int   patch_pos  = 2;
-            unsigned int   patch_size = 4;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, patch_data);
+            int ret_val = init_and_patch_mov_r13d_0(trans_struct);
+            if (ret_val == -1) return -1;
 
             INIT_ENTITY(trans_struct, Push_qword_r13d_plus_ADDR);
             // needs to be patched
@@ -864,10 +963,7 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         case IMM_MASK:
         {
-            unsigned int imm_value  = (unsigned int) * (float*) (trans_struct->input.buffer
-                                                             +  trans_struct->input.pos); 
-
-            trans_struct->input.pos += sizeof(float);
+            unsigned int imm_value = (unsigned int) get_float_from_input(trans_struct);
 
             INIT_ENTITY(trans_struct, Push_qword_ADDR);
             //needs to be patched
@@ -877,29 +973,10 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         case IMM_MASK | REGISTER_MASK | RAM_MASK:
         {
-            unsigned char reg_number = * (trans_struct->input.buffer
-                                       +  trans_struct->input.pos);
-            
-            trans_struct->input.pos += 1; 
+            int ret_val = init_and_patch_cvtss2si(trans_struct);
+            if (ret_val == -1) return -1;
 
-            INIT_ENTITY(trans_struct, Cvtss2si_r13d_xmmi);
-
-            unsigned char patch_byte = (reg_number > 7)? 0x45: 0x44;
-            unsigned int  patch_pos  = 1;
-            unsigned int  patch_size = 1;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
-
-            patch_byte = 0xE8 + ( (reg_number > 7)? reg_number - 8: reg_number);
-            patch_pos  = 4;
-            patch_size = 1;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
-
-            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer
-                                                             +  trans_struct->input.pos); 
-
-            trans_struct->input.pos += sizeof(float);
+            unsigned int ram_index = (unsigned int) get_float_from_input(trans_struct);
 
             INIT_ENTITY(trans_struct, Mov_r14d_0);
 
@@ -932,33 +1009,14 @@ int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    unsigned char oper_code = * (trans_struct->input.buffer
-                              +  trans_struct->input.pos);
-
-    trans_struct->input.pos += 1;
+    unsigned char oper_code = get_unsigned_char_from_input(trans_struct);
 
     switch (oper_code & ~ OPER_CODE_MASK)
     {
         case REGISTER_MASK | RAM_MASK:
         {
-            unsigned char reg_number = * (trans_struct->input.buffer
-                                       +  trans_struct->input.pos);
-            
-            trans_struct->input.pos += 1; 
-
-            INIT_ENTITY(trans_struct, Cvtss2si_r13d_xmmi);
-
-            unsigned char patch_byte = (reg_number > 7)? 0x45: 0x44;
-            unsigned int  patch_pos  = 1;
-            unsigned int  patch_size = 1;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
-
-            patch_byte = 0xE8 + ( (reg_number > 7)? reg_number - 8: reg_number);
-            patch_pos  = 4;
-            patch_size = 1;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+            int ret_val = init_and_patch_cvtss2si(trans_sturct);
+            if (ret_val == -1) return -1;
 
             INIT_ENTITY(trans_struct, Pop_r14);
 
@@ -970,39 +1028,16 @@ int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
         case REGISTER_MASK:
         {
-            unsigned char reg_number = * (trans_struct->input.buffer
-                                       +  trans_struct->input.pos);
-            
-            trans_struct->input.pos += 1; 
-
-            if (reg_number > 7)
-                INIT_ENTITY(trans_struct, Pop_xmmi_h)
-            else
-                INIT_ENTITY(trans_struct, Pop_xmmi_l);
-
-            unsigned char patch_byte = 0x04 + 0x08 * ( (reg_number > 7)? reg_number - 8 : reg_number);
-            unsigned int  patch_pos  = (reg_number > 7)? 4: 3;
-            unsigned int  patch_size = 1;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+            int ret_val = init_and_patch_pop_xmmi(trans_struct);
+            if (ret_val == -1) return -1;
 
             break;            
         }
 
         case IMM_MASK | RAM_MASK:
         {
-            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer
-                                                             +  trans_struct->input.pos); 
-
-            trans_struct->input.pos += sizeof(float);
-
-            INIT_ENTITY(trans_struct, Mov_r13d_0);
-
-            unsigned char* patch_data = (unsigned char*)&ram_index;
-            unsigned int   patch_pos  = 2;
-            unsigned int   patch_size = 4;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, patch_data);
+            int ret_val = init_and_patch_mov_r13d_0(trans_struct);
+            if (ret_val == -1) return -1;
 
             INIT_ENTITY(trans_struct, Pop_r14);
 
@@ -1015,29 +1050,10 @@ int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         case IMM_MASK | REGISTER_MASK | RAM_MASK:
         {
 
-            unsigned char reg_number = * (trans_struct->input.buffer
-                                       +  trans_struct->input.pos);
-            
-            trans_struct->input.pos += 1; 
+            int ret_val = init_and_patch_cvtss2si(trans_struct);
+            if (ret_val == -1) return -1;
 
-            INIT_ENTITY(trans_struct, Cvtss2si_r13d_xmmi);
-
-            unsigned char patch_byte = (reg_number > 7)? 0x45: 0x44;
-            unsigned int  patch_pos  = 1;
-            unsigned int  patch_size = 1;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
-
-            patch_byte = 0xE8 + ( (reg_number > 7)? reg_number - 8: reg_number);
-            patch_pos  = 4;
-            patch_size = 1;
-
-            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
-
-            unsigned int ram_index = (unsigned int) * (float*) (trans_struct->input.buffer
-                                                             +  trans_struct->input.pos); 
-
-            trans_struct->input.pos += sizeof(float);
+            unsigned int ram_index = (unsigned int) get_float_from_input(trans_struct);
 
             INIT_ENTITY(trans_struct, Mov_r15d_0);
 
@@ -1160,6 +1176,20 @@ int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
+int _patch_cond_jump(Trans_struct* trans_struct, 
+                     unsigned char patch_byte FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned int patch_size = 1;
+    unsigned int patch_pos  = 1;
+
+    PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+
+    return 0;
+}
+
 //-----------------------------------------------
 
 int _trans_eq     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
@@ -1196,12 +1226,7 @@ int _trans_eq     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Comiss_xmm0_xmm1);
 
     INIT_ENTITY(trans_struct, Jae_ahead_N);
-
-    unsigned char patch_byte = 0x0A;
-    unsigned int  patch_pos  = 1;
-    unsigned int  patch_size = 1;
-
-    PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+    patch_cond_jump(trans_struct, 0x0A);
 
     INIT_ENTITY(trans_struct, Movss_xmm13_ADDR);
     // needs to be patched
@@ -1238,21 +1263,15 @@ int _trans_mr     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Null_xmm13);
 
     INIT_ENTITY(trans_struct, Jbe_ahead_N);
-
-    unsigned char patch_byte = 0x0A;
-    unsigned int  patch_pos  = 1;
-    unsigned int  patch_size = 1;
-
-    PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
+    patch_cond_jump(trans_struct, 0x0A);
 
     INIT_ENTITY(trans_struct, Movss_xmm13_ADDR);
     // needs to be patched
 
     INIT_ENTITY(trans_struct, Push_dword_xmm13);
 
-    // Save xmm0, xmm1, xmm13 values
-    INIT_ENTITY(trans_struct, Movd_xmm0_r15d);
-    INIT_ENTITY(trans_struct, Movd_xmm13_r13d);
+    // Save xmm0, xmm13 values
+    INIT_SAVE_XMM_0_13(trans_struct);
 
     trans_struct->input.pos += 1;
 

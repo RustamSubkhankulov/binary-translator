@@ -98,6 +98,33 @@
                                                             \
     } while (0);
 
+//-----------------------------------------------
+
+#define INIT_SAVE_XMM_0_1_13(trans_struct)                  \
+                                                            \
+    INIT_ENTITY(trans_struct, Movd_r15d_xmm0);              \
+    INIT_ENTITY(trans_struct, Movd_r14d_xmm1);              \
+    INIT_ENTITY(trans_struct, Movd_r13d_xmm13);          
+
+
+#define INIT_RESTORE_XMM_0_1_13(trans_struct)               \
+                                                            \
+    INIT_ENTITY(trans_struct, Movd_xmm0_r15d);              \
+    INIT_ENTITY(trans_struct, Movd_xmm1_r14d);              \
+    INIT_ENTITY(trans_struct, Movd_xmm13_r13d);         
+
+//-----------------------------------------------
+
+#define INIT_SAVE_XMM_0_13(trans_struct)                    \
+                                                            \
+    INIT_ENTITY(trans_struct, Movd_r15d_xmm0);              \
+    INIT_ENTITY(trans_struct, Movd_r13d_xmm13);     
+
+#define INIT_RESTORE_XMM_0_13(trans_struct)                 \
+                                                            \
+    INIT_ENTITY(trans_struct, Movd_xmm0_r15d);              \
+    INIT_ENTITY(trans_struct, Movd_xmm13_r13d);
+
 //===============================================
 
 struct Binary_input 
@@ -242,6 +269,26 @@ int _trans_je     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 int _trans_jne    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _trans_call   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _patch_cond_jump(Trans_struct* trans_struct, 
+                     unsigned char patch_byte FOR_LOGS(, LOG_PARAMS));
+
+unsigned int _get_unsigned_int_from_input(Trans_struct* trans_struct 
+                                             FOR_LOGS(, LOG_PARAMS))
+
+unsigned char _get_unsigned_char_from_input(Trans_struct* trans_struct 
+                                               FOR_LOGS(, LOG_PARAMS))
+
+//-----------------------------------------------
+
+#define get_unsigned_char_from_input(trans_struct) \
+       _get_unsigned_char_from_input(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define get_unsigned_int_from_input(trans_struct) \
+       _get_unsigned_int_from_input(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define patch_cond_jump(trans_struct, patch_byte) \
+       _patch_cond_jump(trans_struct, patch_byte FOR_LOGS(, LOG_ARGS))
 
 #define trans_arithm(trans_struct, oper_code) \
        _trans_arithm(trans_struct, oper_code FOR_LOGS(, LOG_ARGS))
