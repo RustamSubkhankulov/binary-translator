@@ -28,7 +28,7 @@ done 7,95. make stdlib for various functions
 done 7,958. make  заголовочки для вызовов функций 
 7,959. reduce amount of code 
 7,96. deal with constant and addresses 
-7,97. try to use trigonometric from math.h  directly
+cringe 7,97. try to use trigonometric from math.h  directly
 --(pushing constant values to xmm registets using regular regs)-- 
 8. make загатовочки for translating JUMPS as codegenerating 
 

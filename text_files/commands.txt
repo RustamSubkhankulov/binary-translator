@@ -6,25 +6,25 @@ DEF_CMD_(0, HLT, 0, 136272956,
 
 DEF_CMD_(0, ADD, 1, 4089307820,
 {
-    int ret_val = trans_add(trans_struct);
+    int ret_val = trans_arithm(trans_struct, ADD);
     if (ret_val == -1) return -1; 
 })
 
 DEF_CMD_(0, SUB, 2, 4160544333,
 {
-    int ret_val = trans_sub(trans_struct);
+    int ret_val = trans_arithm(trans_struct, SUB);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, MUL, 3, 4176901080, 
 {
-    int ret_val = trans_mul(trans_struct);
+    int ret_val = trans_arithm(trans_struct, MUL);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, DIV, 4, 98149758, 
 {
-    int ret_val = trans_div(trans_struct);
+    int ret_val = trans_arithm(trans_struct, DIV);
     if (ret_val == -1) return -1;
 })
 

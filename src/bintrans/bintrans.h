@@ -184,15 +184,10 @@ int _input_load_to_buffer  (Binary_input* binary_input FOR_LOGS(, LOG_PARAMS));
 
 //-----------------------------------------------
 
-int _trans_sub    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
-
-int _trans_add    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+int _trans_arithm (Trans_struct* trans_struct, 
+                   unsigned char oper_code FOR_LOGS(, LOG_PARAMS));
 
 int _trans_hlt    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
-
-int _trans_mul    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
-
-int _trans_div    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
@@ -248,21 +243,11 @@ int _trans_jne    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _trans_call   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
-
-#define trans_add(struct) \
-       _trans_add(struct FOR_LOGS(, LOG_ARGS)) 
-
-#define trans_sub(struct) \
-       _trans_sub(struct FOR_LOGS(, LOG_ARGS))
+#define trans_arithm(trans_struct, oper_code) \
+       _trans_arithm(trans_struct, oper_code FOR_LOGS(, LOG_ARGS))
 
 #define trans_hlt(struct) \
        _trans_hlt(struct FOR_LOGS(, LOG_ARGS))
-
-#define trans_mul(struct) \
-       _trans_mul(struct FOR_LOGS(, LOG_ARGS))
-
-#define trans_div(struct) \
-       _trans_div(struct FOR_LOGS(, LOG_ARGS))
 
 #define trans_push(struct) \
        _trans_push(struct FOR_LOGS(, LOG_ARGS))

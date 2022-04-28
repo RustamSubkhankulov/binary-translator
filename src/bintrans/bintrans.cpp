@@ -702,7 +702,8 @@ int _patch_entity(Trans_entity* trans_entity, unsigned int   patch_pos, unsigned
 
 //-----------------------------------------------
 
-int _trans_add(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+int _trans_arithm(Trans_struct* trans_struct, 
+                  unsigned char oper_code FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
@@ -712,37 +713,40 @@ int _trans_add(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     // Get first value
     INIT_ENTITY(trans_struct, Movss_xmm15_dword_rsp_plus_8);
-    // Add with second
-    INIT_ENTITY(trans_struct, Addss_xmm15_dword_rsp);
 
-    INIT_ENTITY(trans_struct, Add_rsp_8);
+    switch(oper_code)
+    {
+        case ADD:
+        {
+            INIT_ENTITY(trans_struct, Addss_xmm15_dword_rsp);
+            break;        
+        }
 
-    // Store result in stack
-    INIT_ENTITY(trans_struct, Movss_dword_rsp_xmm15);
+        case SUB:
+        {
+            INIT_ENTITY(trans_struct, Subss_xmm15_dword_rsp);
+            break;
+        }
 
-    // Restore xmm15 value
-    INIT_ENTITY(trans_struct, Movd_xmm15_r15d);
+        case MUL:
+        {
+            INIT_ENTITY(trans_struct, Mulss_xmm15_dword_rsp);
+            break;
+        }
 
-    trans_struct->input.pos += 1;
+        case DIV:
+        {
+            INIT_ENTITY(trans_struct, Divss_xmm15_dword_rsp);
+            break;
+        }
 
-    return 0;
-}
-
-//-----------------------------------------------
-
-int _trans_sub(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report();
-    assert(trans_struct);
-
-    // Save xmm15 value in r15d
-    INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
-
-    // Get first value
-    INIT_ENTITY(trans_struct, Movss_xmm15_dword_rsp_plus_8);
-    // Sub second
-    INIT_ENTITY(trans_struct, Subss_xmm15_dword_rsp);
-
+        default:
+        {
+            error_report(JIT_INV_OP_CODE);
+            return -1;
+        }
+    }
+    
     INIT_ENTITY(trans_struct, Add_rsp_8);
 
     // Store result in stack
@@ -773,59 +777,7 @@ int _trans_hlt    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-int _trans_mul    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report();
-    assert(trans_struct);
-
-    // Save xmm15 value in r15d
-    INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
-
-    // Get first value
-    INIT_ENTITY(trans_struct, Movss_xmm15_dword_rsp_plus_8);
-    // Mul with second
-    INIT_ENTITY(trans_struct, Mulss_xmm15_dword_rsp);
-
-    INIT_ENTITY(trans_struct, Add_rsp_8);
-
-    // Store result in stack
-    INIT_ENTITY(trans_struct, Movss_dword_rsp_xmm15);
-
-    // Restore xmm15 value
-    INIT_ENTITY(trans_struct, Movd_xmm15_r15d);
-
-    trans_struct->input.pos += 1;
-
-    return 0;
-}
-
-//-----------------------------------------------
-
-int _trans_div    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report();
-    assert(trans_struct);
-
-    // Save xmm15 value in r15d
-    INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
-
-    // Get first value
-    INIT_ENTITY(trans_struct, Movss_xmm15_dword_rsp_plus_8);
-    // Div by second
-    INIT_ENTITY(trans_struct, Divss_xmm15_dword_rsp);
-
-    INIT_ENTITY(trans_struct, Add_rsp_8);
-
-    // Store result in stack
-    INIT_ENTITY(trans_struct, Movss_dword_rsp_xmm15);
-
-    // Restore xmm15 value
-    INIT_ENTITY(trans_struct, Movd_xmm15_r15d);
-
-    trans_struct->input.pos += 1;
-
-    return 0;
-}
+int _init_and_patch_cvtss2si()
 
 //-----------------------------------------------
 
@@ -1188,14 +1140,14 @@ int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Add_rsp_16);
 
     // push xmm0 - xmm7
-    INIT_ENTITY(trans_struct, Push_argument_xmms);
+    INIT_ENTITY(trans_struct, Push_parameter_xmms);
 
     INIT_ENTITY(trans_struct, Rel_call);
     // needs to be patched
     INIT_ENTITY(trans_struct, Push_dword_xmm0);
 
     // pop xmm0 - xmm7
-    INIT_ENTITY(trans_struct, Pop_argument_xmms);
+    INIT_ENTITY(trans_struct, Pop_parameter_xmms);
 
     // restore 
     INIT_ENTITY(trans_struct, Movd_xmm0_r15d);
@@ -1205,6 +1157,8 @@ int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     return 0;
 }
+
+//-----------------------------------------------
 
 //-----------------------------------------------
 
@@ -1243,9 +1197,9 @@ int _trans_eq     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     INIT_ENTITY(trans_struct, Jae_ahead_N);
 
-    unsigned int patch_byte = 0x0A;
-    unsigned int patch_pos  = 1;
-    unsigned int patch_size = 1;
+    unsigned char patch_byte = 0x0A;
+    unsigned int  patch_pos  = 1;
+    unsigned int  patch_size = 1;
 
     PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
 
@@ -1285,9 +1239,9 @@ int _trans_mr     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     INIT_ENTITY(trans_struct, Jbe_ahead_N);
 
-    unsigned int patch_byte = 0x0A;
-    unsigned int patch_pos  = 1;
-    unsigned int patch_size = 1;
+    unsigned char patch_byte = 0x0A;
+    unsigned int  patch_pos  = 1;
+    unsigned int  patch_size = 1;
 
     PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, &patch_byte);
 
