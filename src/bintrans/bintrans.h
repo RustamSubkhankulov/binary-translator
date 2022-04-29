@@ -186,6 +186,52 @@ struct Result
 
 //===============================================
 
+enum Patch_types
+{
+    RAM_START_ADDR = 228,
+    CONST          = 229,
+    STD_FUNC       = 230,
+};
+
+//-----------------------------------------------
+
+union Info
+{
+    float        const_value;
+    int          std_func_code;
+    unsigned int entity_type;
+};
+
+//-----------------------------------------------
+
+struct Patch_instr
+{
+    int patch_type;
+
+    unsigned int res_buf_pos;
+
+    Trans_entity* entity;
+    Info info;
+};
+
+//-----------------------------------------------
+
+struct Patch
+{
+    unsigned int num;
+    unsigned int cap;
+
+    Patch_instr* instructions;
+
+    unsigned int  num_of_consts; 
+    unsigned int  counter_of_consts;
+
+    unsigned char ram_is_used;
+    float*        ram_buffer;
+};
+
+//===============================================
+
 struct Trans_struct
 {
     struct List* entities;
@@ -193,7 +239,12 @@ struct Trans_struct
     struct Input  input;
     struct Result result;
 
-    float reg_values[16];
+    struct Patch patch;
+
+    float* ram_buffer;
+    float* consts_buffer;
+
+    //float reg_values[16];
 
     #ifdef BINTRANS_LISTING
 
@@ -454,6 +505,10 @@ int _write_listing(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 int _listing_message(Trans_entity* trans_entity, unsigned int res_buf_pos, 
                                     FILE* listing FOR_LOGS(, LOG_PARAMS));
 
+int _consts_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _ram_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
 #ifdef BINTRANS_LISTING
 
     int _init_listing_file     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
@@ -463,6 +518,12 @@ int _listing_message(Trans_entity* trans_entity, unsigned int res_buf_pos,
 #endif 
 
 //===============================================
+
+#define ram_buffer_allocate(trans_struct) \
+       _ram_buffer_allocate(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define consts_buffer_allocate(trans_struct) \
+       _consts_buffer_allocate(trans_struct FOR_LOGS(, LOG_ARGS))
 
 #define count_call_buf_size(trans_struct) \
        _count_call_buf_size(trans_struct FOR_LOGS(, LOG_ARGS))

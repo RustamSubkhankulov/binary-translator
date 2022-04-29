@@ -5,6 +5,7 @@
 //===============================================
 
 #include "bintrans.h"
+#include "patch.h"
 #include "instr.h"
 #include "../general/general.h"
 #include "../../lang/proc/assembler/processor_general.h"
@@ -114,6 +115,9 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     trans_struct->input.pos += (unsigned int)sizeof(Header);
 
+    int ret_val = init_patch_struct(&trans_struct->patch);
+    if (ret_val == -1) return -1;
+
     INIT_ENTITY(trans_struct, Save_regs);
     INIT_ENTITY(trans_struct, Null_xmms);
 
@@ -123,7 +127,7 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Restore_regs);
     INIT_ENTITY(trans_struct, Return);
 
-    int ret_val = write_listing(trans_struct);
+    ret_val = write_listing(trans_struct);
     if (ret_val == -1) return -1;
 
     return 0;
@@ -613,6 +617,15 @@ int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     } while (cur_index != 0);
     
+    if (trans_struct->patch.ram_is_used)
+    {
+        free(trans_struct->ram_buffer);
+    }
+
+    if (trans_struct->patch.num_of_consts)
+    {
+        free(trans_struct->consts_buffer);
+    }
 
     int is_destr = list_dtor(list);
     if (is_destr == -1) return -1;
@@ -623,6 +636,53 @@ int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         if (ret_val == -1) return -1;
 
     #endif 
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _ram_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    if (!trans_struct->patch.ram_is_used)
+        return 0;
+
+    float* ram_buffer = (float*) aligned_alloc(sizeof(float),
+                                               sizeof(float) * Ram_size);
+    if (!ram_buffer)
+    {
+        error_report(CANNOT_ALLOCATE_MEM);
+        return -1;
+    }
+
+    trans_struct->ram_buffer       = ram_buffer;
+    trans_struct->patch.ram_buffer = ram_buffer;
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _consts_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    if (!trans_struct->patch.num_of_consts)
+        return 0;
+
+    float* consts_buffer = (float*) aligned_alloc(sizeof(float), 
+                                                  sizeof(float) * trans_struct->patch.num_of_consts);
+    if (!consts_buffer) 
+    {
+        error_report(CANNOT_ALLOCATE_MEM);
+        return -1;
+    }
+
+    trans_struct->consts_buffer = consts_buffer;
 
     return 0;
 }
@@ -1221,7 +1281,7 @@ int _trans_eq     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     INIT_ENTITY(trans_struct, Comiss_xmm0_xmm1);
 
-    INIT_ENTITY(trans_struct, Jae_ahead_N);
+    INIT_ENTITY(trans_struct, Jae_near_ahead_N);
     patch_short_cond_jump(trans_struct, 0x0A);
 
     INIT_ENTITY(trans_struct, Movss_xmm13_ADDR);
@@ -1255,7 +1315,7 @@ int _trans_mr     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     INIT_ENTITY(trans_struct, Null_xmm13);
 
-    INIT_ENTITY(trans_struct, Jbe_ahead_N);
+    INIT_ENTITY(trans_struct, Jbe_near_ahead_N);
     patch_short_cond_jump(trans_struct, 0x0A);
 
     INIT_ENTITY(trans_struct, Movss_xmm13_ADDR);

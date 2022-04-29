@@ -1,15 +1,8 @@
 #include <stdlib.h>
 
-//
-#include <tgmath.h>
-//
-
 #include "global_conf.h"
 #include "bintrans/bintrans.h"
-
-//
-#include "bintrans/standard.h"
-//
+#include "bintrans/patch.h"
 
 //===============================================
 
@@ -41,6 +34,9 @@ int main(int argc, char* argv[])
     // Main actions
 
     ret_val = binary_translate(&trans_struct);
+    if (ret_val == -1) return -1;
+
+    ret_val = binary_patch_instructions(&trans_struct);
     if (ret_val == -1) return -1;
 
     ret_val = binary_execute(&trans_struct);
