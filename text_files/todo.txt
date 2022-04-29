@@ -27,6 +27,7 @@ done 7,947. add name of entity in list_dump
 done 7,95. make stdlib for various functions  
 done 7,958. make  заголовочки для вызовов функций 
 done 7,959. reduce amount of code 
+7,9595. make enum fro std func and patching functions for each case
 7,96. deal with constant and addresses 
 cringe 7,97. try to use trigonometric from math.h  directly
 --(pushing constant values to xmm registets using regular regs)-- 
@@ -87,6 +88,6 @@ IDEAS:
 	---------------------------------------------
 	при втором проходе фиксировать момент когда встречаем dest jumpa
 	отдельный проход 
-	в конце еще один проход для патчинга
+	cв конце еще один проход для патчинга
 
 
