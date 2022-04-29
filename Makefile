@@ -1,6 +1,6 @@
 CC    = gcc 
 
-OBJ   = obj/main.o obj/logs.o obj/general.o obj/bintrans.o obj/list.o obj/standard.o obj/patch.o
+OBJ   = obj/main.o obj/logs.o obj/general.o obj/bintrans.o obj/list.o obj/standard.o obj/patch.o obj/trans.o
 
 FLAGS = 
 #-lubsan -D NDEBUG -g -std=c++14 -fmax-errors=1 				\
@@ -75,6 +75,13 @@ PATCH_DEP       = src/bintrans/patch.h				\
 				  src/bintrans/bintrans_conf.h		\
 				  src/bintrans/instr.h
 
+TRANS_DEP       = src/bintrans/trans.cpp			\
+				  src/bintrans/trans.h				\
+				  src/bintrans/instr.h				\
+				  src/bintrans/bintrans.h			\
+				  src/bintrans/bintrans.cpp			\
+				  src/bintrans/bintrans_conf.h
+
 #================================================
 
 all: global
@@ -106,6 +113,9 @@ obj/standard.o: $(GLOBAL_DEP) $(STANDARD_DEP)
 
 obj/patch.o:	$(GLOBAL_DEP) $(PATCH_DEP)
 	$(CC) src/bintrans/patch.cpp 		-c -o obj/patch.o 
+
+obj/trans.o:	$(GLOBAL_DEP) $(TRANS_DEP)
+	$(CC) src/bintrans/trans.cpp 		-c -o obj/trans.o
 
 #================================================
 
