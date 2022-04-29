@@ -795,3 +795,9 @@ Zero size of patch in _patch_entity function)
 
 DEF_ERR(1219, JIT_INV_PATCH_POS,
 Patch position is more than entity size)
+
+DEF_ERR(1220, JIT_INV_PATCH_TYPE,
+Invalid patch_type value)
+
+DEF_ERR(1222, INV_ENTITY_TYPE,
+Invalid entity type)

@@ -202,8 +202,8 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
 
 //-----------------------------------------------
 
-int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned char* data 
-                            FOR_LIST_DUMP(, const char* name_str) FOR_LOGS(, LOG_PARAMS))
+int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned char* data, int type 
+                                       FOR_LIST_DUMP(, const char* name_str) FOR_LOGS(, LOG_PARAMS))
  {
     bintrans_log_report(); 
     assert(trans_struct);
@@ -216,6 +216,8 @@ int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned c
         error_report(CANNOT_ALLOCATE_MEM);
         return -1;
     }
+
+    trans_entity->type = type;
 
     trans_entity->data = (unsigned char*) calloc(size, sizeof(unsigned char));
     if (!trans_entity->data)

@@ -71,6 +71,8 @@ struct Trans_entity
     unsigned char* data;
     unsigned int   size;
 
+    int type;
+
     #ifdef ENTITY_ADD_NAME_STR
 
         char* name_str;
@@ -113,9 +115,8 @@ enum Patch_types
 
 union Info
 {
-    float        const_value;
-    int          std_func_code;
-    unsigned int entity_type;
+    float const_value;
+    int   std_func_code;
 };
 
 //-----------------------------------------------
@@ -217,8 +218,8 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
 
 int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LOG_PARAMS));
 
-int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned char* data 
-                            FOR_LIST_DUMP(, const char* name_str) FOR_LOGS(, LOG_PARAMS));
+int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned char* data, int type
+                                      FOR_LIST_DUMP(, const char* name_str) FOR_LOGS(, LOG_PARAMS));
  
 int _patch_entity(Trans_entity* trans_entity, unsigned int   patch_pos, unsigned int  patch_size,
                                               unsigned char* patch_data FOR_LOGS(, LOG_PARAMS));
@@ -319,12 +320,12 @@ int _ram_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 #ifdef ENTITY_ADD_NAME_STR
 
-    #define init_entity(trans_struct, size, data, name_str) \
-           _init_entity(trans_struct, size, data, name_str FOR_LOGS(, LOG_ARGS))
+    #define init_entity(trans_struct, size, data, type, name_str) \
+           _init_entity(trans_struct, size, data, type, name_str FOR_LOGS(, LOG_ARGS))
 
 #else
 
-    #define init_entity(trans_struct, size, data) \
-           _init_entity(trans_struct, size, data FOR_LOGS(, LOG_ARGS))
+    #define init_entity(trans_struct, size, data, type) \
+           _init_entity(trans_struct, size, data, type FOR_LOGS(, LOG_ARGS))
 
 #endif 
