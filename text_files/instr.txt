@@ -74,6 +74,13 @@ DEF_INSTR(Movss_xmm0_dword_rsp_plus_8, 0xF3, 0x0F, 0x10, 0x44, 0x24, 0x08)
 
 //-----------------------------------------------
 
+// Get top value from stack in xmm0 for comapring 
+// movss xmm0, dword [rsp]
+
+DEF_INSTR(Movss_xmm0_dword_rsp, 0xF3, 0x0F, 0x10, 0x04, 0x24)
+
+//-----------------------------------------------
+
 // Get second argument from stack to xmm1
 // movss xmm1, dword [rsp]
 
@@ -215,39 +222,79 @@ DEF_INSTR(Comiss_xmm0_dword_rsp_plus_8, 0x0F, 0x2F, 0x44, 0x24, 0x08)
 
 //-----------------------------------------------
 
-// Conditional jump 'jbe' N bytes ahead from this instruction
-// jbe $ + N
+// Conditional (short) jump 'jbe' N bytes ahead from this instruction
+// jbe $ + N (short)
 
 // WARNING: Instruction must be patched
 
-DEF_INSTR(Jbe_ahead_N, 0x76, 0x00 )
+DEF_INSTR(Jbe_short_ahead_N, 0x76, 0x00 )
 
 //-----------------------------------------------
 
-// Conditional jump 'jb' N bytes ahead from this instruction
+// Conditional (near) jump 'jbe' N bytes ahead from this instruction
+// jbe $ + N (short)
+
+// WARNING: Instruction must be patched
+
+DEF_INSTR(Jbe_near_ahead_N, 0x0F, 0x86, \
+                            0x00, 0x00, 0x00, 0x00 )
+
+//-----------------------------------------------
+
+// Conditional (short) jump 'jb' N bytes ahead from this instruction
 // jb $ + N
 
 // WARNING: Instruction must be patched
 
-DEF_INSTR(Jb_ahead_N, 0x72, 0x00 )
+DEF_INSTR(Jb_short_ahead_N, 0x72, 0x00 )
 
 //-----------------------------------------------
 
-// Conditional jump 'ja' N bytes ahead from this instruction
+// Conditional (near) jump 'jb' N bytes ahead from this instruction
+// jb $ + N
+
+// WARNING: Instruction must be patched
+
+DEF_INSTR(Jb_near_ahead_N, 0x0F, 0x82, \
+                           0x00, 0x00, 0x00, 0x00 )
+
+//-----------------------------------------------
+
+// Conditional (short) jump 'ja' N bytes ahead from this instruction
 // ja $ + N
 
 // WARNING: Instruction must be patched
 
-DEF_INSTR(Ja_ahead_N, 0x77, 0x00 )
+DEF_INSTR(Ja_short_ahead_N, 0x77, 0x00 )
 
 //-----------------------------------------------
 
-// Conditional jump 'jae' N bytes ahead from this instruction
+// Conditional (near) jump 'ja' N bytes ahead from this instruction
+// ja $ + N
+
+// WARNING: Instruction must be patched
+
+DEF_INSTR(Ja_near_ahead_N, 0x0F, 0x87, \
+                           0x00, 0x00, 0x00, 0x00 )
+
+//-----------------------------------------------
+
+// Conditional (short) jump 'jae' N bytes ahead from this instruction
 // jae $ + N
 
 // WARNING: Instruction must be patched
 
-DEF_INSTR(Jae_ahead_N, 0x73, 0x00 )
+DEF_INSTR(Jae_short_ahead_N, 0x73, 0x00 )
+
+//-----------------------------------------------
+
+// Conditional (near) jump 'jae' N bytes ahead from this instruction
+// jae $ + N
+
+// WARNING: Instruction must be patched
+
+DEF_INSTR(Jae_short_ahead_N, 0x0F, 0x83, \
+                             0x00, 0x00, 0x00, 0x00 )
 
 //-----------------------------------------------
 
