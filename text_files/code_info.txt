@@ -223,7 +223,7 @@ memory - array of float-point values
 
 
     cvtss2si r13d, xmm0
-		push qword[Start_addr + r13d]
+		push qword[Start_addr + r13d * 4]
 
 
 	- reg
@@ -242,7 +242,7 @@ memory - array of float-point values
 		// get index in memory array ( for example 1)
 
     mov r13d, 1
-		push qword[Start_addr + r13d]
+		push qword[Start_addr + r13d * 4]
 
 	- imm
 
@@ -265,7 +265,7 @@ memory - array of float-point values
 
     cvtss2si r13d, xmm0
 
-		//store index in r14d
+		//store index * 4 in r14d
 
 		push qword[r13d + r14d + Start_addr]
 
@@ -278,7 +278,7 @@ memory - array of float-point values
 
     cvtss2si r13d, xmm0
     pop r14
-		mov dword [Start_addr + r13d], r14d
+		mov dword [Start_addr + r13d  * 4], r14d
 		
 
 	- reg
@@ -294,8 +294,8 @@ memory - array of float-point values
 		// store index in r13d
 
 		pop r14
-    mov r13d, index
-		mov dword [Start_addr + r13d], r14d
+        mov r13d, index
+		mov dword [Start_addr + r13d * 4], r14d
 	
 
 	- imm
@@ -309,11 +309,11 @@ memory - array of float-point values
 
 		// get reg ( xmm0 for example)
 
-    mov r15d, index
+    mov r15d, index * 4
     cvtss2si r13d, xmm0
     pop r14
 
-		movss dword [Start_addr + r13d + r15d], r14d
+		movss dword [Start_addr + r13d * 4 + r15d], r14d
 
 
 //-----------------------------------------------

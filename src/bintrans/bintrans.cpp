@@ -664,6 +664,8 @@ int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     int is_destr = list_dtor(list);
     if (is_destr == -1) return -1;
 
+    free(list);
+
     #ifdef BINTRANS_LISTING
 
         int ret_val = end_listing_file(trans_struct);
@@ -684,16 +686,34 @@ int _ram_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     if (!trans_struct->patch.ram_is_used)
         return 0;
 
-    float* ram_buffer = (float*) aligned_alloc(sizeof(float),
-                                               sizeof(float) * Ram_size);
+    int pagesize = (int) sysconf(_SC_PAGE_SIZE);
+    if (pagesize == -1)
+    {
+        error_report(SYSCONF_ERR);
+        return -1;
+    }
+
+    size_t ram_buffer_size = sizeof(float) * Ram_size; 
+
+    float* ram_buffer = (float*) aligned_alloc((size_t)pagesize,
+                                                ram_buffer_size);
     if (!ram_buffer)
     {
         error_report(CANNOT_ALLOCATE_MEM);
         return -1;
     }
 
+    int ret_val = mprotect((void*)ram_buffer, ram_buffer_size, PROT_READ | PROT_WRITE);
+    if (ret_val == -1) 
+    {
+        error_report(MPROTECT_ERR);
+        return -1;
+    }
+
     trans_struct->ram_buffer       = ram_buffer;
     trans_struct->patch.ram_buffer = ram_buffer;
+
+    printf("\n ram_buffer %p \n", ram_buffer);
 
     return 0;
 }

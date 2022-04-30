@@ -520,13 +520,13 @@ DEF_INSTR(55, Cvtss2si_r14d_xmmi, 0xF3, 0x00, 0x0F, 0x2D, 0x00)
 
 //-----------------------------------------------
 
-// Push in stack qword from [0xAddress + r13d]
+// Push in stack qword from [0xAddress + 4 * r13d]
 // WARNING: needs to be patched
 
-// push qword [0xAddress + r13d]
+// push qword [0xAddress + 4 * r13d]
 
-DEF_INSTR(56, Push_qword_r13d_plus_ADDR, 0x67, 0x41, 0xFF, 0xB5, \
-                                         0x00, 0x00, 0x00, 0x00)
+DEF_INSTR(56, Push_qword_4_r13d_plus_ADDR, 0x67, 0x42, 0xFF, 0x34, 0xAD, \
+                                           0x00, 0x00, 0x00, 0x00)
 
 //-----------------------------------------------
 
@@ -596,12 +596,12 @@ DEF_INSTR(62, Push_qword_ADDR, 0xFF, 0x34, 0x25, \
 
 //-----------------------------------------------
 
-// push qword [r13d + r14d + 0x00000000]
+// push qword [4 * r13d + r14d + 0x00000000]
 
 // needs to be patched
 
-DEF_INSTR(63, Push_qword_r13d_plus_r14d_plus_ADDR, 0x67, 0x43, 0xFF, 0xB4, 0x35, \
-                                                   0x00, 0x00, 0x00, 0x00 )
+DEF_INSTR(63, Push_qword_4_r13d_plus_r14d_plus_ADDR, 0x67, 0x43, 0xFF, 0xB4, 0xAE, \
+                                                     0x00, 0x00, 0x00, 0x00 )
 
 //-----------------------------------------------
 
@@ -611,17 +611,17 @@ DEF_INSTR(64, Pop_r14, 0x41, 0x5E)
 
 //-----------------------------------------------
 
-// mov dword [ADDR + r13d], r14d
+// mov dword [ADDR + 4 * r13d], r14d
 
-DEF_INSTR(65, Mov_dword_ADDR_plus_r13d_r14d, 0x67, 0x45, 0x89, 0xB5, \
-                                             0x00, 0x00, 0x00, 0x00 )
+DEF_INSTR(65, Mov_dword_ADDR_plus_4_r13d_r14d, 0x67, 0x46, 0x89, 0x34, 0xAD, \
+                                               0x00, 0x00, 0x00, 0x00 )
 
 //-----------------------------------------------
 
-// mov dword [ADDR + r13d + r15d], r14d
+// mov dword [ADDR + 4 * r13d + r15d], r14d
 
-DEF_INSTR(66, Mov_dword_ADDR_plus_r13d_plus_r15d_r14d, 0x67, 0x47, 0x89, 0xB4, 0x3D, \
-                                                       0x00, 0x00, 0x00, 0x00 )
+DEF_INSTR(66, Mov_dword_ADDR_plus_4_r13d_plus_r15d_r14d, 0x67, 0x47, 0x89, 0xB4, 0xAF, \
+                                                         0x00, 0x00, 0x00, 0x00 )
 
 //-----------------------------------------------
 

@@ -1,23 +1,7 @@
-PUSH 5
+PUSH -9
 
-PUSH 10
+PUSH 6
 
-ADD
+MR
 
 OUT
-
-
-
-PUSH [5]
-
-PUSH [ax]
-
-PUSH [ax + 5]
-
-
-
-POP [5]
-
-POP [ax]
-
-POP [ax + 5]

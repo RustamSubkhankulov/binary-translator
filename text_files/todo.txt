@@ -29,8 +29,9 @@ done 7,958. make  заголовочки для вызовов функций
 done 7,959. reduce amount of code 
 done 7,9595. make enum fro std func and patching functions for each case
 done 7,96. deal with constant and addresses 
-7,965. remove patching, make everything сразу
-7,966. test everything
+none 7,965. remove patching, make everything сразу
+done 7,9655. error in instructions;
+done 7,966. test everything
 8. make загатовочки for translating JUMPS as codegenerating 
 
 9. remove redudant push/pops of registers ( during calls)
@@ -41,11 +42,15 @@ in aims above make jumps and calls only relative
 
 8,7. replace spushing and poping xmm0-7 xmm1-7 with movs to registers
 8,8. remove count call buf size
+8,9. change types in patchig segment 
 
 9. unite some functions of translating 
 9,5. make codegenerating for standard functions
 
 9,6. part of array for const values is unused, change it
+
+9,7. deal with file i/o
+9,8. deal with seg faults with io
 
 
 993. check what instructions are faster ( push/ pop xmm(i) using R(i)X)
