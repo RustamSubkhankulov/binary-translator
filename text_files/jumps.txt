@@ -1,46 +1,46 @@
-DEF_JMP_(1, JMP,  24, 780006197, 
+DEF_JMP_(1, JMP,  25, 780006197, 
 {
-    int ret_val = trans_jmp(trans_struct);
+    int ret_val = trans_jmp(trans_struct, JMP);
     if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JA,   31, 3413231484, 
 {
-    int ret_val = trans_cond_jmp(trans_struct, JA);
+    int ret_val = trans_jmp(trans_struct, JA);
     if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JAE,  30, 469140019, 
 {
-    int ret_val = trans_cond_jmp(trans_struct, JAE);
+    int ret_val = trans_jmp(trans_struct, JAE);
     if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JB,   29, 315656441, 
 {
-    int ret_val = trans_cond_jmp(trans_struct, JB);
+    int ret_val = trans_jmp(trans_struct, JB);
     if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JBE,  28, 3172396438, 
 {
-    int ret_val = trans_cond_jmp(trans_struct, JBE);
+    int ret_val = trans_jmp(trans_struct, JBE);
     if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JE,   27, 1310313540, 
 {
-    int ret_val = trans_cond_jmp(trans_struct, JE);
+    int ret_val = trans_jmp(trans_struct, JE);
     if (ret_val == -1) return -1;
 })
 
 DEF_JMP_(1, JNE,  26, 367029121, 
 {
-    int ret_val = trans_cond_jmp(trans_struct, JNE);
+    int ret_val = trans_jmp(trans_struct, JNE);
     if (ret_val == -1) return -1;
 })
 
-DEF_JMP_(1, CALL, 25, 1316946032, 
+DEF_JMP_(1, CALL, 24, 1316946032, 
 {
     int ret_val = trans_call(trans_struct);
     if (ret_val == -1) return -1;

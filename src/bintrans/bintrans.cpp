@@ -177,6 +177,11 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
     bintrans_log_report(); 
     assert(trans_struct);
 
+    int is_ok = check_and_add_res_dest(&trans_struct->jumps, 
+                                        trans_struct->input.pos,
+                                        trans_struct->result.cur_pos);
+    if (is_ok == -1) return -1;   
+
     unsigned char oper_code = *(trans_struct->input.buffer 
                               + trans_struct->input.pos);
 
@@ -199,6 +204,30 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
 
 #undef DEF_CMD_
 #undef DEF_JMP_
+
+//-----------------------------------------------
+
+int _check_and_add_res_dest(Jumps* jumps, unsigned int inp_pos, 
+                                          unsigned int res_pos FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(jumps);
+
+    if (!jumps->num)
+        return 0;
+
+    for (unsigned int counter = 0;
+                      counter < jumps->num;
+                      counter++)
+    {
+        if (jumps->inp_dst[counter] == inp_pos)
+        {
+            jumps->res_dst[counter] =  res_pos;
+        }
+    }
+
+    return 0;
+}
 
 //-----------------------------------------------
 
@@ -813,7 +842,7 @@ int _jumps_struct_ctor(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
         return -1;
     }
 
-    jumps->entities = (Trans_struct**) calloc(Initial_jumps_cap,
+    jumps->entities = (Trans_entity**) calloc(Initial_jumps_cap,
                                               sizeof(Trans_entity*));
     if (!jumps->entities)
     {
@@ -821,8 +850,9 @@ int _jumps_struct_ctor(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
         return -1;
     }
 
-    jumps->cap = Initial_jumps_cap;
-    jumps->num = 0;
+    jumps->cap     = Initial_jumps_cap;
+    jumps->num     = 0;
+    jumps->counter = 0;
 
     return 0;
 }
@@ -834,7 +864,34 @@ int _jumps_struct_resize(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(jumps);
 
-    
+    unsigned int old_jumps_cap = jumps->cap;
+    unsigned int new_jumps_cap = old_jumps_cap * 2;
+
+    jumps->inp_dst = (unsigned int*) my_recalloc((void* ) jumps->inp_dst,
+                                                 (size_t) new_jumps_cap,
+                                                 (size_t) old_jumps_cap,
+                                                  sizeof (unsigned int));
+    if (!jumps->inp_dst) return -1;
+
+    jumps->res_dst = (unsigned int*) my_recalloc((void* ) jumps->res_dst,
+                                                 (size_t) new_jumps_cap,
+                                                 (size_t) old_jumps_cap,
+                                                  sizeof (unsigned int));
+    if (!jumps->res_dst) return -1;
+
+    jumps->res_pos = (unsigned int*) my_recalloc((void* ) jumps->res_pos,
+                                                 (size_t) new_jumps_cap,
+                                                 (size_t) old_jumps_cap,
+                                                  sizeof (unsigned int));
+    if (!jumps->res_pos) return -1;
+
+    jumps->entities = (Trans_entity**) my_recalloc ((void* ) jumps->entities,
+                                                    (size_t) new_jumps_cap,
+                                                    (size_t) old_jumps_cap,
+                                                     sizeof (Trans_entity*));
+    if (!jumps->entities) return -1;
+
+    jumps->cap = new_jumps_cap;
 
     return 0;
 }
@@ -851,6 +908,74 @@ int _jumps_struct_dtor(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
     free(jumps->res_pos);
 
     free(jumps->entities);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _add_jump_dest(Jumps* jumps, unsigned int inp_dst FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(jumps);
+
+    if (jumps->num == jumps->cap)
+    {
+        int ret_val = jumps_struct_resize(jumps);
+        if (ret_val == -1) return -1;
+    }
+
+    jumps->inp_dst[jumps->num] = inp_dst;
+    jumps->num += 1;
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity, 
+                                   unsigned int res_pos FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+
+    assert(trans_entity);
+    assert(jumps);
+
+    jumps->entities[jumps->counter] = trans_entity;
+    jumps->res_pos [jumps->counter] = res_pos;
+
+    jumps->counter += 1;
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _gather_jumps_in_input(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
+    unsigned int   cur_input_pos = 0;
+    unsigned int   input_size    = trans_struct->input.size;
+    unsigned char* input_buffer  = trans_struct->input.buffer;
+
+    Jumps* jumps = &trans_struct->jumps;
+
+    while (cur_input_pos < input_size)
+    {
+        unsigned char oper_code = * (input_buffer + cur_input_pos);
+        cur_input_pos += 1;
+
+        if (oper_code >= CALL && oper_code <= JA)
+        {
+            int inp_dest = * (int*) (input_buffer + cur_input_pos);
+            cur_input_pos += sizeof(int);
+
+            int ret_val = add_jump_dest(jumps, cur_input_pos);
+            if (ret_val == -1) return -1;
+        }
+    }
 
     return 0;
 }

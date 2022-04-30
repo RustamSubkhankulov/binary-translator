@@ -1,8 +1,20 @@
 Current position: 10. Input string : PUSH -9 Written bytes: 25 00 00 10 c1 
 
-Current position: 15. Input string : PUSH 6 Written bytes: 25 00 00 c0 40 
+Current position: 15. Input string : JMP: SKIP Written bytes: 19 00 00 00 00 
 
-Current position: 1a. Input string : MR Written bytes: 0c 
+Current position: 1a. Input string : PUSH 6 Written bytes: 25 00 00 c0 40 
 
-Current position: 1b. Input string : OUT Written bytes: 07 
+Current position: 1f. Input string : PUSH 6 Written bytes: 25 00 00 c0 40 
+
+Current position: 24. Input string : PUSH 6 Written bytes: 25 00 00 c0 40 
+
+Current position: 29. Input string : PUSH 6 Written bytes: 25 00 00 c0 40 
+
+Current position: 2e. Input string : PUSH 12 Written bytes: 25 00 00 40 41 
+
+Current position: 33. Input string : MR Written bytes: 0c 
+
+Current position: 34. Input string : OUT Written bytes: 07 
+
+Filled jump destination. Ip: 16. Destination Ip: 2e 
 

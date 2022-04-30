@@ -1,6 +1,18 @@
 PUSH -9
 
+JMP: SKIP
+
 PUSH 6
+
+PUSH 6
+
+PUSH 6
+
+PUSH 6
+
+SKIP:
+
+PUSH 12
 
 MR
 

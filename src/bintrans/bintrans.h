@@ -155,10 +155,11 @@ struct Jumps
     unsigned int* res_dst;
     unsigned int* res_pos;
 
-    Trans_struct** entities;
+    Trans_entity** entities;
 
     unsigned int num;
     unsigned int cap;
+    unsigned int counter;
 };
 
 //===============================================
@@ -252,6 +253,24 @@ int _consts_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _ram_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
+//-----------------------------------------------
+
+int _jumps_struct_ctor  (Jumps* jumps FOR_LOGS(, LOG_PARAMS));
+
+int _jumps_struct_dtor  (Jumps* jumps FOR_LOGS(, LOG_PARAMS));
+
+int _jumps_struct_resize(Jumps* jumps FOR_LOGS(, LOG_PARAMS));
+
+int _gather_jumps_in_input(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _add_jump_dest(Jumps* jumps, unsigned int cur_inp_pos FOR_LOGS(, LOG_PARAMS));
+
+int _check_and_add_res_dest(Jumps* jumps, unsigned int inp_pos, 
+                                          unsigned int res_pos FOR_LOGS(, LOG_PARAMS));
+
+int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity, 
+                                   unsigned int res_pos FOR_LOGS(, LOG_PARAMS));
+
 #ifdef BINTRANS_LISTING
 
     int _init_listing_file     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
@@ -261,6 +280,27 @@ int _ram_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 #endif 
 
 //===============================================
+
+#define check_and_add_res_dest(jumps, int_pos, res_pos) \
+       _check_and_add_res_dest(jumps, int_pos, res_pos FOR_LOGS(, LOG_ARGS))
+
+#define add_jump_entity(jumps, entity, res_pos) \
+       _add_jump_entity(jumps, entity, res_pos FOR_LOGS(, LOG_ARGS))
+
+#define add_jump_dest(jumps, cur_inp_pos) \
+       _add_jump_dest(jumps, cur_inp_pos FOR_LOGS(, LOG_ARGS))
+
+#define gahter_jumps_in_input(trans_struct) \
+       _gather_jumps_in_input(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define jumps_struct_ctor(jumps) \
+       _jumps_struct_ctor(jumps FOR_LOGS(, LOG_ARGS))
+
+#define jumps_struct_dtor(jumps) \
+       _jumps_struct_dtor(jumps FOR_LOGS(, LOG_ARGS))
+
+#define jumps_struct_resize(jumps) \
+       _jumps_struct_resize(jumps FOR_LOGS(, LOG_ARGS))
 
 #define ram_buffer_allocate(trans_struct) \
        _ram_buffer_allocate(trans_struct FOR_LOGS(, LOG_ARGS))
