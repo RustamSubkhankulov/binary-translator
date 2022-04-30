@@ -784,6 +784,79 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
+int _jumps_struct_ctor(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(jumps);
+
+    jumps->inp_dst = (unsigned int*) calloc(Initial_jumps_cap,
+                                            sizeof(unsigned int));
+    if (!jumps->inp_dst) 
+    {   
+        error_report(CANNOT_ALLOCATE_MEM); 
+        return -1;
+    }
+
+    jumps->res_dst = (unsigned int*) calloc(Initial_jumps_cap,
+                                            sizeof(unsigned int));                             
+    if (!jumps->res_dst) 
+    { 
+        error_report(CANNOT_ALLOCATE_MEM); 
+        return -1;
+    }
+
+    jumps->res_pos = (unsigned int*) calloc(Initial_jumps_cap,
+                                            sizeof(unsigned int));                             
+    if (!jumps->res_pos) 
+    { 
+        error_report(CANNOT_ALLOCATE_MEM); 
+        return -1;
+    }
+
+    jumps->entities = (Trans_struct**) calloc(Initial_jumps_cap,
+                                              sizeof(Trans_entity*));
+    if (!jumps->entities)
+    {
+        error_report(CANNOT_ALLOCATE_MEM);
+        return -1;
+    }
+
+    jumps->cap = Initial_jumps_cap;
+    jumps->num = 0;
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _jumps_struct_resize(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(jumps);
+
+    
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _jumps_struct_dtor(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(jumps);
+
+    free(jumps->inp_dst);
+    free(jumps->res_dst);
+    free(jumps->res_pos);
+
+    free(jumps->entities);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
 int _patch_entity(Trans_entity* trans_entity, unsigned int   patch_pos, unsigned int  patch_size,
                                               unsigned char* patch_data FOR_LOGS(, LOG_PARAMS))
 {

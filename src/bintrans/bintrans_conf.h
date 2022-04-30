@@ -43,3 +43,5 @@
 //-----------------------------------------------
 
 static const unsigned int Ram_size = 2048; 
+
+static const unsigned int Initial_jumps_cap = 8;

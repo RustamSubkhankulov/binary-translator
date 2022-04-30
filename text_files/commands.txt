@@ -66,73 +66,73 @@ DEF_CMD_(0, POW,  10, 3916815338,
 
 DEF_CMD_(0, EQ, 11, 2497190062,
 {
-    int ret_val = trans_eq(trans_struct);
+    int ret_val = trans_eq_neq(trans_struct, EQ);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, MR, 12, 4260295007,
 {
-    int ret_val = trans_mr(trans_struct);
+    int ret_val = trans_compare(trans_struct, MR);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, MRE, 13, 2864530677,
 {
-    int ret_val = trans_mre(trans_struct);
+    int ret_val = trans_compare(trans_struct, MRE);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, LS, 14, 162631210,
 {
-    int ret_val = trans_ls(trans_struct);
+    int ret_val = trans_compare(trans_struct, LS);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, LSE, 15, 273834884,
 {
-    int ret_val = trans_lse(trans_struct);
+    int ret_val = trans_compare(trans_struct, LSE);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, NEQ, 16, 3987610013,
 {
-    int ret_val = trans_neq(trans_struct);
+    int ret_val = trans_eq_neq(trans_struct, NEQ);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, SIN, 17, 3502304637,
 {
-    int ret_val = trans_sin(trans_struct);
+    int ret_val = trans_std_func(trans_struct, SIN);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, COS, 18, 11133052,
 {
-    int ret_val = trans_cos(trans_struct);
+    int ret_val = trans_std_func(trans_struct, COS);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, TG, 19, 3508519860,
 {
-    int ret_val = trans_tg(trans_struct);
+    int ret_val = trans_std_func(trans_struct, TG);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, LN, 20, 314398320,
 {
-    int ret_val = trans_ln(trans_struct);
+    int ret_val = trans_std_func(trans_struct, LN);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, ASIN, 21, 2062072772,
 {
-    int ret_val = trans_asin(trans_struct);
+    int ret_val = trans_std_func(trans_struct, ASIN);
     if (ret_val == -1) return -1;
 })
 
 DEF_CMD_(0, ATG, 22, 2174791585,
 {
-    int ret_val = trans_atg(trans_struct);
+    int ret_val = trans_std_func(trans_struct, ATG);
     if (ret_val == -1) return -1;
 })
 

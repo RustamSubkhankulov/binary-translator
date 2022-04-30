@@ -148,6 +148,21 @@ struct Patch
 
 //===============================================
 
+struct Jumps
+{
+    unsigned int* inp_dst;
+
+    unsigned int* res_dst;
+    unsigned int* res_pos;
+
+    Trans_struct** entities;
+
+    unsigned int num;
+    unsigned int cap;
+};
+
+//===============================================
+
 struct Trans_struct
 {
     struct List* entities;
@@ -156,6 +171,7 @@ struct Trans_struct
     struct Result result;
 
     struct Patch patch;
+    struct Jumps jumps;
 
     float* ram_buffer;
 
