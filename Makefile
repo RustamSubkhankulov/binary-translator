@@ -87,7 +87,7 @@ TRANS_DEP       = src/bintrans/trans.cpp			\
 all: global
 
 global: $(OBJ) 
-	$(CC) $(OBJ) -o bintrans $(FLAGS) -lm
+	$(CC) $(OBJ) -o bintrans $(FLAGS) -lm -no-pie
 	
 #-fsanitize=address -fsanitize=bounds
 

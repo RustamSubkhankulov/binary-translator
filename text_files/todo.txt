@@ -28,10 +28,9 @@ done 7,95. make stdlib for various functions
 done 7,958. make  заголовочки для вызовов функций 
 done 7,959. reduce amount of code 
 done 7,9595. make enum fro std func and patching functions for each case
-7,96. deal with constant and addresses 
+done 7,96. deal with constant and addresses 
 7,965. remove patching, make everything сразу
-cringe 7,97. try to use trigonometric from math.h  directly
---(pushing constant values to xmm registets using regular regs)-- 
+7,966. test everything
 8. make загатовочки for translating JUMPS as codegenerating 
 
 9. remove redudant push/pops of registers ( during calls)
@@ -40,10 +39,13 @@ in aims above make jumps and calls only relative
 
 8,5. make far calls and jumps
 
+8,7. replace spushing and poping xmm0-7 xmm1-7 with movs to registers
+8,8. remove count call buf size
+
 9. unite some functions of translating 
-9,5. make codegenerating for standardfunctions
-10. addressinf for memory - address of start of array + index (?)
-11. patch entity function ( replace particual bytes in array with arguments) ( two version for byte and several bytes)
+9,5. make codegenerating for standard functions
+
+9,6. part of array for const values is unused, change it
 
 
 993. check what instructions are faster ( push/ pop xmm(i) using R(i)X)

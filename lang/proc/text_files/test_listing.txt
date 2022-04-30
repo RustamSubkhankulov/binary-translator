@@ -1,0 +1,20 @@
+Current position: 10. Input string : PUSH 5 Written bytes: 25 00 00 a0 40 
+
+Current position: 15. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
+
+Current position: 1a. Input string : ADD Written bytes: 01 
+
+Current position: 1b. Input string : OUT Written bytes: 07 
+
+Current position: 1c. Input string : PUSH [5] Written bytes: a5 00 00 a0 40 
+
+Current position: 21. Input string : PUSH [ax] Written bytes: c5 01 
+
+Current position: 23. Input string : PUSH [ax + 5] Written bytes: e5 01 00 00 a0 40 
+
+Current position: 29. Input string : POP [5] Written bytes: a6 00 00 a0 40 
+
+Current position: 2e. Input string : POP [ax] Written bytes: c6 01 
+
+Current position: 30. Input string : POP [ax + 5] Written bytes: e6 01 00 00 a0 40 
+

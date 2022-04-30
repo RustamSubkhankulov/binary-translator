@@ -118,8 +118,8 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Save_regs);
     INIT_ENTITY(trans_struct, Null_xmms);
 
-    // ret_val = translate_instructions(trans_struct);
-    // if (ret_val == -1) return -1;
+    ret_val = translate_instructions(trans_struct);
+    if (ret_val == -1) return -1;
 
     INIT_ENTITY(trans_struct, Restore_regs);
     INIT_ENTITY(trans_struct, Return);
@@ -236,7 +236,7 @@ int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned c
 
         assert(name_str);
 
-        unsigned int name_len = (unsigned int) strlen(name_str);
+        unsigned int name_len = (unsigned int) strlen(name_str) + 1;
 
         trans_entity->name_str = (char*) calloc(name_len, sizeof(char));
         if (!trans_entity->name_str)
@@ -311,8 +311,23 @@ int _binary_execute(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     ret_val = call_buf_change_acc_prot(trans_struct, PROT_EXEC);
     if (ret_val == -1) return -1;
 
+    #ifdef FILE_IO
+
+        ret_val = init_file_io(Std_input_filename, 
+                               Std_output_filename);
+        if (ret_val == -1) return -1;
+
+    #endif 
+
     ret_val = call_translated_code(trans_struct);
     if (ret_val == -1) return -1;
+
+    #ifdef FILE_IO
+
+        ret_val = close_file_io();
+        if (ret_val == -1) return -1;
+
+    #endif 
 
     ret_val = call_buf_change_acc_prot(trans_struct, PROT_READ | PROT_WRITE);
     if (ret_val == -1) return -1;
@@ -331,6 +346,12 @@ int _call_translated_code(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     int (*func) (void) = NULL;
     func = (int (*)(void)) trans_struct->result.buffer;
+
+    #ifdef DEBUG_EXEC
+
+        __asm__("int $3");
+
+    #endif 
 
     int exit_code = func();
     printf(" Exit code of translated code: %d \n", exit_code);
@@ -377,6 +398,8 @@ int _call_buf_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
                                                      size * sizeof(unsigned char));
     if (!trans_struct->result.buffer) return -1;
 
+    printf("\n buffer after alloc %p \n", trans_struct->result.buffer);
+
     trans_struct->result.buffer_addr = (uint64_t)trans_struct->result.buffer;
 
     return 0;
@@ -412,7 +435,7 @@ int _count_call_buf_size(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-int _flush_entities_to_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+int _call_buf_prepare(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(trans_struct);
@@ -423,6 +446,16 @@ int _flush_entities_to_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     ret_val = call_buf_allocate(trans_struct);
     if (ret_val == -1) return -1;
 
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _flush_entities_to_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(trans_struct);
+
     unsigned int call_buf_pos = 0;
 
     List* list    = trans_struct->entities;
@@ -432,9 +465,9 @@ int _flush_entities_to_buf(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     {
         unsigned int entity_size = list->data[cur_index]->size;
 
-        ret_val = fast_cpy((void*)(trans_struct->result.buffer + call_buf_pos),
-                           (void*) list->data[cur_index]->data,
-                                   entity_size);
+        int ret_val = fast_cpy((void*)(trans_struct->result.buffer + call_buf_pos),
+                               (void*) list->data[cur_index]->data,
+                                       entity_size);
 
         if (ret_val == -1) return -1;
 
@@ -584,6 +617,8 @@ int _listing_message(Trans_entity* trans_entity, unsigned int res_buf_pos, FILE*
 
     #endif 
 
+    fprintf(listing, "\\--------------------------------------------------\n");
+
     return 0;
 }
 
@@ -673,8 +708,9 @@ int _consts_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     if (!trans_struct->patch.num_of_consts)
         return 0;
 
-    float* consts_buffer = (float*) aligned_alloc(sizeof(float), 
-                                                  sizeof(float) * trans_struct->patch.num_of_consts);
+    float* consts_buffer = (float*) aligned_alloc(sizeof(float),    // adding + 1 so there is no SEGFAULT during
+                                                  sizeof(float)     // execution (see Push_qword [addr])
+                                                  * ( trans_struct->patch.num_of_consts + 1 ));
     if (!consts_buffer) 
     {
         error_report(CANNOT_ALLOCATE_MEM);

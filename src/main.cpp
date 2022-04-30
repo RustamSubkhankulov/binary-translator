@@ -4,11 +4,17 @@
 #include "bintrans/bintrans.h"
 #include "bintrans/patch.h"
 
+//
+#include "bintrans/standard.h"
+//
+
 //===============================================
 
 int main(int argc, char* argv[])
 {
-    
+    printf("\n standard out addr: %lx \n", (uint64_t)&standard_out);
+
+
     #ifdef LOGS
         FILE* logs_file = open_log_file(Logfile_name);
         if (!logs_file)

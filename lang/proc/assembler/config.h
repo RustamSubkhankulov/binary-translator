@@ -27,7 +27,7 @@
 
 //#define ASM_LOGS
 
-//#define LISTING
+#define LISTING
 
 #define ASM_MAX_CODE_SIZE 16384
 

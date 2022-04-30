@@ -141,7 +141,6 @@ struct Patch
     Patch_instr* instructions;
 
     unsigned int  num_of_consts; 
-    unsigned int  counter_of_consts;
 
     unsigned char ram_is_used;
     float*        ram_buffer;
@@ -159,7 +158,9 @@ struct Trans_struct
     struct Patch patch;
 
     float* ram_buffer;
+
     float* consts_buffer;
+    unsigned int consts_ct;
 
     //float reg_values[16];
 
@@ -207,6 +208,8 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 int _flush_entities_to_buf (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _call_translated_code  (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+int _call_buf_prepare      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _count_call_buf_size   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
@@ -266,6 +269,9 @@ int _ram_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 #define call_buf_allocate(trans_struct) \
        _call_buf_allocate(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define call_buf_prepare(trans_struct) \
+       _call_buf_prepare(trans_struct FOR_LOGS(, LOG_ARGS))
 
 #define call_buf_change_acc_prot(trans_struct, prot) \
        _call_buf_change_acc_prot(trans_struct, prot FOR_LOGS(, LOG_ARGS))

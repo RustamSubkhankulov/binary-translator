@@ -26,12 +26,6 @@
 
 //-----------------------------------------------
 
-// Places 'int 3' interrupt just before executing translated code
-
-#define DEBUG_EXEC
-
-//-----------------------------------------------
-
 // Turns on validator for BinaryTranslator structure
 
 #define BINTRANS_STRUCT_VALID_CHECK
