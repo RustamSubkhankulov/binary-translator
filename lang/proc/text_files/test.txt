@@ -3,7 +3,7 @@ HLT
 
 MAIN:
 PUSH 10
-OUT
+COS
 RET
 
 

@@ -4,7 +4,7 @@ Current position: 15. Input string : HLT Written bytes: 00
 
 Current position: 16. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
 
-Current position: 1b. Input string : OUT Written bytes: 07 
+Current position: 1b. Input string : COS Written bytes: 12 
 
 Current position: 1c. Input string : RET Written bytes: 09 
 

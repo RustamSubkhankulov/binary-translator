@@ -37,6 +37,8 @@ done 8. make загатовочки for translating JUMPS as codegenerating
 done 8,5. deal with conditional jumps
 done 8,6. change fix up of jumps 
 
+8,8. test which functions need alignment
+8,9. (alignment before call) errors with out in CALL: MAIN (WTF ?? i dk how to fix this shit)
 
 9. remove redudant push/pops of registers ( during calls)
 
@@ -46,7 +48,7 @@ done 8,5. make near calls and jumps
 8,8. remove count call buf size
 8,9. change types in patchig segment ( int64_t, uint64_t etc )
 
-9. unite some functions of translating 
+done 9. unite some functions of translating 
 9,5. make codegenerating for standard functions
 
 9,6. part of array for const values is unused, change it
