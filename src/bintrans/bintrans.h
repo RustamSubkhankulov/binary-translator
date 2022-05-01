@@ -290,7 +290,7 @@ int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity,
 #define add_jump_dest(jumps, cur_inp_pos) \
        _add_jump_dest(jumps, cur_inp_pos FOR_LOGS(, LOG_ARGS))
 
-#define gahter_jumps_in_input(trans_struct) \
+#define gather_jumps_in_input(trans_struct) \
        _gather_jumps_in_input(trans_struct FOR_LOGS(, LOG_ARGS))
 
 #define jumps_struct_ctor(jumps) \

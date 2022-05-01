@@ -694,3 +694,34 @@ DEF_INSTR(72, Je_near_ahead_N, 0x0F, 0x84, \
 
 DEF_INSTR(73, Jne_near_ahead_N, 0x0F, 0x85, \
                                 0x00, 0x00, 0x00, 0x00)
+
+//-----------------------------------------------
+
+// movss xmm0, dword [rsp - 16]
+
+DEF_INSTR(74, Movss_xmm0_dword_rsp_minus_16, 0xF3, 0x0F, 0x10, 0x44, 0x24, 0xF0)
+
+//-----------------------------------------------
+
+// comiss xmm0, dword [rsp - 8] 
+
+DEF_INSTR(75, Comiss_xmm0_dword_rsp_minus_8, 0x0F, 0x2F, 0x44, 0x24, 0xF8)
+
+//-----------------------------------------------
+
+// Conditional (short) jump 'je' N bytes ahead from this instruction
+// je $ + N (short)
+
+// WARNING: Instruction must be patched
+
+DEF_INSTR(76, Je_short_ahead_N, 0x74, 0x00 )
+
+//-----------------------------------------------
+
+// Conditional (short) jump 'jne' N bytes ahead from this instruction
+// jne $ + N (short)
+
+// WARNING: Instruction must be patched
+
+DEF_INSTR(77, Jne_short_ahead_N, 0x75, 0x00 )
+

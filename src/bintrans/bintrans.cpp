@@ -115,6 +115,12 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     int ret_val = init_patch_struct(&trans_struct->patch);
     if (ret_val == -1) return -1;
 
+    ret_val = jumps_struct_ctor(&trans_struct->jumps);
+    if (ret_val == -1) return -1;
+
+    ret_val = gather_jumps_in_input(trans_struct);
+    if (ret_val == -1) return -1;
+
     INIT_ENTITY(trans_struct, Save_regs);
     INIT_ENTITY(trans_struct, Null_xmms);
 
@@ -141,11 +147,21 @@ int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     while (trans_struct->input.pos < trans_struct->input.size)
     {
+        ret_val = check_and_add_res_dest(&trans_struct->jumps, 
+                                          trans_struct->input.pos,
+                                          trans_struct->result.cur_pos);
+        if (ret_val == -1) return -1; 
+
         ret_val = translate_single_instruction(trans_struct);
         if (ret_val == -1) return -1;
 
         TRANS_STRUCT_VALID(trans_struct);
     }
+
+    ret_val = check_and_add_res_dest(&trans_struct->jumps, 
+                                      trans_struct->input.pos,
+                                      trans_struct->result.cur_pos);
+    if (ret_val == -1) return -1; 
 
     return 0;
 }
@@ -175,12 +191,7 @@ int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report(); 
-    assert(trans_struct);
-
-    int is_ok = check_and_add_res_dest(&trans_struct->jumps, 
-                                        trans_struct->input.pos,
-                                        trans_struct->result.cur_pos);
-    if (is_ok == -1) return -1;   
+    assert(trans_struct);  
 
     unsigned char oper_code = *(trans_struct->input.buffer 
                               + trans_struct->input.pos);
@@ -956,7 +967,7 @@ int _gather_jumps_in_input(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    unsigned int   cur_input_pos = 0;
+    unsigned int   cur_input_pos = (unsigned int) sizeof(Header);
     unsigned int   input_size    = trans_struct->input.size;
     unsigned char* input_buffer  = trans_struct->input.buffer;
 
@@ -972,8 +983,31 @@ int _gather_jumps_in_input(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
             int inp_dest = * (int*) (input_buffer + cur_input_pos);
             cur_input_pos += sizeof(int);
 
-            int ret_val = add_jump_dest(jumps, cur_input_pos);
+            int ret_val = add_jump_dest(jumps, inp_dest);
             if (ret_val == -1) return -1;
+        }
+
+        switch (oper_code & ~ OPER_CODE_MASK)
+        {
+            case REGISTER_MASK:
+                [[fallthrough]];
+
+            case REGISTER_MASK | RAM_MASK:
+                cur_input_pos += 1;
+                break;
+
+            case IMM_MASK:
+                [[fallthrough]];
+
+            case IMM_MASK | RAM_MASK:
+                cur_input_pos += sizeof(float);
+                break;
+
+            case IMM_MASK | REGISTER_MASK | RAM_MASK:
+                cur_input_pos += sizeof(float) + 1;
+                break;
+
+            default: break;
         }
     }
 

@@ -66,7 +66,7 @@ DEF_CMD_(0, POW,  10, 3916815338,
 
 DEF_CMD_(0, EQ, 11, 2497190062,
 {
-    int ret_val = trans_eq_neq(trans_struct, EQ);
+    int ret_val = trans_compare(trans_struct, EQ);
     if (ret_val == -1) return -1;
 })
 
@@ -96,7 +96,7 @@ DEF_CMD_(0, LSE, 15, 273834884,
 
 DEF_CMD_(0, NEQ, 16, 3987610013,
 {
-    int ret_val = trans_eq_neq(trans_struct, NEQ);
+    int ret_val = trans_compare(trans_struct, NEQ);
     if (ret_val == -1) return -1;
 })
 

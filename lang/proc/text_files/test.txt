@@ -1,19 +1,21 @@
-PUSH -9
+PUSH 3.283339
 
-JMP: SKIP
+PUSH 2
 
-PUSH 6
+MUL
 
-PUSH 6
+PUSH 4
 
-PUSH 6
+POP cx
 
-PUSH 6
+POP [cx + 2]
 
-SKIP:
+PUSH 6.566678
 
-PUSH 12
+PUSH [cx + 2]
 
-MR
+EQ
 
 OUT
+
+
