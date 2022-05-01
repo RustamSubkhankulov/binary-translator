@@ -1,21 +1,9 @@
-PUSH 3.283339
+CALL: MAIN
+HLT
 
-PUSH 2
-
-MUL
-
-PUSH 4
-
-POP cx
-
-POP [cx + 2]
-
-PUSH 6.566678
-
-PUSH [cx + 2]
-
-EQ
-
+MAIN:
+PUSH 10
 OUT
+RET
 
 

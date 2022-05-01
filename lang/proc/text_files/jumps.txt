@@ -146,7 +146,7 @@ DEF_JMP_(1, JNE,  26, 367029121,
     procstruct->command_ct++; 
 })
 
-DEF_JMP_(1, CALL, 26, 1316946032, 
+DEF_JMP_(1, CALL, 24, 1316946032, 
 {
      int dest_ip = 0;
     GET_DESTINATION_IP(&dest_ip);

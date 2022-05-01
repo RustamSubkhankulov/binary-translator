@@ -34,8 +34,8 @@ done 7,9655. error in instructions;
 done 7,966. test everything
 done 8. make загатовочки for translating JUMPS as codegenerating 
 
-8,5. deal with conditional jumps
-8,6. change fix up of jumps 
+done 8,5. deal with conditional jumps
+done 8,6. change fix up of jumps 
 
 
 9. remove redudant push/pops of registers ( during calls)

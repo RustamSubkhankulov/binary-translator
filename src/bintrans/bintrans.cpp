@@ -127,8 +127,8 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     ret_val = translate_instructions(trans_struct);
     if (ret_val == -1) return -1;
 
-    INIT_ENTITY(trans_struct, Restore_regs);
-    INIT_ENTITY(trans_struct, Return);
+    // INIT_ENTITY(trans_struct, Restore_regs);
+    // INIT_ENTITY(trans_struct, Return);
 
     ret_val = write_listing(trans_struct);
     if (ret_val == -1) return -1;
