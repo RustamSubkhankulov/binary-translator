@@ -725,3 +725,21 @@ DEF_INSTR(76, Je_short_ahead_N, 0x74, 0x00 )
 
 DEF_INSTR(77, Jne_short_ahead_N, 0x75, 0x00 )
 
+//-----------------------------------------------
+
+// Align stack to 16 boundary 
+
+// mov r14, rsp; and r14, 0xF; add rsp, r14; 
+
+DEF_INSTR(78, Align_stack_to_16, 0x49, 0x89, 0xE6, \
+                                 0x49, 0x83, 0xE6, 0x0F, \
+                                 0x4C, 0x01, 0xF4 )
+
+//-----------------------------------------------
+
+// Sub stack alignment
+
+// sub rsp, r14
+
+DEF_INSTR(79, Sub_stack_alignment, 0x4C, 0x29, 0xF4 )
+

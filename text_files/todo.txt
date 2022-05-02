@@ -37,8 +37,8 @@ done 8. make загатовочки for translating JUMPS as codegenerating
 done 8,5. deal with conditional jumps
 done 8,6. change fix up of jumps 
 
-8,8. test which functions need alignment
-8,9. (alignment before call) errors with out in CALL: MAIN (WTF ?? i dk how to fix this shit)
+done 8,8. test which functions need alignment
+done 8,9. (alignment before call) errors with out in CALL: MAIN (WTF ?? i dk how to fix this shit)
 
 9. remove redudant push/pops of registers ( during calls)
 
