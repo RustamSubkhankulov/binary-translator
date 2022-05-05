@@ -137,14 +137,10 @@ int _list_draw_graph(struct List* list FOR_LOGS(, LOG_PARAMS)) {
 
         if (list->data[counter] != NULL)
 
-        #ifndef ENTITY_ADD_NAME_STR
+        #ifndef ADD_INSTR_NAME
 
-            for (unsigned int ct = 0;
-                            ct < list->data[counter]->size;
-                            ct++)
-            {
-                fprintf(graph, "%x ", (list->data[counter]->data[ct]));
-            }
+            fprintf(graph, "%x ", list->data[counter]->oper_code);
+
         #else
 
             fprintf(graph, "%s ", list->data[counter]->name_str);
@@ -232,14 +228,9 @@ int _list_draw_graph_logical(struct List* list FOR_LOGS(, LOG_PARAMS)) {
 
         if (list->data[index] != NULL)
 
-        #ifndef ENTITY_ADD_NAME_STR
+        #ifndef ADD_INSTR_NAME
 
-            for (unsigned int ct = 0;
-                            ct < list->data[index]->size;
-                            ct++)
-            {
-                fprintf(graph, "%x ", (list->data[index]->data[ct]));
-            }
+            fprintf(graph, "%x ", list->data[index]->oper_code);
 
         #else
 

@@ -25,10 +25,10 @@
 //LIST PARAMETERS
 
 //Element type of the list structure
-typedef struct Trans_entity* list_elem_t;
+typedef struct Instr* list_elem_t;
 
 //Name of type using in list(for logs)
-#define LIST_TYPE_NAME "struct Trans_entity*"
+#define LIST_TYPE_NAME "struct Instr*"
 
 //Specificator for type using in list
 #define LIST_ELEM_SPEC "%p"

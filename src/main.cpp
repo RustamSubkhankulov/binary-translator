@@ -33,12 +33,12 @@ int main(int argc, char* argv[])
 
     // Main actions
 
-    #ifdef BINARY_OPT
+    // #ifdef BINARY_OPT
 
-        ret_val = binary_optimize(&trans_struct);
-        if (ret_val == -1) return -1;
+    //     ret_val = binary_optimize(&trans_struct);
+    //     if (ret_val == -1) return -1;
 
-    #endif 
+    // #endif 
 
     ret_val = binary_translate(&trans_struct);
     if (ret_val == -1) return -1;

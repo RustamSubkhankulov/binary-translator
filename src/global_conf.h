@@ -38,6 +38,6 @@ static const char* Logfile_name = "trans.html";
 
 //===============================================
 
-#define ENTITY_ADD_NAME_STR
+//#define ENTITY_ADD_NAME_STR
 
 //===============================================

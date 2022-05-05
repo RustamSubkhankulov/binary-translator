@@ -57,8 +57,10 @@ done 9,7. deal with file i/o
 done 9,8. deal with seg faults with io
 
 10. improve validator
-11. change list for optimizer
+done 11. change list for optimizer
 12. optimizer
+13. cmndline arguments
+14. change trans_struct input (from list directly)
 
 done 993. check what instructions are faster ( push/ pop xmm(i) using R(i)X)
 994. table with current values of registers
