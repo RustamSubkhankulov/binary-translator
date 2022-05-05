@@ -1,0 +1,21 @@
+// DEF_STD_FUNC(name, code)
+
+DEF_STD_FUNC(in  , IN  )
+
+DEF_STD_FUNC(out , OUT )
+
+DEF_STD_FUNC(sin , SIN )
+
+DEF_STD_FUNC(cos , COS )
+
+DEF_STD_FUNC(tg  , TG  )
+
+DEF_STD_FUNC(ln  , LN  )
+
+DEF_STD_FUNC(asin, ASIN)
+
+DEF_STD_FUNC(atg , ATG )
+
+DEF_STD_FUNC(pow , POW )
+
+DEF_STD_FUNC(fabs, FABS)

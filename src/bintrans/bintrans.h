@@ -228,8 +228,6 @@ int _call_translated_code  (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _call_buf_prepare      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
-int _count_call_buf_size   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
-
 int _call_buf_allocate     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _translate_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
@@ -307,9 +305,6 @@ int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity,
 
 #define consts_buffer_allocate(trans_struct) \
        _consts_buffer_allocate(trans_struct FOR_LOGS(, LOG_ARGS))
-
-#define count_call_buf_size(trans_struct) \
-       _count_call_buf_size(trans_struct FOR_LOGS(, LOG_ARGS))
 
 #define increase_entities_array(trans_struct) \
        _increase_entities_array(trans_struct FOR_LOGS(, LOG_ARGS))

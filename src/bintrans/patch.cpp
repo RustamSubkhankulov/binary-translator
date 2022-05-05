@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <tgmath.h>
+#include <math.h>
 
 //===============================================
 
@@ -94,6 +96,13 @@ int _patch_instruction(Trans_struct* trans_struct, Patch_instr* patch_instr FOR_
 
 //-----------------------------------------------
 
+#define DEF_STD_FUNC(name, code)                            \
+                                                            \
+    case code: destin_pos = (uint64_t) &standard_##name;    \
+               break;                                       
+
+//-----------------------------------------------
+
 int _patch_std_func(Trans_struct* trans_struct, Patch_instr* patch_instr FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -105,25 +114,8 @@ int _patch_std_func(Trans_struct* trans_struct, Patch_instr* patch_instr FOR_LOG
 
     switch (patch_instr->info.std_func_code)
     {
-        case IN:   destin_pos = (uint64_t) &standard_in;   break;
 
-        case OUT:  destin_pos = (uint64_t) &standard_out;  break;
-
-        case SIN:  destin_pos = (uint64_t) &standard_sin;  break;
-
-        case COS:  destin_pos = (uint64_t) &standard_cos;  break;
-
-        case TG:   destin_pos = (uint64_t) &standard_tg;   break;
-
-        case LN:   destin_pos = (uint64_t) &standard_ln;   break;
-
-        case ASIN: destin_pos = (uint64_t) &standard_asin; break;
-
-        case ATG:  destin_pos = (uint64_t) &standard_atg;  break;
-
-        case POW:  destin_pos = (uint64_t) &standard_pow;  break;
-
-        case FABS: destin_pos = (uint64_t) &standard_fabs; break;
+        #include "../../text_files/std_func.txt"
 
         default:
         {
@@ -142,6 +134,10 @@ int _patch_std_func(Trans_struct* trans_struct, Patch_instr* patch_instr FOR_LOG
     
     return 0;
 }
+
+//-----------------------------------------------
+
+#undef DEF_STD_FUNC
 
 //-----------------------------------------------
 
@@ -306,15 +302,6 @@ int _fix_up_jumps(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(jumps);
-
-    // for (unsigned int ct = 0;
-    //                   ct < jumps->num;
-    //                   ct ++)
-    // {
-    //     printf("\n Jump #%d inp_dst: %d res_dst: %d res_pos %d \n", ct, jumps->inp_dst[ct],
-    //                                                                     jumps->res_dst[ct],
-    //                                                                     jumps->res_pos[ct]);
-    // }
 
     unsigned int counter = 0;
 

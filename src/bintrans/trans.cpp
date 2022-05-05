@@ -495,7 +495,7 @@ int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     INIT_ENTITY(trans_struct, Two_nops);
 
-    // save xmm0, xmm1 values 
+    // save xmm0, xmm1 values in regular registers
     INIT_SAVE_XMM_0_1(trans_struct);
 
     // xmm0 = base; xmm1 = exp;
@@ -556,72 +556,6 @@ int _patch_near_cond_jump(Trans_struct* trans_struct,
 
     return 0;
 }
-
-//-----------------------------------------------
-
-// int _trans_eq_neq(Trans_struct* trans_struct, unsigned char op_code
-//                                             FOR_LOGS(, LOG_PARAMS))
-// {
-//     bintrans_log_report();
-//     assert(trans_struct);
-
-//     INIT_ENTITY(trans_struct, Two_nops);
-
-//     // Save xmm0, xmm1, xmm13 values
-//     INIT_SAVE_XMM_0_1_13(trans_struct);
-
-//     // Get first arg in xmm0
-//     INIT_ENTITY(trans_struct, Movss_xmm0_dword_rsp_plus_8);
-//     // Sub second from first
-//     INIT_ENTITY(trans_struct, Subss_xmm0_dword_rsp);
-
-//     INIT_ENTITY(trans_struct, Add_rsp_16);
-
-//     // push xmm1 - xmm7
-//     INIT_ENTITY(trans_struct, Push_xmms_1_7);
-
-//     INIT_ENTITY(trans_struct, Rel_call);
-//     ADD_PATCH_STD_FUNC(trans_struct, FABS);
-//     // needs to be patched
-
-//     // pop xmm1 -xmm7
-//     INIT_ENTITY(trans_struct, Pop_xmms_1_7);
-
-//     INIT_ENTITY(trans_struct, Null_xmm13);
-
-//     INIT_ENTITY(trans_struct, Movss_xmm1_ADDR);
-//     ADD_PATCH_CONST(trans_struct, 0.000001f);
-//     // needs to be patched
-
-//     INIT_ENTITY(trans_struct, Comiss_xmm0_xmm1);
-
-//     switch(op_code)
-//     {
-//         case EQ:    INIT_ENTITY(trans_struct, Jae_short_ahead_N);   break;
-
-//         case NEQ:   INIT_ENTITY(trans_struct, Jb_short_ahead_N);    break;
-
-//         default:
-//         {
-//             error_report(INV_OPER_CODE);
-//             return -1;
-//         }
-//     }
-//     patch_short_cond_jump(LAST_ENTITY, 0x0A);
-
-//     INIT_ENTITY(trans_struct, Movss_xmm13_ADDR);
-//     ADD_PATCH_CONST(trans_struct, 1.0f);
-//     // needs to be patched
-
-//     INIT_ENTITY(trans_struct, Push_dword_xmm13);
-
-//     // Restore xmm0, xmm1, xmm13 values
-//     INIT_RESTORE_XMM_0_1_13(trans_struct);
-
-//     trans_struct->input.pos += 1;
-
-//     return 0;
-// }
 
 //-----------------------------------------------
 

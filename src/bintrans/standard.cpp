@@ -63,13 +63,16 @@ float standard_in(void)
 
     #ifdef FILE_IO
 
-        int fscanf_return = fscanf(Output, "%f\n", &read);
+        int fscanf_return = fscanf(Input, " %f\n", &read);
+
         if (fscanf_return != 1)
         {
             fprintf(stderr, "Error occured during input from file");
         }
 
     #else
+
+        printf("\n Insert a number: ");
 
         int scanf_return = scanf(" %f", &read); 
         while (getchar() != '\n') {;}
@@ -93,9 +96,7 @@ int standard_out(float argument)
 
     #else
 
-        printf("%f", argument);
-
-        //printf("%f\n", argument);
+        printf("\n Output: %f\n", argument);
         
     #endif
 
@@ -115,10 +116,10 @@ int standard_out(float argument)
         assert(input_name);
         assert(output_name);
 
-        Input = open_file(input_name, "rb");
+        Input = open_file(input_name, "r");
         if (!Input) return -1;
 
-        Output = open_file(output_name, "wb");
+        Output = open_file(output_name, "w");
         if (!Output) return -1;
 
         return 0;

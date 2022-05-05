@@ -348,7 +348,7 @@ int _binary_execute(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     int ret_val = flush_entities_to_buf(trans_struct);
     if (ret_val == -1) return -1;
 
-    ret_val = call_buf_change_acc_prot(trans_struct, PROT_EXEC);
+    ret_val = call_buf_change_acc_prot(trans_struct, PROT_EXEC | PROT_WRITE);
     if (ret_val == -1) return -1;
 
     #ifdef FILE_IO
@@ -394,7 +394,7 @@ int _call_translated_code(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     #endif 
 
     int exit_code = func();
-    printf(" Exit code of translated code: %d \n", exit_code);
+    printf("\n Exit code of translated code: %d \n", exit_code);
 
     return 0;
 }
@@ -447,31 +447,31 @@ int _call_buf_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-int _count_call_buf_size(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report();
-    assert(trans_struct);
+// int _count_call_buf_size(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
+// {
+//     bintrans_log_report();
+//     assert(trans_struct);
 
-    unsigned int call_buf_size = 0;
+//     unsigned int call_buf_size = 0;
 
-    List* list = trans_struct->entities;
+//     List* list = trans_struct->entities;
     
-    int cur_index = (int)list->head;
+//     int cur_index = (int)list->head;
 
-    do
-    {
-        call_buf_size += list->data[cur_index]->size;
+//     do
+//     {
+//         call_buf_size += list->data[cur_index]->size;
 
-        cur_index = list->next[cur_index];
+//         cur_index = list->next[cur_index];
 
-    } while (cur_index != 0);
+//     } while (cur_index != 0);
 
-    trans_struct->result.size = call_buf_size;
+//     trans_struct->result.size = call_buf_size;
 
-    printf("\n call buf size %u \n", call_buf_size);
+//     printf("\n call buf size %u cur_result_pos %u \n", call_buf_size, trans_struct->result.cur_pos);
 
-    return 0;
-}
+//     return 0;
+// }
 
 //-----------------------------------------------
 
@@ -480,10 +480,10 @@ int _call_buf_prepare(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    int ret_val = count_call_buf_size(trans_struct);
-    if (ret_val == -1) return -1;
-
-    ret_val = call_buf_allocate(trans_struct);
+    trans_struct->result.size = 
+    trans_struct->result.cur_pos;
+                 
+    int ret_val = call_buf_allocate(trans_struct);
     if (ret_val == -1) return -1;
 
     return 0;

@@ -45,19 +45,19 @@ done 8,9. (alignment before call) errors with out in CALL: MAIN (WTF ?? i dk how
 done 8,5. make near calls and jumps
 
 8,7. replace spushing and poping xmm0-7 xmm1-7 with movs to registers
-8,8. remove count call buf size
-8,9. change types in patchig segment ( int64_t, uint64_t etc )
+done 8,8. remove count call buf size
+done 8,9. change types in patchig segment ( int64_t, uint64_t etc )
 
 done 9. unite some functions of translating 
 9,5. make codegenerating for standard functions
 
-9,6. part of array for const values is unused, change it
+done 9,6. part of array for const values is unused, change it
 
-9,7. deal with file i/o
-9,8. deal with seg faults with io
+done 9,7. deal with file i/o
+done 9,8. deal with seg faults with io
 
 
-993. check what instructions are faster ( push/ pop xmm(i) using R(i)X)
+done 993. check what instructions are faster ( push/ pop xmm(i) using R(i)X)
 994. table with current values of registers
 995. list visiter
 996. list search ( gets function for comparing)

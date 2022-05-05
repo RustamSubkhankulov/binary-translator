@@ -4,31 +4,8 @@ HLT
 MAIN:
 
 IN 
-POP cx
-
-PUSH 10
-COS
-POP cx
-
-PUSH 10
 SIN
-POP cx
-
-PUSH 10
-TG
-POP cx
-
-PUSH 10
-LN
-POP cx
-
-PUSH 10
-ASIN
-POP cx
-
-PUSH 10
-ATG
-POP cx
+OUT
 
 RET
 

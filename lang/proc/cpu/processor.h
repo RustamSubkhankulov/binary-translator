@@ -158,7 +158,7 @@ struct Procstruct {
     int fprintf_ret = fprintf(proc_output, ELEM_SPEC_2 "\n", value);  \
                                                                       \
     if (fprintf_ret < 0)                                              \
-       error_report(FILE_OUTPUT_ERROR);                        \
+       error_report(FILE_OUTPUT_ERROR);                               \
 }
 
 //===================================================================
@@ -170,7 +170,7 @@ struct Procstruct {
     int scanf_ret = fscanf(proc_input, ELEM_SPEC, value_ptr);         \
                                                                       \
     if (scanf_ret != 1)                                               \
-       error_report(FILE_INPUT_ERR);                           \
+       error_report(FILE_INPUT_ERR);                                  \
 }
 
 //===================================================================
@@ -178,7 +178,7 @@ struct Procstruct {
 #define RAM_NUMBER_CHECK(ram_number) {                                \
                                                                       \
    if (ram_number < 0 || ram_number > RAM_SIZE)                       \
-       error_report(INV_RAM_NUMBER);                           \
+       error_report(INV_RAM_NUMBER);                                  \
 }
 
 //===================================================================

@@ -124,9 +124,6 @@ int _trans_cond_jmp(Trans_struct* trans_struct, unsigned char op_code
 
 int _trans_jmp(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
-// int _trans_eq_neq (Trans_struct* trans_struct, unsigned char op_code 
-//                                              FOR_LOGS(, LOG_PARAMS));
-
 int _trans_compare(Trans_struct* trans_struct, unsigned char op_code 
                                              FOR_LOGS(, LOG_PARAMS));
 

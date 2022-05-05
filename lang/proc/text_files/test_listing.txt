@@ -4,45 +4,11 @@ Current position: 15. Input string : HLT Written bytes: 00
 
 Current position: 16. Input string : IN  Written bytes: 08 
 
-Current position: 17. Input string : POP cx Written bytes: 46 03 
+Current position: 17. Input string : SIN Written bytes: 11 
 
-Current position: 19. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
+Current position: 18. Input string : OUT Written bytes: 07 
 
-Current position: 1e. Input string : COS Written bytes: 12 
-
-Current position: 1f. Input string : POP cx Written bytes: 46 03 
-
-Current position: 21. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
-
-Current position: 26. Input string : SIN Written bytes: 11 
-
-Current position: 27. Input string : POP cx Written bytes: 46 03 
-
-Current position: 29. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
-
-Current position: 2e. Input string : TG Written bytes: 13 
-
-Current position: 2f. Input string : POP cx Written bytes: 46 03 
-
-Current position: 31. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
-
-Current position: 36. Input string : LN Written bytes: 14 
-
-Current position: 37. Input string : POP cx Written bytes: 46 03 
-
-Current position: 39. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
-
-Current position: 3e. Input string : ASIN Written bytes: 15 
-
-Current position: 3f. Input string : POP cx Written bytes: 46 03 
-
-Current position: 41. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
-
-Current position: 46. Input string : ATG Written bytes: 16 
-
-Current position: 47. Input string : POP cx Written bytes: 46 03 
-
-Current position: 49. Input string : RET Written bytes: 09 
+Current position: 19. Input string : RET Written bytes: 09 
 
 Filled jump destination. Ip: 11. Destination Ip: 16 
 
