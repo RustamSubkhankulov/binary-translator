@@ -12,6 +12,12 @@
 
 //#define DEBUG_EXEC
 
+//-----------------------------------------------
+
+// turns on binary optimizations
+
+#define BINARY_OPT
+
 //===============================================
 
 static const char* Logfile_name = "trans.html";

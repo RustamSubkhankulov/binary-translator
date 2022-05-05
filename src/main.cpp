@@ -3,10 +3,7 @@
 #include "global_conf.h"
 #include "bintrans/bintrans.h"
 #include "bintrans/patch.h"
-
-//
-#include "bintrans/standard.h"
-//
+#include "bintrans/optimizer.h"
 
 //===============================================
 
@@ -35,6 +32,13 @@ int main(int argc, char* argv[])
     if (ret_val == -1) return -1;
 
     // Main actions
+
+    #ifdef BINARY_OPT
+
+        ret_val = binary_optimize(&trans_struct);
+        if (ret_val == -1) return -1;
+
+    #endif 
 
     ret_val = binary_translate(&trans_struct);
     if (ret_val == -1) return -1;

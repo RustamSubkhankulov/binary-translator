@@ -1,6 +1,14 @@
 CC    = gcc 
 
-OBJ   = obj/main.o obj/logs.o obj/general.o obj/bintrans.o obj/list.o obj/standard.o obj/patch.o obj/trans.o
+OBJ   = obj/main.o      \
+	    obj/logs.o 	    \
+		obj/general.o   \
+		obj/bintrans.o  \
+		obj/list.o      \
+		obj/standard.o  \
+		obj/patch.o     \
+		obj/trans.o	    \
+		obj/optimizer.o \
 
 FLAGS = 
 #-lubsan -D NDEBUG -g -std=c++14 -fmax-errors=1 				\
@@ -37,7 +45,11 @@ FLAGS =
 
 #================================================
 
-GLOBAL_DEP 		= src/global_conf.h 
+GLOBAL_DEP 		= src/global_conf.h 				\
+				  text_files/commands.txt			\
+				  text_files/instr.txt				\
+				  text_files/jumps.txt				\
+				  text_files/std_func.txt
 
 #================================================
 
@@ -82,6 +94,11 @@ TRANS_DEP       = src/bintrans/trans.cpp			\
 				  src/bintrans/bintrans.cpp			\
 				  src/bintrans/bintrans_conf.h
 
+OPTIMIZER_DEP   = src/bintrans/optimizer.cpp		\
+				  src/bintrans/optimizer.h			\
+				  src/bintrans/optimizer_conf.h		\
+				  src/bintrans/bintrans_conf.h		\
+
 #================================================
 
 all: global
@@ -92,29 +109,33 @@ global: $(OBJ)
 
 #================================================
 
-obj/main.o: 	$(GLOBAL_DEP) $(MAIN_DEP)
-	$(CC) src/main.cpp 					-c -o obj/main.o 	 $(FLAGS)
+obj/main.o: 	 $(GLOBAL_DEP) $(MAIN_DEP)
+	$(CC) src/main.cpp 					-c -o obj/main.o 	  $(FLAGS)
 
-obj/logs.o: 	$(GLOBAL_DEP) $(LOG_DEP)
-	$(CC) src/logs/errors_and_logs.cpp  -c -o obj/logs.o     $(FLAGS)
+obj/logs.o: 	 $(GLOBAL_DEP) $(LOG_DEP)
+	$(CC) src/logs/errors_and_logs.cpp  -c -o obj/logs.o      $(FLAGS)
 
-obj/general.o: 	$(GLOBAL_DEP) $(GLOBAL_DEP)
-	$(CC) src/general/general.cpp 		-c -o obj/general.o  $(FLAGS)
+obj/general.o: 	 $(GLOBAL_DEP) $(GLOBAL_DEP)
+	$(CC) src/general/general.cpp 		-c -o obj/general.o   $(FLAGS)
 
-obj/bintrans.o:	$(GLOBAL_DEP) $(BINTRANS_DEP) 
-	$(CC) src/bintrans/bintrans.cpp 	-c -o obj/bintrans.o $(FLAGS)
+obj/bintrans.o:	 $(GLOBAL_DEP) $(BINTRANS_DEP) 
+	$(CC) src/bintrans/bintrans.cpp 	-c -o obj/bintrans.o  $(FLAGS)
 
-obj/list.o:		$(GLOBAL_DEP) $(LIST_DEP)
-	$(CC) src/list/list.cpp 		    -c -o obj/list.o 	 $(FLAGS)
+obj/list.o:		 $(GLOBAL_DEP) $(LIST_DEP)
+	$(CC) src/list/list.cpp 		    -c -o obj/list.o 	  $(FLAGS)
 
-obj/standard.o: $(GLOBAL_DEP) $(STANDARD_DEP)
-	$(CC) src/bintrans/standard.cpp     -c -o obj/standard.o $(FLAGS)
+obj/standard.o:  $(GLOBAL_DEP) $(STANDARD_DEP)
+	$(CC) src/bintrans/standard.cpp     -c -o obj/standard.o  $(FLAGS)
+	$(FLAGS)
 
-obj/patch.o:	$(GLOBAL_DEP) $(PATCH_DEP)
-	$(CC) src/bintrans/patch.cpp 		-c -o obj/patch.o 
+obj/patch.o:	 $(GLOBAL_DEP) $(PATCH_DEP)
+	$(CC) src/bintrans/patch.cpp 		-c -o obj/patch.o     $(FLAGS)
 
-obj/trans.o:	$(GLOBAL_DEP) $(TRANS_DEP)
-	$(CC) src/bintrans/trans.cpp 		-c -o obj/trans.o
+obj/trans.o:	 $(GLOBAL_DEP) $(TRANS_DEP)
+	$(CC) src/bintrans/trans.cpp 		-c -o obj/trans.o     $(FLAGS)
+
+obj/optimizer.o: $(GLOBAL_DEP) $(OPTIMIZER_DEP)
+	$(CC) src/bintrans/optimizer.cpp	-c -o obj/optimizer.o $(FLAGS)
 
 #================================================
 
