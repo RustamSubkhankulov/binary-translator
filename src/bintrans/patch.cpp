@@ -375,8 +375,8 @@ Patch_instr* _patch_instr_init(Trans_struct* trans_struct, int type FOR_LOGS(, L
     cur_patch_instr->patch_type  = type; 
     cur_patch_instr->res_buf_pos = trans_struct->result.cur_pos;
 
-    unsigned int cur_index      = trans_struct->entities->tail; 
-    cur_patch_instr->entity = trans_struct->entities->data[cur_index];
+    unsigned int cur_index  = trans_struct->entities.num - 1; 
+    cur_patch_instr->entity = trans_struct->entities.data[cur_index];
 
     return cur_patch_instr;
 }

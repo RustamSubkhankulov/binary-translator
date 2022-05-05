@@ -1,6 +1,5 @@
 #pragma once 
 
-#include "../list/list.h"
 #include "bintrans_conf.h"
 #include "../logs/errors_and_logs.h"
 
@@ -41,17 +40,17 @@
 
 #ifdef ENTITY_ADD_NAME_STR
 
-    #define FOR_LIST_DUMP(...) __VA_ARGS__ 
+    #define FOR_DUMP(...) __VA_ARGS__ 
 
 #else
 
-    #define FOR_LIST_DUMP(...)
+    #define FOR_DUMP(...)
 
 #endif 
 
 //===============================================
 
-#define LAST_ENTITY trans_struct->entities->data[trans_struct->entities->tail] 
+#define LAST_ENTITY trans_struct->entities.data[trans_struct->entities.num - 1] 
 
 //===============================================
 
@@ -164,9 +163,19 @@ struct Jumps
 
 //===============================================
 
+struct Entities
+{
+    Trans_entity** data;
+
+    unsigned int num;
+    unsigned int cap;
+};
+
+//===============================================
+
 struct Trans_struct
 {
-    struct List* entities;
+    struct Entities entities;
 
     struct Input  input;
     struct Result result;
@@ -197,6 +206,17 @@ struct Register_info
 };
 
 //===============================================
+
+int _entities_struct_ctor(Entities* entities FOR_LOGS(, LOG_PARAMS));
+
+int _entities_struct_dtor(Entities* entities FOR_LOGS(, LOG_PARAMS));
+
+int _entities_struct_increase(Entities* entities FOR_LOGS(, LOG_PARAMS));
+
+int _add_entity(Trans_entity* trans_entity, Entities* entities
+                                            FOR_LOGS(, LOG_PARAMS));
+
+//-----------------------------------------------
 
 int _read_binary_input(Binary_input* binary_input, const char* input_filename 
                                                       FOR_LOGS(, LOG_PARAMS));
@@ -237,7 +257,7 @@ int _translate_single_instruction(Trans_struct* trans_struct FOR_LOGS(, LOG_PARA
 int _call_buf_change_acc_prot(Trans_struct* trans_struct, int prot FOR_LOGS(, LOG_PARAMS));
 
 int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned char* data, int type
-                                      FOR_LIST_DUMP(, const char* name_str) FOR_LOGS(, LOG_PARAMS));
+                                      FOR_DUMP(, const char* name_str) FOR_LOGS(, LOG_PARAMS));
  
 int _patch_entity(Trans_entity* trans_entity, unsigned int   patch_pos, unsigned int  patch_size,
                                               unsigned char* patch_data FOR_LOGS(, LOG_PARAMS));
@@ -276,6 +296,20 @@ int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity,
     int _end_listing_file      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 #endif 
+
+//===============================================
+
+#define entities_struct_ctor(entities) \
+       _entities_struct_ctor(entities FOR_LOGS(, LOG_ARGS))
+
+#define entities_struct_dtor(entities) \
+       _entities_struct_dtor(entities FOR_LOGS(, LOG_ARGS))
+
+#define entities_struct_increase(entities) \
+       _entities_struct_increase(entities FOR_LOGS(, LOG_ARGS))
+
+#define add_entity(entity, entities) \
+       _add_entity(entity, entities FOR_LOGS(, LOG_ARGS))
 
 //===============================================
 

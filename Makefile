@@ -4,7 +4,6 @@ OBJ   = obj/main.o      \
 	    obj/logs.o 	    \
 		obj/general.o   \
 		obj/bintrans.o  \
-		obj/list.o      \
 		obj/standard.o  \
 		obj/patch.o     \
 		obj/trans.o	    \
@@ -121,8 +120,8 @@ obj/general.o: 	 $(GLOBAL_DEP) $(GLOBAL_DEP)
 obj/bintrans.o:	 $(GLOBAL_DEP) $(BINTRANS_DEP) 
 	$(CC) src/bintrans/bintrans.cpp 	-c -o obj/bintrans.o  $(FLAGS)
 
-obj/list.o:		 $(GLOBAL_DEP) $(LIST_DEP)
-	$(CC) src/list/list.cpp 		    -c -o obj/list.o 	  $(FLAGS)
+#obj/list.o:		 $(GLOBAL_DEP) $(LIST_DEP)
+#	$(CC) src/list/list.cpp 		    -c -o obj/list.o 	  $(FLAGS)
 
 obj/standard.o:  $(GLOBAL_DEP) $(STANDARD_DEP)
 	$(CC) src/bintrans/standard.cpp     -c -o obj/standard.o  $(FLAGS)

@@ -49,13 +49,16 @@ done 8,8. remove count call buf size
 done 8,9. change types in patchig segment ( int64_t, uint64_t etc )
 
 done 9. unite some functions of translating 
-9,5. make codegenerating for standard functions
+done 9,5. make codegenerating for standard functions
 
 done 9,6. part of array for const values is unused, change it
 
 done 9,7. deal with file i/o
 done 9,8. deal with seg faults with io
 
+10. improve validator
+11. change list for optimizer
+12. optimizer
 
 done 993. check what instructions are faster ( push/ pop xmm(i) using R(i)X)
 994. table with current values of registers
