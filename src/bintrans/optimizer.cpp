@@ -317,7 +317,43 @@ int _optimize_instructions(List* list FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(list);
 
-    
+    int ret_val = optimize_reg_pops(list);
+    if (ret_val == -1) return -1;
+
+    int is_opt = 0;
+
+    do 
+    {
+        is_opt = optimize_arithm(list);
+        if (is_opt == -1) return -1;
+
+    } while(is_opt == 1);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _optimize_arithm(List* list FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(list);
+
+
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _optimize_reg_pops(List* list FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(list);
+
+    float Registers[16] = { 0 };
+
+    unsigned int cur_index = list->head;
 
     return 0;
 }

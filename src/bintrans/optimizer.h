@@ -41,6 +41,10 @@ int _read_instructions(Input* input, List* list FOR_LOGS(, LOG_PARAMS));
 
 int _optimize_instructions(List* list FOR_LOGS(, LOG_PARAMS));
 
+int _optimize_arithm(List* list FOR_LOGS(, LOG_PARAMS));
+
+int _optimize_reg_pops(List* list FOR_LOGS(, LOG_PARAMS));
+
 int _count_instructions_size(List* list FOR_LOGS(, LOG_PARAMS));
 
 int _flush_instructions_to_buf(Trans_struct* trans_struct, List* list 
@@ -126,6 +130,12 @@ int _store_instr_data         (Instr* instr, unsigned char* new_buf,
 
 #define optimize_instructions(list) \
        _optimize_instructions(list FOR_LOGS(, LOG_ARGS))
+
+#define optimize_arithm(list) \
+       _optimize_arithm(list FOR_LOGS(, LOG_ARGS))
+
+#define optimize_reg_pops(list) \
+       _optimize_reg_pops(list FOR_LOGS(, LOG_ARGS))
 
 #define flush_instructions_to_buf(trans_struct, list) \
        _flush_instructions_to_buf(trans_struct, list FOR_LOGS(, LOG_ARGS))
