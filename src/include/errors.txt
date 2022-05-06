@@ -801,3 +801,15 @@ Invalid patch_type value)
 
 DEF_ERR(1222, INV_ENTITY_TYPE,
 Invalid entity type)
+
+DEF_ERR(1223, NULL_JUMPS_INP_DST,
+Null pointer to array of jump destinations in input buffer)
+
+DEF_ERR(1224, NULL_JUMPS_RES_DST,
+Null pointer to array of jump destinations in result buffer)
+
+DEF_ERR(1225, NULL_JUMPS_RES_POS,
+Null pointer to array of jump positions in result buffer)
+
+DEF_ERR(1226, NULL_PATCH_ARRAY,
+Null pointerto array of instruction to be patched)

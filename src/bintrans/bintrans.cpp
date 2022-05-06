@@ -846,6 +846,30 @@ int _trans_struct_validator(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         err_num++;
     }
 
+    if (!trans_struct->jumps.inp_dst)
+    {
+        error_report(NULL_JUMPS_INP_DST);
+        err_num++;
+    }
+
+    if (!trans_struct->jumps.res_dst)
+    {
+        error_report(NULL_JUMPS_RES_DST);
+        err_num++;
+    }
+
+    if (!trans_struct->jumps.res_pos)
+    {
+        error_report(NULL_JUMPS_RES_POS);
+        err_num++;
+    }
+
+    if (!trans_struct->patch.instructions)
+    {
+        error_report(NULL_PATCH_ARRAY);
+        err_num++;
+    }
+
     #ifdef BINTRANS_LISTING
 
         if (trans_struct->listing == NULL)

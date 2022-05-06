@@ -56,8 +56,9 @@ done 9,6. part of array for const values is unused, change it
 done 9,7. deal with file i/o
 done 9,8. deal with seg faults with io
 
-10. improve validator
+done 10. improve validator
 done 11. change list for optimizer
+11,5.listing optimizer'a
 12. optimizer
 13. cmndline arguments
 14. change trans_struct input (from list directly)
