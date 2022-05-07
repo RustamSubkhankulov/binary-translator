@@ -63,14 +63,14 @@ done 12. optimizer
 done 12,1 test optimizer
 done 12,5. optimize code in optimizer
 13. cmndline arguments
-14. change trans_struct input (from list directly)
+none 14. change trans_struct input (from list directly)
 
-done 993. check what instructions are faster ( push/ pop xmm(i) using R(i)X)
-994. table with current values of registers
-995. list visiter
-996. list search ( gets function for comparing)
+none done 993. check what instructions are faster ( push/ pop xmm(i) using R(i)X)
+done 994. table with current values of registers
+none 995. list visiter
+none 996. list search ( gets function for comparing)
 997. fast cpy sse
-998. add types for entities for optimizations 
+done 998. add types for entities for optimizations 
 	 of last step
 999. add saving feature 
 

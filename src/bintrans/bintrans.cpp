@@ -14,6 +14,47 @@
 
 //===============================================
 
+int _read_cmndline(Cmndline* cmndline, int argc, const char** argv FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(cmndline);
+    assert(argv);
+
+    int arg_ct = 1;
+
+    while(arg_ct < argc)
+    {
+        if (strcmp(argv[arg_ct], "-s") == 0)
+        {
+            cmndline->saving = 1;
+            cmndline->save_name = argv[arg_ct + 1];
+        
+            arg_ct += 2;
+            continue;
+        }
+
+        if (strcmp(argv[arg_ct], "-i") == 0)
+        {
+            cmndline->input_name = argv[arg_ct + 1];
+
+            arg_ct += 2;
+            continue;
+        }
+
+        if (strcmp(argv[arg_ct], "-opt") == 0)
+        {
+            cmndline->opt = 1;
+
+            arg_ct += 1;
+            continue;
+        }
+    } 
+
+    return 0;
+}
+
+//===============================================
+
 int _entities_struct_ctor(Entities* entities FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();

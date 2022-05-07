@@ -5,6 +5,18 @@
 
 //===============================================
 
+struct Cmndline
+{
+    const char* input_name;
+
+    char saving; 
+    const char* save_name;
+
+    char opt;
+};
+
+//===============================================
+
 #ifdef BINTRANS_LOGS
 
     #define bintrans_log_report() \
@@ -76,8 +88,7 @@ struct Trans_entity
 
         char* name_str;
 
-    #endif 
-    //type maybe?
+    #endif
 };
 
 
@@ -188,8 +199,6 @@ struct Trans_struct
     float* consts_buffer;
     unsigned int consts_ct;
 
-    //float reg_values[16];
-
     #ifdef BINTRANS_LISTING
 
         FILE* listing;
@@ -206,6 +215,11 @@ struct Register_info
 };
 
 //===============================================
+
+int _read_cmndline(Cmndline* cmndline, int argc, const char** argv 
+                                                 FOR_LOGS(, LOG_PARAMS));
+
+//-----------------------------------------------
 
 int _entities_struct_ctor(Entities* entities FOR_LOGS(, LOG_PARAMS));
 
@@ -296,6 +310,11 @@ int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity,
     int _end_listing_file      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 #endif 
+
+//===============================================
+
+#define read_cmndline(cmndline, argc, argv) \
+       _read_cmndline(cmndline, argc, argv FOR_LOGS(, LOG_ARGS))
 
 //===============================================
 

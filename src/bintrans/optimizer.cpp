@@ -27,53 +27,8 @@ int _binary_optimize(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
                                 &list);
     if (ret_val == -1) return -1;
 
-    //-------------------------------------------
-
-    {
-        unsigned int cur_index = list.head;
-
-        while (cur_index != 0)
-        {
-            printf("\n index %d hex oper_code %x size: %d float: %x int: %x char: %x \n", cur_index, 
-                                                                                          list.data[cur_index]->oper_code,
-                                                                                          list.data[cur_index]->size,
-                                                                                          (unsigned)list.data[cur_index]->data.float_value,
-                                                                                          list.data[cur_index]->data.int_value,
-                                                                                          list.data[cur_index]->data.unsigned_char_value);
-        
-            cur_index = list.next[cur_index];
-        }
-
-    }
-
-    //-------------------------------------------
-
     ret_val = optimize_instructions(&list);
     if (ret_val == -1) return -1;
-
-    //-------------------------------------------
-
-    {
-
-        printf("\n----------------------------------------\n");
-
-        unsigned int cur_index = list.head;
-
-        while (cur_index != 0)
-        {
-            printf("\n index %d hex oper_code %x size: %d float: %x int: %x char: %x \n", cur_index, 
-                                                                                          list.data[cur_index]->oper_code,
-                                                                                          list.data[cur_index]->size,
-                                                                                          (unsigned)list.data[cur_index]->data.float_value,
-                                                                                          list.data[cur_index]->data.int_value,
-                                                                                          list.data[cur_index]->data.unsigned_char_value);
-        
-            cur_index = list.next[cur_index];
-        }
-
-    }
-
-    //-------------------------------------------
 
     ret_val = flush_instructions_to_buf(trans_struct, 
                                         &list);
@@ -448,10 +403,6 @@ int _fold_std_func(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAM
         }
     }
 
-    //
-    printf("\n OPTIMIZER: FUNC: %xh VALUE: %f RES:%f\n", func_code, val, res);
-    //
-
     push->data.float_value = res;
 
     int next_iter_index = list->next[nxt_index];
@@ -542,8 +493,6 @@ int _fold_arithm(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS)
     }
 
     frst_push->data.float_value = res;
-
-    printf("\n OPTIMIZER: ARITHM: %xh 1st VALUE: %f 2nd VALUE: %f RES:%f\n", arithm_code, frst_val, scnd_val, res);
 
     int next_iter_index = list->next[arithm_index];
 
@@ -783,14 +732,6 @@ int _optimize_reg_pop(List* list, int cur_index, float* registers
     float    pushed_value = push->data.float_value;
     unsigned char reg_num = pop ->data.unsigned_char_value - 1;
 
-    //-------------------------------------------
-
-    printf("\n Optimizer: PUSH %f POP %d; REGS[reg_num] %f\n", pushed_value,
-                                                               reg_num,
-                                                               registers[reg_num]);
-
-    //-------------------------------------------
-
     if (pushed_value == registers[reg_num])
     {
         int next_iter_index = list->next[nxt_index];
@@ -831,8 +772,6 @@ int _count_instructions_size(List* list FOR_LOGS(, LOG_PARAMS))
         result_size += list->data[cur_index]->size;
         cur_index    = list->next[cur_index];
     }
-
-    printf("\n counted size: %d \n", result_size);
 
     return result_size;
 }
@@ -1030,24 +969,6 @@ int _flush_instructions_to_buf(Trans_struct* trans_struct, List* list
 
         cur_index = list->next[cur_index];
     }
-
-    //-------------------------------------------
-
-    for (unsigned int counter = 0;
-                      counter < trans_struct->input.size;
-                      counter++)
-        printf("%02x", old_buf[counter]);
-
-    printf("\n");
-
-    for (unsigned int counter = 0;
-                      counter < size;
-                      counter++)
-        printf("%02x", new_buf[counter]);
-
-    printf("\n");
-
-    //-------------------------------------------
 
     trans_struct->input.buffer = new_buf;
     trans_struct->input.size   = size;
