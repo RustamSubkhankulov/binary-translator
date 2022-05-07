@@ -796,8 +796,6 @@ int _ram_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     trans_struct->ram_buffer       = ram_buffer;
     trans_struct->patch.ram_buffer = ram_buffer;
 
-    printf("\n ram_buffer %p \n", ram_buffer);
-
     return 0;
 }
 

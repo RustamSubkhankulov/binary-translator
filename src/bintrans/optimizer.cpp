@@ -364,14 +364,15 @@ int _optimize_consts(List* list FOR_LOGS(, LOG_PARAMS))
     int is_opt_std_func     = optimize_std_func(list);
     if (is_opt_std_func     == -1) return -1;
 
-    int is_opt_arithm       = optimize_arithm(list);
-    if (is_opt_arithm       == -1) return -1;
-
     int is_opt_mul_zero     = optimize_mul_zero(list);
     if (is_opt_mul_zero     == -1) return -1;
 
     int is_opt_add_sub_zero = optimize_add_sub_zero(list);
     if (is_opt_add_sub_zero == -1) return -1;
+
+    int is_opt_arithm       = optimize_arithm(list);
+    if (is_opt_arithm       == -1) return -1;
+
 
     return (is_opt_std_func || is_opt_arithm 
          || is_opt_mul_zero || is_opt_add_sub_zero);
@@ -447,14 +448,19 @@ int _fold_std_func(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAM
         }
     }
 
+    //
+    printf("\n OPTIMIZER: FUNC: %xh VALUE: %f RES:%f\n", func_code, val, res);
+    //
+
     push->data.float_value = res;
 
     int next_iter_index = list->next[nxt_index];
-    free(func);
-    
+
     int err = 0;
     list_pop_by_index(list, (unsigned int)nxt_index, &err);
     if (err == -1) return -1;
+
+    free(func);
 
     return next_iter_index;
 }
@@ -514,7 +520,7 @@ int _fold_arithm(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS)
     float scnd_val = scnd_push->data.float_value;
     float res      = 0;
 
-    unsigned char arithm_code = arithm->data.unsigned_char_value;
+    unsigned char arithm_code = arithm->oper_code;
 
     switch(arithm_code)
     {
@@ -537,8 +543,7 @@ int _fold_arithm(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS)
 
     frst_push->data.float_value = res;
 
-    free(arithm);
-    free(scnd_push);
+    printf("\n OPTIMIZER: ARITHM: %xh 1st VALUE: %f 2nd VALUE: %f RES:%f\n", arithm_code, frst_val, scnd_val, res);
 
     int next_iter_index = list->next[arithm_index];
 
@@ -548,6 +553,9 @@ int _fold_arithm(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS)
 
     list_pop_by_index(list, (unsigned int)arithm_index, &err);
     if (err == -1) return -1;
+
+    free(arithm);
+    free(scnd_push);
 
     return next_iter_index;
 }
@@ -571,6 +579,10 @@ int _optimize_mul_zero(List* list FOR_LOGS(, LOG_PARAMS))
         if (nxt_nxt_index == 0) break;
 
         if (list->data[nxt_nxt_index]->oper_code != MUL)
+        {
+            cur_index = nxt_index;
+            continue;
+        }
 
         char first_cond = (((list->data[cur_index]->oper_code &  OPER_CODE_MASK) == PUSH
                           || list->data[cur_index]->oper_code                    == IN)
@@ -612,7 +624,7 @@ int _fold_mul_zero(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAM
     Instr* push_0 = list->data[cur_index];
 
     push_0->oper_code = PUSH | IMM_MASK;
-    push_0->size = 1 + sizeof(float;)
+    push_0->size = 1 + sizeof(float);
     push_0->data.float_value = 0;
 
     #ifdef ADD_INSTR_NAME
@@ -622,9 +634,6 @@ int _fold_mul_zero(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAM
 
     #endif 
 
-    free(list->data[mul_index]);
-    free(list->data[nxt_index]);
-
     int err = 0;
 
     list_pop_by_index(list, (unsigned int) mul_index, &err);
@@ -632,6 +641,9 @@ int _fold_mul_zero(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAM
 
     list_pop_by_index(list, (unsigned int) nxt_index, &err);
     if (err == -1) return -1;
+
+    free(list->data[mul_index]);
+    free(list->data[nxt_index]);
 
     return next_iter_index;
 }
@@ -656,6 +668,10 @@ int _optimize_add_sub_zero(List* list FOR_LOGS(, LOG_PARAMS))
 
         if (list->data[oper_index]->oper_code != ADD 
         &&  list->data[oper_index]->oper_code != SUB)
+        {
+            cur_index = nxt_index;
+            continue;
+        }
 
         int zero_index = 0;
         int scnd_index = 0;
@@ -707,9 +723,6 @@ int _fold_add_sub_zero(List* list, int zero_index, int oper_index FOR_LOGS(, LOG
 
     int next_iter_index = list->next[oper_index];
 
-    free(list->data[zero_index]);
-    free(list->data[oper_index]);
-
     int err = 0;
 
     list_pop_by_index(list, (unsigned int) zero_index, &err);
@@ -717,6 +730,9 @@ int _fold_add_sub_zero(List* list, int zero_index, int oper_index FOR_LOGS(, LOG
 
     list_pop_by_index(list, (unsigned int) oper_index, &err);
     if (err == -1) return -1;
+
+    free(list->data[zero_index]);
+    free(list->data[oper_index]);
 
     return next_iter_index;
 }
@@ -781,15 +797,15 @@ int _optimize_reg_pop(List* list, int cur_index, float* registers
 
         int err = 0;
 
-        free(push);
-        free(pop);
-
         list_pop_by_index(list, (unsigned int) cur_index, &err);
         if (err == -1) return -1;
 
         list_pop_by_index(list, (unsigned int) nxt_index, &err);
         if (err == -1) return -1;
     
+        free(push);
+        free(pop);
+
         return next_iter_index;
     }
 

@@ -3,8 +3,13 @@ HLT
 
 MAIN:
 
+PUSH [bx+4]
 PUSH 0
-POP bx
+ADD
+PUSH 0
+MUL
+
+OUT
 
 RET
 
