@@ -59,7 +59,8 @@ done 9,8. deal with seg faults with io
 done 10. improve validator
 done 11. change list for optimizer
 11,5.listing optimizer'a
-12. optimizer
+done 12. optimizer
+12,1 test optimizer
 12,5. optimize code in optimizer
 13. cmndline arguments
 14. change trans_struct input (from list directly)

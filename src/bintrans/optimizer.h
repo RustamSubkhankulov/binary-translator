@@ -49,9 +49,18 @@ int _optimize_arithm  (List* list FOR_LOGS(, LOG_PARAMS));
 
 int _optimize_std_func(List* list FOR_LOGS(, LOG_PARAMS));
 
+int _optimize_mul_zero(List* list FOR_LOGS(, LOG_PARAMS));
+
+int _optimize_add_sub_zero(List* list FOR_LOGS(, LOG_PARAMS));
+
 int _fold_std_func(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS));
 
 int _fold_arithm  (List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS));
+
+int _fold_mul_zero(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS));
+
+int _fold_add_sub_zero(List* list, int zero_index, int oper_index 
+                                                   FOR_LOGS(, LOG_PARAMS));
 
 int _optimize_reg_pop(List* list, int cur_index, float* registers
                                                  FOR_LOGS(, LOG_PARAMS));
@@ -160,11 +169,23 @@ int _store_instr_data         (Instr* instr, unsigned char* new_buf,
 #define optimize_reg_pop(list, cur_index, registers) \
        _optimize_reg_pop(list, cur_index, registers FOR_LOGS(, LOG_ARGS))
 
+#define optimize_mul_zero(list) \
+       _optimize_mul_zero(list FOR_LOGS(, LOG_ARGS))
+
 #define fold_std_func(list, cur, nxt) \
        _fold_std_func(list, cur, nxt FOR_LOGS(, LOG_ARGS))
 
 #define fold_arithm(list, cur, nxt) \
        _fold_arithm(list, cur, nxt FOR_LOGS(, LOG_ARGS))
+
+#define fold_mul_zero(list, cur, nxt) \
+       _fold_mul_zero(list, cur, nxt FOR_LOGS(, LOG_ARGS))
+
+#define fold_add_sub_zero(list, zero, oper) \
+       _fold_add_sub_zero(list, zero, oper FOR_LOGS(, LOG_ARGS))
+
+#define optimize_add_sub_zero(list) \
+       _optimize_add_sub_zero(list FOR_LOGS(, LOG_ARGS))
 
 #define change_and_store_header(new_buf, old_buf, size) \
        _change_and_store_header(new_buf, old_buf, size FOR_LOGS(, LOG_ARGS))
