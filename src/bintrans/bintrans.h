@@ -7,10 +7,8 @@
 
 struct Cmndline
 {
+    char input;
     const char* input_name;
-
-    char saving; 
-    const char* save_name;
 
     char opt;
 };

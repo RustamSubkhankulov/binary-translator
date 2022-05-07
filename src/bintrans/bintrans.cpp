@@ -24,17 +24,9 @@ int _read_cmndline(Cmndline* cmndline, int argc, const char** argv FOR_LOGS(, LO
 
     while(arg_ct < argc)
     {
-        if (strcmp(argv[arg_ct], "-s") == 0)
-        {
-            cmndline->saving = 1;
-            cmndline->save_name = argv[arg_ct + 1];
-        
-            arg_ct += 2;
-            continue;
-        }
-
         if (strcmp(argv[arg_ct], "-i") == 0)
         {
+            cmndline->input = 1;
             cmndline->input_name = argv[arg_ct + 1];
 
             arg_ct += 2;
