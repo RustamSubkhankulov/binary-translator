@@ -3,9 +3,8 @@ HLT
 
 MAIN:
 
-IN 
-SIN
-OUT
+PUSH 0
+POP bx
 
 RET
 

@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
+#include <tgmath.h
+#include <math.h>
 
 //===============================================
 
@@ -48,6 +50,30 @@ int _binary_optimize(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     ret_val = optimize_instructions(&list);
     if (ret_val == -1) return -1;
+
+    //-------------------------------------------
+
+    {
+
+        printf("\n----------------------------------------\n");
+
+        unsigned int cur_index = list.head;
+
+        while (cur_index != 0)
+        {
+            printf("\n index %d hex oper_code %x size: %d float: %x int: %x char: %x \n", cur_index, 
+                                                                                          list.data[cur_index]->oper_code,
+                                                                                          list.data[cur_index]->size,
+                                                                                          (unsigned)list.data[cur_index]->data.float_value,
+                                                                                          list.data[cur_index]->data.int_value,
+                                                                                          list.data[cur_index]->data.unsigned_char_value);
+        
+            cur_index = list.next[cur_index];
+        }
+
+    }
+
+    //-------------------------------------------
 
     ret_val = flush_instructions_to_buf(trans_struct, 
                                         &list);
@@ -144,6 +170,9 @@ int _load_instr_data(unsigned char oper_code, Input* input,
     assert(instr);
     assert(input);
 
+    unsigned char masks = oper_code & ~ OPER_CODE_MASK;
+              oper_code = oper_code &   OPER_CODE_MASK;
+
     if (oper_code >= CALL && oper_code <= JA)
     {
         int ret_val = load_int_value(input, instr);
@@ -155,7 +184,7 @@ int _load_instr_data(unsigned char oper_code, Input* input,
     if (oper_code != PUSH && oper_code != POP)
         return 0;
 
-    switch(oper_code & ~ OPER_CODE_MASK)
+    switch(masks)
     {
         case REGISTER_MASK | RAM_MASK: [[fallthrough]];
 
@@ -252,7 +281,7 @@ int _add_instruction_name(Instr* instr FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(instr);
 
-    switch (instr->oper_code)
+    switch (instr->oper_code & OPER_CODE_MASK)
     {
         #include "../../text_files/commands_and_jumps.txt"
 
@@ -317,19 +346,114 @@ int _optimize_instructions(List* list FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(list);
 
-    int ret_val = optimize_reg_pops(list);
-    if (ret_val == -1) return -1;
-
     int is_opt = 0;
 
     do 
     {
-        is_opt = optimize_arithm(list);
+        is_opt = optimize_consts(list);
         if (is_opt == -1) return -1;
 
     } while(is_opt == 1);
 
+    int ret_val = optimize_reg_pops(list);
+    if (ret_val == -1) return -1;
+
     return 0;
+}
+
+//-----------------------------------------------
+
+int _optimize_consts(List* list FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(list);
+
+    int is_opt_std_func = optimize_std_func(list);
+    if (is_opt_std_func == -1) return -1;
+
+    int is_opt_arithm   = optimize_arithm(list);
+    if (is_opt_arithm   == -1) return -1;
+
+    return (is_opt_std_func || is_opt_arithm);
+}
+
+//-----------------------------------------------
+
+int _optimize_std_func(List* list FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(list);
+
+    int cur_index = list->head;
+
+    while(cur_index != 0)
+    {
+        int nxt_index = list->next[cur_index];
+        if (nxt_index == 0) break;
+
+        unsigned char nxt_index_oper_code = list->data[nxt_index]->oper_code;
+
+        if (list->data[cur_index]->oper_code == (PUSH | IMM_MASK)
+        &&  SIN <= nxt_index_oper_code
+        &&  ATG >= nxt_index_oper_code)
+        {
+            cur_index = fold_std_func(list, cur_index, nxt_index);
+            if (cur_index == -1) return -1;
+        }
+
+        else 
+            cur_index = nxt_index;
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _fold_std_func(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(list);
+
+    Instr* push = list->data[cur_index];
+    Instr* func = list->data[nxt_index];
+
+    float val = push->data.float_value;
+    float res = 0;
+    
+    unsigned char func_code = func->oper_code;
+
+    switch(func_code)
+    {
+        case SIN:   res = sinf (val);   break;
+
+        case COS:   res = cosf (val);   break;
+
+        case TG:    res = tanf (val);   break;
+
+        case LN:    res = logf (val);   break;
+
+        case ASIN:  res = asinf(val);   break;
+
+        case ATG:   res = atanf(val);   break;
+
+        default:
+        {
+            error_report(JIT_INV_OP_CODE);
+            return -1;
+        }
+    }
+
+    push->data.float_value = res;
+
+    int next_iter_index = list->next[nxt_index];
+    free(func);
+    
+    int err = 0;
+    list_pop_by_index(list, (unsigned int)nxt_index, &err);
+    if (err == -1) return -1;
+
+    return next_iter_index;
 }
 
 //-----------------------------------------------
@@ -339,9 +463,87 @@ int _optimize_arithm(List* list FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(list);
 
+    int cur_index = list->head;
 
+    while(cur_index != 0)
+    {
+        int nxt_index = list->next[cur_index];
+        if (nxt_index == 0) break;
+
+        int nxt_nxt_index = list->next[nxt_index];
+        if (nxt_nxt_index == 0) break;
+
+        unsigned char nxt_nxt_oper_code = list->data[nxt_nxt_index]->oper_code;
+
+        if (list->data[cur_index]->oper_code == (PUSH | IMM_MASK)
+        &&  list->data[nxt_index]->oper_code == (PUSH | IMM_MASK)
+        && ((nxt_nxt_oper_code >= ADD nxt_nxt_oper_code <= DIV) 
+        ||   nxt_nxt_oper_code == POW))
+        {
+            cur_index = fold_arithm(list, cur_index, nxt_index);
+            if (cur_index == -1) return -1;
+        }
+
+        else
+            cur_index = nxt_index;
+    }
 
     return 0;
+}
+
+//-----------------------------------------------
+
+int _fold_arithm(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(list);
+
+    Instr* frst_push = list->data[cur_index];
+    Instr* scnd_push = list->data[nxt_index];
+
+    int arithm_index = list->data[nxt_index];
+    Instr* arithm    = list->data[arithm_index];
+
+    float frst_val = frst_push->data.float_val;
+    float scnd_val = scnd_push->data.float_val;
+    float res      = 0;
+
+    unsigned char arithm_code = arithm->data.unsigned_char_value;
+
+    switch(arithm_code)
+    {
+        case ADD: res = frst_val + scnd_val;      break;
+
+        case SUB: res = frst_val - scnd_val;      break;
+
+        case MUL: res = frst_val * scnd_val;      break;
+
+        case DIV: res = frst_val / scnd_val;      break;
+
+        case POW: res = powf(frst_val, scnd_val); break;
+
+        default:
+        {
+            error_report(JIT_INV_OP_CODE);
+            return -1;
+        }
+    }
+
+    frst_push->data.float_value = res;
+
+    free(arithm);
+    free(scnd_push);
+
+    int next_inter_index = list->next[arithm_index];
+
+    int err = 0;
+    list_pop_by_index(list, (unsigned int)nxt_index,    &err);
+    if (err == -1) return -1;
+
+    list_pop_by_index(list, (unsigned int)arithm_index, &err);
+    if (err == -1) return -1;
+
+    return next_iter_index;
 }
 
 //-----------------------------------------------
@@ -351,11 +553,76 @@ int _optimize_reg_pops(List* list FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(list);
 
-    float Registers[16] = { 0 };
+    float registers[16] = { 0 };
 
-    unsigned int cur_index = list->head;
+    int cur_index = list->head;
+    
+    while (cur_index != 0)
+    {
+        int nxt_index = list->next[cur_index];
+        if (nxt_index == 0) break;
+
+        if (list->data[cur_index]->oper_code == (PUSH | IMM_MASK)
+        &&  list->data[nxt_index]->oper_code == (POP  | REGISTER_MASK))
+        {
+            cur_index = optimize_reg_pop(list, cur_index, registers);
+            if (cur_index == -1) return -1;
+        }
+
+        else
+            cur_index = nxt_index;
+    }
 
     return 0;
+}
+
+//-----------------------------------------------
+
+int _optimize_reg_pop(List* list, int cur_index, float* registers 
+                                          FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(registers);
+    assert(list);
+
+    int nxt_index = list->next[cur_index];
+    Instr* push   = list->data[cur_index];
+    Instr* pop    = list->data[nxt_index];
+
+    float    pushed_value = push->data.float_value;
+    unsigned char reg_num = pop ->data.unsigned_char_value - 1;
+
+    //-------------------------------------------
+
+    printf("\n Optimizer: PUSH %f POP %d; REGS[reg_num] %f\n", pushed_value,
+                                                               reg_num,
+                                                               registers[reg_num]);
+
+    //-------------------------------------------
+
+    if (pushed_value == registers[reg_num])
+    {
+        int next_iter_index = list->next[nxt_index];
+
+        int err = 0;
+
+        free(push);
+        free(pop);
+
+        list_pop_by_index(list, (unsigned int) cur_index, &err);
+        if (err == -1) return -1;
+
+        list_pop_by_index(list, (unsigned int) nxt_index, &err);
+        if (err == -1) return -1;
+    
+        return next_iter_index;
+    }
+
+    else
+    {
+        registers[reg_num] = pushed_value;
+        return nxt_index;
+    }
 }
 
 //-----------------------------------------------
@@ -449,6 +716,9 @@ int _store_instr_data(Instr* instr, unsigned char* new_buf,
 
     unsigned char oper_code = instr->oper_code;
 
+    unsigned char masks = oper_code & ~ OPER_CODE_MASK;
+              oper_code = oper_code &   OPER_CODE_MASK;
+
     if (oper_code >= CALL && oper_code <= JA)
     {
         int ret_val = store_int_value(instr, new_buf,
@@ -461,7 +731,7 @@ int _store_instr_data(Instr* instr, unsigned char* new_buf,
     if (oper_code != PUSH && oper_code != POP)
         return 0;
 
-    switch(oper_code & ~ OPER_CODE_MASK)
+    switch(masks)
     {
         case REGISTER_MASK | RAM_MASK: [[fallthrough]];
 
@@ -510,6 +780,28 @@ int _store_instr_data(Instr* instr, unsigned char* new_buf,
 
 //-----------------------------------------------
 
+int _change_and_store_header(unsigned char* new_buf, unsigned char* old_buf, 
+                             unsigned int   new_size FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(new_buf);
+    assert(old_buf);
+
+    Header header = { 0 };
+
+    int ret_val = fast_cpy((void*)&header, (void*)old_buf, sizeof(Header));
+    if (ret_val == -1) return -1;
+
+    header.file_size = new_size;
+
+    ret_val = fast_cpy((void*)new_buf, (void*)&header, sizeof(header));
+    if (ret_val == -1) return -1;
+
+    return 0;
+}
+
+//-----------------------------------------------
+
 int _flush_instructions_to_buf(Trans_struct* trans_struct, List* list 
                                               FOR_LOGS(, LOG_PARAMS))
 {
@@ -527,7 +819,7 @@ int _flush_instructions_to_buf(Trans_struct* trans_struct, List* list
         return -1;
     }
 
-    int is_ok = fast_cpy((void*) new_buf, (void*) old_buf, sizeof(Header));
+    int is_ok = change_and_store_header(new_buf, old_buf, size);
     if (is_ok == -1) return -1;
 
     int cur_index = list->head;
@@ -547,6 +839,24 @@ int _flush_instructions_to_buf(Trans_struct* trans_struct, List* list
 
         cur_index = list->next[cur_index];
     }
+
+    //-------------------------------------------
+
+    for (unsigned int counter = 0;
+                      counter < trans_struct->input.size;
+                      counter++)
+        printf("%02x", old_buf[counter]);
+
+    printf("\n");
+
+    for (unsigned int counter = 0;
+                      counter < size;
+                      counter++)
+        printf("%02x", new_buf[counter]);
+
+    printf("\n");
+
+    //-------------------------------------------
 
     trans_struct->input.buffer = new_buf;
     trans_struct->input.size   = size;

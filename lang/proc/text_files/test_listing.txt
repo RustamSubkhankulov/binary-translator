@@ -2,13 +2,11 @@ Current position: 10. Input string : CALL: MAIN Written bytes: 18 00 00 00 00
 
 Current position: 15. Input string : HLT Written bytes: 00 
 
-Current position: 16. Input string : IN  Written bytes: 08 
+Current position: 16. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
 
-Current position: 17. Input string : SIN Written bytes: 11 
+Current position: 1b. Input string : POP bx Written bytes: 46 02 
 
-Current position: 18. Input string : OUT Written bytes: 07 
-
-Current position: 19. Input string : RET Written bytes: 09 
+Current position: 1d. Input string : RET Written bytes: 09 
 
 Filled jump destination. Ip: 11. Destination Ip: 16 
 

@@ -30,4 +30,4 @@ asmexecute:
 	./proc/asm.exe proc/text_files/quadratic.txt proc/text_files/quadratic.code asm_logs.html proc/text_files/asm_listing.txt
 
 bin:
-	./proc/asm.exe proc/text_files/test.txt ../binary/test.code asm_logs.html proc/text_files/asm_listing.txt
+	./proc/asm.exe proc/text_files/test.txt ../binary/test.code asm_logs.html proc/text_files/test_listing.txt

@@ -41,14 +41,28 @@ int _read_instructions(Input* input, List* list FOR_LOGS(, LOG_PARAMS));
 
 int _optimize_instructions(List* list FOR_LOGS(, LOG_PARAMS));
 
-int _optimize_arithm(List* list FOR_LOGS(, LOG_PARAMS));
+int _optimize_consts  (List* list FOR_LOGS(, LOG_PARAMS));
 
 int _optimize_reg_pops(List* list FOR_LOGS(, LOG_PARAMS));
+
+int _optimize_arithm  (List* list FOR_LOGS(, LOG_PARAMS));
+
+int _optimize_std_func(List* list FOR_LOGS(, LOG_PARAMS));
+
+int _fold_std_func(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS));
+
+int _fold_arithm  (List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS));
+
+int _optimize_reg_pop(List* list, int cur_index, float* registers
+                                                 FOR_LOGS(, LOG_PARAMS));
 
 int _count_instructions_size(List* list FOR_LOGS(, LOG_PARAMS));
 
 int _flush_instructions_to_buf(Trans_struct* trans_struct, List* list 
                                               FOR_LOGS(, LOG_PARAMS));
+
+int _change_and_store_header(unsigned char* new_buf, unsigned char* old_buf, 
+                             unsigned int   new_size FOR_LOGS(, LOG_PARAMS));
 
 int _list_free_instr(List* list FOR_LOGS(, LOG_PARAMS));
 
@@ -131,11 +145,29 @@ int _store_instr_data         (Instr* instr, unsigned char* new_buf,
 #define optimize_instructions(list) \
        _optimize_instructions(list FOR_LOGS(, LOG_ARGS))
 
+#define optimize_consts(list) \
+       _optimize_consts(list FOR_LOGS(, LOG_ARGS))
+
 #define optimize_arithm(list) \
        _optimize_arithm(list FOR_LOGS(, LOG_ARGS))
 
+#define optimize_std_func(list) \
+       _optimize_std_func(list FOR_LOGS(, LOG_ARGS))
+
 #define optimize_reg_pops(list) \
        _optimize_reg_pops(list FOR_LOGS(, LOG_ARGS))
+
+#define optimize_reg_pop(list, cur_index, registers) \
+       _optimize_reg_pop(list, cur_index, registers FOR_LOGS(, LOG_ARGS))
+
+#define fold_std_func(list, cur, nxt) \
+       _fold_std_func(list, cur, nxt FOR_LOGS(, LOG_ARGS))
+
+#define fold_arithm(list, cur, nxt) \
+       _fold_arithm(list, cur, nxt FOR_LOGS(, LOG_ARGS))
+
+#define change_and_store_header(new_buf, old_buf, size) \
+       _change_and_store_header(new_buf, old_buf, size FOR_LOGS(, LOG_ARGS))
 
 #define flush_instructions_to_buf(trans_struct, list) \
        _flush_instructions_to_buf(trans_struct, list FOR_LOGS(, LOG_ARGS))

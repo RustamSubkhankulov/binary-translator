@@ -8,7 +8,9 @@ Current position: 17. Input string : SIN Written bytes: 11
 
 Current position: 18. Input string : OUT Written bytes: 07 
 
-Current position: 19. Input string : RET Written bytes: 09 
+Current position: 19. Input string : POP ax Written bytes: 46 01 
+
+Current position: 1b. Input string : RET Written bytes: 09 
 
 Filled jump destination. Ip: 11. Destination Ip: 16 
 

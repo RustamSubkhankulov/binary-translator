@@ -5,6 +5,7 @@
 
 #include "list.h"
 #include "../general/general.h"
+#include "../bintrans/optimizer.h"
 
 //===================================================================
 

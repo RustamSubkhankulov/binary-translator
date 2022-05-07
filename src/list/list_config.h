@@ -49,7 +49,7 @@ const size_t List_max_capacity = 262144;
     #define LIST_DUMP
 
     //GRAPHVIZ usage for dumps
-    //#define LIST_GRAPHVIZ
+    #define LIST_GRAPHVIZ
 
 #endif 
 
