@@ -31,3 +31,9 @@ asmexecute:
 
 bin:
 	./proc/asm.exe proc/text_files/test.txt ../binary/test.code asm_logs.html proc/text_files/test_listing.txt
+
+fact:
+	./proc/asm.exe proc/text_files/factorial.txt ../binary/fact.code asm_logs.html proc/text_files/fact_listing.txt
+
+quad:
+	./proc/asm.exe proc/text_files/quadratic.txt ../binary/quad.code asm_logs.html proc/text_files/quad_listing.txt

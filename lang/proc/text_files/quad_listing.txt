@@ -1,0 +1,288 @@
+Current position: 10. Input string : CALL: main  Written bytes: 18 00 00 00 00 
+
+Current position: 15. Input string : HLT  Written bytes: 00 
+
+Current position: 16. Input string : CALL: get_args Written bytes: 18 00 00 00 00 
+
+Current position: 1b. Input string : CALL: solve  Written bytes: 18 00 00 00 00 
+
+Current position: 20. Input string : RET  Written bytes: 09 
+
+Current position: 21. Input string : IN  Written bytes: 08 
+
+Current position: 22. Input string : POP ax Written bytes: 46 01 
+
+Current position: 24. Input string : IN  Written bytes: 08 
+
+Current position: 25. Input string : POP bx  Written bytes: 46 02 
+
+Current position: 27. Input string : IN Written bytes: 08 
+
+Current position: 28. Input string : POP cx  Written bytes: 46 03 
+
+Current position: 2a. Input string : RET  Written bytes: 09 
+
+Current position: 2b. Input string : PUSH ax  Written bytes: 45 01 
+
+Current position: 2d. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 32. Input string : JE: solve_linear  Written bytes: 1b 00 00 00 00 
+
+Current position: 37. Input string : JMP: solve_quadratic  Written bytes: 19 00 00 00 00 
+
+Current position: 3c. Input string : PUSH cx Written bytes: 45 03 
+
+Current position: 3e. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 43. Input string : JE: linear_c_is_zero Written bytes: 1b 00 00 00 00 
+
+Current position: 48. Input string : JMP: linear_c_is_not_zero Written bytes: 19 00 00 00 00 
+
+Current position: 4d. Input string : PUSH bx  Written bytes: 45 02 
+
+Current position: 4f. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 54. Input string : JE: inf_roots Written bytes: 1b 00 00 00 00 
+
+Current position: 59. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 5e. Input string : OUT  Written bytes: 07 
+
+Current position: 5f. Input string : RET  Written bytes: 09 
+
+Current position: 60. Input string : PUSH 999 Written bytes: 25 00 c0 79 44 
+
+Current position: 65. Input string : OUT Written bytes: 07 
+
+Current position: 66. Input string : RET  Written bytes: 09 
+
+Current position: 67. Input string : PUSH 404 Written bytes: 25 00 00 ca 43 
+
+Current position: 6c. Input string : OUT Written bytes: 07 
+
+Current position: 6d. Input string : RET  Written bytes: 09 
+
+Current position: 6e. Input string : PUSH bx  Written bytes: 45 02 
+
+Current position: 70. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 75. Input string : JE: no_roots Written bytes: 1b 67 00 00 00 
+
+Current position: 7a. Input string : PUSH cx  Written bytes: 45 03 
+
+Current position: 7c. Input string : PUSH -1 Written bytes: 25 00 00 80 bf 
+
+Current position: 81. Input string : MUL  Written bytes: 03 
+
+Current position: 82. Input string : PUSH bx  Written bytes: 45 02 
+
+Current position: 84. Input string : DIV  Written bytes: 04 
+
+Current position: 85. Input string : OUT  Written bytes: 07 
+
+Current position: 86. Input string : RET  Written bytes: 09 
+
+Current position: 87. Input string : PUSH cx  Written bytes: 45 03 
+
+Current position: 89. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 8e. Input string : JE: quadratic_c_is_zero Written bytes: 1b 00 00 00 00 
+
+Current position: 93. Input string : PUSH bx  Written bytes: 45 02 
+
+Current position: 95. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 9a. Input string : JE: quadratic_b_is_zero Written bytes: 1b 00 00 00 00 
+
+Current position: 9f. Input string : CALL: discriminant  Written bytes: 18 00 00 00 00 
+
+Current position: a4. Input string : PUSH dx Written bytes: 45 04 
+
+Current position: a6. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: ab. Input string : JE: quadratic_one_root Written bytes: 1b 00 00 00 00 
+
+Current position: b0. Input string : PUSH dx Written bytes: 45 04 
+
+Current position: b2. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: b7. Input string : JA: no_roots Written bytes: 1f 67 00 00 00 
+
+Current position: bc. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: be. Input string : PUSH 0.5 Written bytes: 25 00 00 00 3f 
+
+Current position: c3. Input string : POW  Written bytes: 0a 
+
+Current position: c4. Input string : POP dx  Written bytes: 46 04 
+
+Current position: c6. Input string : PUSH bx  Written bytes: 45 02 
+
+Current position: c8. Input string : PUSH -1  Written bytes: 25 00 00 80 bf 
+
+Current position: cd. Input string : MUL  Written bytes: 03 
+
+Current position: ce. Input string : POP bx  Written bytes: 46 02 
+
+Current position: d0. Input string : PUSH bx  Written bytes: 45 02 
+
+Current position: d2. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: d4. Input string : ADD   Written bytes: 01 
+
+Current position: d5. Input string : PUSH 2 Written bytes: 25 00 00 00 40 
+
+Current position: da. Input string : PUSH ax  Written bytes: 45 01 
+
+Current position: dc. Input string : MUL  Written bytes: 03 
+
+Current position: dd. Input string : DIV  Written bytes: 04 
+
+Current position: de. Input string : OUT  Written bytes: 07 
+
+Current position: df. Input string : PUSH bx  Written bytes: 45 02 
+
+Current position: e1. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: e3. Input string : SUB    Written bytes: 02 
+
+Current position: e4. Input string : PUSH 2 Written bytes: 25 00 00 00 40 
+
+Current position: e9. Input string : PUSH ax  Written bytes: 45 01 
+
+Current position: eb. Input string : MUL  Written bytes: 03 
+
+Current position: ec. Input string : DIV  Written bytes: 04 
+
+Current position: ed. Input string : OUT  Written bytes: 07 
+
+Current position: ee. Input string : RET Written bytes: 09 
+
+Current position: ef. Input string : PUSH bx Written bytes: 45 02 
+
+Current position: f1. Input string : PUSH -1 Written bytes: 25 00 00 80 bf 
+
+Current position: f6. Input string : MUL  Written bytes: 03 
+
+Current position: f7. Input string : PUSH 2 Written bytes: 25 00 00 00 40 
+
+Current position: fc. Input string : PUSH ax  Written bytes: 45 01 
+
+Current position: fe. Input string : MUL  Written bytes: 03 
+
+Current position: ff. Input string : DIV  Written bytes: 04 
+
+Current position: 100. Input string : OUT  Written bytes: 07 
+
+Current position: 101. Input string : RET  Written bytes: 09 
+
+Current position: 102. Input string : PUSH bx Written bytes: 45 02 
+
+Current position: 104. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 109. Input string : JE: quadratic_c_and_b_are_zero Written bytes: 1b 00 00 00 00 
+
+Current position: 10e. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 113. Input string : OUT  Written bytes: 07 
+
+Current position: 114. Input string : PUSH bx  Written bytes: 45 02 
+
+Current position: 116. Input string : PUSH -1  Written bytes: 25 00 00 80 bf 
+
+Current position: 11b. Input string : MUL  Written bytes: 03 
+
+Current position: 11c. Input string : PUSH ax  Written bytes: 45 01 
+
+Current position: 11e. Input string : DIV  Written bytes: 04 
+
+Current position: 11f. Input string : OUT  Written bytes: 07 
+
+Current position: 120. Input string : RET Written bytes: 09 
+
+Current position: 121. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+
+Current position: 126. Input string : OUT Written bytes: 07 
+
+Current position: 127. Input string : RET Written bytes: 09 
+
+Current position: 128. Input string : PUSH cx  Written bytes: 45 03 
+
+Current position: 12a. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 12f. Input string : JB: no_roots Written bytes: 1d 67 00 00 00 
+
+Current position: 134. Input string : PUSH cx  Written bytes: 45 03 
+
+Current position: 136. Input string : PUSH -1  Written bytes: 25 00 00 80 bf 
+
+Current position: 13b. Input string : MUL  Written bytes: 03 
+
+Current position: 13c. Input string : PUSH 0.5  Written bytes: 25 00 00 00 3f 
+
+Current position: 141. Input string : POW  Written bytes: 0a 
+
+Current position: 142. Input string : POP cx  Written bytes: 46 03 
+
+Current position: 144. Input string : PUSH cx  Written bytes: 45 03 
+
+Current position: 146. Input string : OUT  Written bytes: 07 
+
+Current position: 147. Input string : PUSH cx  Written bytes: 45 03 
+
+Current position: 149. Input string : PUSH -1 Written bytes: 25 00 00 80 bf 
+
+Current position: 14e. Input string : MUL   Written bytes: 03 
+
+Current position: 14f. Input string : OUT  Written bytes: 07 
+
+Current position: 150. Input string : RET  Written bytes: 09 
+
+Current position: 151. Input string : PUSH bx  Written bytes: 45 02 
+
+Current position: 153. Input string : PUSH bx  Written bytes: 45 02 
+
+Current position: 155. Input string : MUL  Written bytes: 03 
+
+Current position: 156. Input string : PUSH 4 Written bytes: 25 00 00 80 40 
+
+Current position: 15b. Input string : PUSH ax  Written bytes: 45 01 
+
+Current position: 15d. Input string : PUSH cx  Written bytes: 45 03 
+
+Current position: 15f. Input string : MUL  Written bytes: 03 
+
+Current position: 160. Input string : MUL  Written bytes: 03 
+
+Current position: 161. Input string : SUB  Written bytes: 02 
+
+Current position: 162. Input string : POP dx  Written bytes: 46 04 
+
+Current position: 164. Input string : RET  Written bytes: 09 
+
+Filled jump destination. Ip: 11. Destination Ip: 16 
+
+Filled jump destination. Ip: 17. Destination Ip: 21 
+
+Filled jump destination. Ip: 1c. Destination Ip: 2b 
+
+Filled jump destination. Ip: 33. Destination Ip: 3c 
+
+Filled jump destination. Ip: 38. Destination Ip: 87 
+
+Filled jump destination. Ip: 44. Destination Ip: 4d 
+
+Filled jump destination. Ip: 49. Destination Ip: 6e 
+
+Filled jump destination. Ip: 55. Destination Ip: 60 
+
+Filled jump destination. Ip: 8f. Destination Ip: 102 
+
+Filled jump destination. Ip: 9b. Destination Ip: 128 
+
+Filled jump destination. Ip: a0. Destination Ip: 151 
+
+Filled jump destination. Ip: ac. Destination Ip: ef 
+
+Filled jump destination. Ip: 10a. Destination Ip: 121 
+

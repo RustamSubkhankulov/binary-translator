@@ -12,7 +12,7 @@
 
 #ifdef LOGS
 
-    #define LIST_LOGS
+    //#define LIST_LOGS
 
 #endif 
 
@@ -63,10 +63,10 @@ const size_t List_max_capacity = 262144;
 //#define LIST_ONLY_DUMPS
 
 // Turns on list validator check 
-#define LIST_VALID_CHECK
+//#define LIST_VALID_CHECK
 
 // Turns of all additionals checks in ctor, dtor and etc
-//#define LIST_FAST
+#define LIST_FAST
 
 //==================================================================
 
