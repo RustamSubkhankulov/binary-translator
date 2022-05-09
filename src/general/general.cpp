@@ -9,6 +9,16 @@
 
 //-----------------------------------------------
 
+int int_compare(const void* frst, const void* scnd)
+{
+    int frst_val = *(const int*)frst;
+    int scnd_val = *(const int*)scnd;
+
+    return frst_val - scnd_val;
+}
+
+//-----------------------------------------------
+
 char* _get_time_string(FOR_LOGS(LOG_PARAMS))
 {
     general_log_report();

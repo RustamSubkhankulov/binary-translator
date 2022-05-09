@@ -813,3 +813,6 @@ Null pointer to array of jump positions in result buffer)
 
 DEF_ERR(1226, NULL_PATCH_ARRAY,
 Null pointerto array of instruction to be patched)
+
+DEF_ERR(1227, INP_DST_NOT_FOUND,
+Input destination in input binary file is not found in bsearch)

@@ -3,13 +3,29 @@ HLT
 
 MAIN:
 
-PUSH [bx+4]
-PUSH 0
-ADD
-PUSH 0
-MUL
-
+PUSH 10
 OUT
+
+HERE:
+
+JMP: AHA
+
+PUSH 10
+OUT
+
+JMP: HERE
+
+PUSH 10
+OUT
+
+JMP: HERE
+
+JMP: AHA
+
+PUSH 10
+OUT
+
+AHA:
 
 RET
 

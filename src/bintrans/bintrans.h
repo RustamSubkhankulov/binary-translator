@@ -64,7 +64,7 @@ struct Cmndline
 
 //===============================================
 
-#ifdef REMOVE_NOPS
+#ifndef REMOVE_NOPS
 
     #define INSERT_NOPS(trans_struct) INIT_ENTITY(trans_struct, Two_nops)
 
@@ -180,6 +180,8 @@ struct Jumps
     unsigned int num;
     unsigned int cap;
     unsigned int counter;
+
+    unsigned int cur_index;
 };
 
 //===============================================
@@ -303,15 +305,18 @@ int _jumps_struct_dtor  (Jumps* jumps FOR_LOGS(, LOG_PARAMS));
 
 int _jumps_struct_resize(Jumps* jumps FOR_LOGS(, LOG_PARAMS));
 
+int _sort_jump_destinations(Jumps* jumps FOR_LOGS(, LOG_PARAMS));
+
 int _gather_jumps_in_input(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _add_jump_dest(Jumps* jumps, unsigned int cur_inp_pos FOR_LOGS(, LOG_PARAMS));
 
+int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity, 
+                                   unsigned int res_pos, 
+                                   unsigned int inp_dst FOR_LOGS(, LOG_PARAMS));
+
 int _check_and_add_res_dest(Jumps* jumps, unsigned int inp_pos, 
                                           unsigned int res_pos FOR_LOGS(, LOG_PARAMS));
-
-int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity, 
-                                   unsigned int res_pos FOR_LOGS(, LOG_PARAMS));
 
 #ifdef BINTRANS_LISTING
 
@@ -342,17 +347,20 @@ int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity,
 
 //===============================================
 
-#define check_and_add_res_dest(jumps, int_pos, res_pos) \
-       _check_and_add_res_dest(jumps, int_pos, res_pos FOR_LOGS(, LOG_ARGS))
-
-#define add_jump_entity(jumps, entity, res_pos) \
-       _add_jump_entity(jumps, entity, res_pos FOR_LOGS(, LOG_ARGS))
+#define add_jump_entity(jumps, entity, res_pos, inp_dst) \
+       _add_jump_entity(jumps, entity, res_pos, inp_dst FOR_LOGS(, LOG_ARGS))
 
 #define add_jump_dest(jumps, cur_inp_pos) \
        _add_jump_dest(jumps, cur_inp_pos FOR_LOGS(, LOG_ARGS))
 
 #define gather_jumps_in_input(trans_struct) \
        _gather_jumps_in_input(trans_struct FOR_LOGS(, LOG_ARGS))
+
+#define sort_jump_destinations(jumps) \
+       _sort_jump_destinations(jumps FOR_LOGS(, LOG_ARGS))
+
+#define check_and_add_res_dest(jumps, inp_pos, res_pos) \
+       _check_and_add_res_dest(jumps, inp_pos, res_pos FOR_LOGS(, LOG_ARGS)) 
 
 #define jumps_struct_ctor(jumps) \
        _jumps_struct_ctor(jumps FOR_LOGS(, LOG_ARGS))

@@ -22,7 +22,7 @@
 
 // removes nops from translated code 
 
-#define REMOVE_NOPS
+//#define REMOVE_NOPS
 
 //===============================================
 

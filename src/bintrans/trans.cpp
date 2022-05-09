@@ -627,11 +627,13 @@ int _trans_jmp(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     INIT_ENTITY(trans_struct, Near_rel_jmp_N); 
 
-    int ret_val = add_jump_entity(&trans_struct->jumps, LAST_ENTITY, 
-                                   trans_struct->result.cur_pos);
-    if (ret_val == -1) return -1;
+    trans_struct->input.pos += 1;
+    unsigned int inp_dst = get_unsigned_int_from_input(trans_struct);
 
-    trans_struct->input.pos += 5;
+    int ret_val = add_jump_entity(&trans_struct->jumps, LAST_ENTITY, 
+                                   trans_struct->result.cur_pos,
+                                                        inp_dst);
+    if (ret_val == -1) return -1;
 
     return 0;
 }
@@ -686,11 +688,13 @@ int _trans_cond_jmp(Trans_struct* trans_struct, unsigned char op_code
 
     INIT_ENTITY(trans_struct, Near_rel_jmp_N);
 
-    ret_val = add_jump_entity(&trans_struct->jumps, LAST_ENTITY, 
-                               trans_struct->result.cur_pos);
-    if (ret_val == -1) return -1;
+    trans_struct->input.pos += 1;
+    unsigned int inp_dst = get_unsigned_int_from_input(trans_struct);
 
-    trans_struct->input.pos += 5;
+    ret_val = add_jump_entity(&trans_struct->jumps, LAST_ENTITY, 
+                               trans_struct->result.cur_pos,
+                                                    inp_dst);
+    if (ret_val == -1) return -1;
 
     return 0;
 }
@@ -759,11 +763,13 @@ int _trans_call   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
 
     INIT_ENTITY(trans_struct, Rel_call);
 
-    int ret_val = add_jump_entity(&trans_struct->jumps, LAST_ENTITY, 
-                                   trans_struct->result.cur_pos);
-    if (ret_val == -1) return -1;
+    trans_struct->input.pos += 1;
+    unsigned int inp_dst = get_unsigned_int_from_input(trans_struct);
 
-    trans_struct->input.pos += 5;
+    int ret_val = add_jump_entity(&trans_struct->jumps, LAST_ENTITY, 
+                                   trans_struct->result.cur_pos,
+                                                        inp_dst);
+    if (ret_val == -1) return -1;
 
     return 0;
 }

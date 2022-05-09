@@ -57,7 +57,13 @@ float* _add_const_to_buffer(Trans_struct* trans_struct, float value
 
 int _fix_up_jumps(Jumps* jumps FOR_LOGS(, LOG_PARAMS));
 
+int _get_jump_res_dst(Trans_entity* trans_entity, Jumps* jumps, unsigned int patch_pos
+                                                                FOR_LOGS(, LOG_PARAMS));
+
 //===============================================
+
+#define get_jump_res_dst(trans_entity, jumps, patch_pos) \
+       _get_jump_res_dst(trans_entity, jumps, patch_pos FOR_LOGS(, LOG_ARGS))
 
 #define fix_up_jumps(jumps) \
        _fix_up_jumps(jumps FOR_LOGS(, LOG_ARGS))

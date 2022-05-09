@@ -230,6 +230,9 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     int ret_val = gather_jumps_in_input(trans_struct);
     if (ret_val == -1) return -1;
 
+    ret_val = sort_jump_destinations(&trans_struct->jumps);
+    if (ret_val == -1) return -1;
+
     INIT_ENTITY(trans_struct, Save_regs);
     INIT_ENTITY(trans_struct, Null_xmms);
 
@@ -333,14 +336,10 @@ int _check_and_add_res_dest(Jumps* jumps, unsigned int inp_pos,
     if (!jumps->num)
         return 0;
 
-    for (unsigned int counter = 0;
-                      counter < jumps->num;
-                      counter++)
+    while (jumps->inp_dst[jumps->cur_index] == inp_pos)
     {
-        if (jumps->inp_dst[counter] == inp_pos)
-        {
-            jumps->res_dst[counter] =  res_pos;
-        }
+        jumps->res_dst[jumps->cur_index] = res_pos;
+        jumps->cur_index++;
     }
 
     return 0;
@@ -846,7 +845,7 @@ int _consts_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     unsigned int consts_buffer_size = sizeof(float) * (trans_struct->patch.num_of_consts + 1);
                                                             // adding + 1 so there is no SEGFAULT during
                                                             // execution (see Push_qword [addr])
-                                                            
+
     float* consts_buffer = (float*) aligned_alloc(sizeof(float), consts_buffer_size);
     if (!consts_buffer) 
     {
@@ -1044,7 +1043,8 @@ int _add_jump_dest(Jumps* jumps, unsigned int inp_dst FOR_LOGS(, LOG_PARAMS))
 //-----------------------------------------------
 
 int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity, 
-                                   unsigned int res_pos FOR_LOGS(, LOG_PARAMS))
+                                   unsigned int res_pos, 
+                                   unsigned int inp_dst FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
 
@@ -1055,6 +1055,19 @@ int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity,
     jumps->res_pos [jumps->counter] = res_pos;
 
     jumps->counter += 1;
+
+    unsigned int   patch_size = 4;
+    unsigned char* patch_data = (unsigned char*)&inp_dst;
+    unsigned int   patch_pos  = 0;
+
+    if (trans_entity->type == Near_rel_jmp_N_type
+    ||  trans_entity->type == Rel_call_type)
+
+        patch_pos = 1;
+    else 
+        patch_pos = 2;
+
+    PATCH_ENTITY(trans_entity, patch_pos, patch_size, patch_data);
 
     return 0;
 }
@@ -1109,6 +1122,24 @@ int _gather_jumps_in_input(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
             default: break;
         }
     }
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _sort_jump_destinations(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(jumps);
+
+    size_t count = (size_t)jumps->num;
+    size_t size  = sizeof(int);
+
+    void* data   = (void*) jumps->inp_dst;
+    qsort(data, count, size, &int_compare);
+
+    jumps->cur_index = 0;
 
     return 0;
 }

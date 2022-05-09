@@ -231,7 +231,7 @@ int _patch_const(Trans_struct* trans_struct, Patch_instr* patch_instr FOR_LOGS(,
 
     if (!value_ptr)
         value_ptr = add_const_to_buffer(trans_struct, value);
-        
+
     uint32_t destin_pos = (uint64_t) value_ptr;
 
     unsigned int   patch_size = 4;
@@ -299,6 +299,34 @@ int _free_patch_struct(Patch* patch_struct FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
+int _get_jump_res_dst(Trans_entity* trans_entity, Jumps* jumps, unsigned int patch_pos
+                                                               FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+
+    assert(trans_entity);
+    assert(jumps);
+
+    unsigned int inp_dst = *(unsigned int*) (trans_entity->data + patch_pos);
+
+    size_t count = (size_t) jumps->num;
+    size_t size  = sizeof(int);
+    void*  data  = (void*) (jumps->inp_dst);
+    void*  key   = (void*) &inp_dst;
+
+    void* result = bsearch(key, data, count, size, &int_compare);
+    if (!result)
+    {
+        error_report(INP_DST_NOT_FOUND);
+        return -1;
+    }
+
+    unsigned int index = (unsigned int) ( ( (uint64_t) result - (uint64_t) data ) >> 2 );
+    return jumps->res_dst[index];
+}
+
+//-----------------------------------------------
+
 int _fix_up_jumps(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
@@ -320,9 +348,12 @@ int _fix_up_jumps(Jumps* jumps FOR_LOGS(, LOG_PARAMS))
         else 
             patch_pos = 2;
 
-        int offset = (int) jumps->res_dst[counter] 
-                   - (int) jumps->res_pos[counter];
+        unsigned int res_pos = jumps->res_pos[counter];
 
+        int res_dst = get_jump_res_dst(cur_entity, jumps, patch_pos);
+        if (res_dst == -1) return -1;
+
+        int offset = res_dst - (int) res_pos;
         unsigned char* patch_data = (unsigned char*) &offset;
 
         PATCH_ENTITY(cur_entity, patch_pos, patch_size, patch_data);

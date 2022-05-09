@@ -155,6 +155,8 @@ const double Precise = 0.000001;
 
 //===================================================================
 
+int int_compare(const void* frst, const void* scnd);
+
 int _fast_cpy(void* dest, void* src, unsigned int size FOR_LOGS(, LOG_PARAMS));
 
 char* _get_time_string(FOR_LOGS(LOG_PARAMS));
