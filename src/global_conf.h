@@ -18,6 +18,12 @@
 
 #define BINARY_OPT
 
+//-----------------------------------------------
+
+// removes nops from translated code 
+
+#define REMOVE_NOPS
+
 //===============================================
 
 static const char* Logfile_name = "trans.html";

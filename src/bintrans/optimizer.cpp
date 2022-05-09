@@ -625,7 +625,7 @@ int _optimize_add_sub_zero(List* list FOR_LOGS(, LOG_PARAMS))
         int zero_index = 0;
         int scnd_index = 0;
 
-        if (list->data[cur_index]->oper_code == PUSH | IMM_MASK
+        if (list->data[cur_index]->oper_code == (PUSH | IMM_MASK)
         &&  list->data[cur_index]->data.float_value == 0)
         {
             zero_index = cur_index;
@@ -633,7 +633,7 @@ int _optimize_add_sub_zero(List* list FOR_LOGS(, LOG_PARAMS))
         }
 
         else 
-        if (list->data[nxt_index]->oper_code == PUSH | IMM_MASK
+        if (list->data[nxt_index]->oper_code == (PUSH | IMM_MASK)
         &&  list->data[nxt_index]->data.float_value == 0)
         {
             zero_index = nxt_index;

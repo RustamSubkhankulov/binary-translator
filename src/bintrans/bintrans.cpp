@@ -2,6 +2,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
+
 //===============================================
 
 #include "bintrans.h"
@@ -842,15 +843,18 @@ int _consts_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     if (!trans_struct->patch.num_of_consts)
         return 0;
 
-    float* consts_buffer = (float*) aligned_alloc(sizeof(float),    // adding + 1 so there is no SEGFAULT during
-                                                  sizeof(float)     // execution (see Push_qword [addr])
-                                                  * ( trans_struct->patch.num_of_consts + 1 ));
+    unsigned int consts_buffer_size = sizeof(float) * (trans_struct->patch.num_of_consts + 1);
+                                                            // adding + 1 so there is no SEGFAULT during
+                                                            // execution (see Push_qword [addr])
+                                                            
+    float* consts_buffer = (float*) aligned_alloc(sizeof(float), consts_buffer_size);
     if (!consts_buffer) 
     {
         error_report(CANNOT_ALLOCATE_MEM);
         return -1;
     }
 
+    memset(consts_buffer, 0, (size_t)consts_buffer_size);
     trans_struct->consts_buffer = consts_buffer;
 
     return 0;

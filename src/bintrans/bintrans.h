@@ -64,6 +64,18 @@ struct Cmndline
 
 //===============================================
 
+#ifdef REMOVE_NOPS
+
+    #define INSERT_NOPS(trans_struct) INIT_ENTITY(trans_struct, Two_nops)
+
+#else
+
+    #define INSERT_NOPS(trans_struct) 
+
+#endif 
+
+//===============================================
+
 struct Binary_input 
 {
 

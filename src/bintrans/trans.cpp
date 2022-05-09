@@ -15,7 +15,7 @@ int _trans_arithm(Trans_struct* trans_struct,
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     // Save xmm15 value in r15d
     INIT_ENTITY(trans_struct, Movd_r15d_xmm15);
@@ -76,7 +76,7 @@ int _trans_hlt    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     INIT_ENTITY(trans_struct, Restore_regs);
     INIT_ENTITY(trans_struct, Return);
@@ -241,7 +241,7 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     unsigned char oper_code = get_unsigned_char_from_input(trans_struct);
 
@@ -329,7 +329,7 @@ int _trans_pop    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     unsigned char oper_code = get_unsigned_char_from_input(trans_struct);
 
@@ -413,7 +413,7 @@ int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     // Save xmm0
     INIT_ENTITY(trans_struct, Movd_r15d_xmm0);
@@ -425,7 +425,7 @@ int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Push_xmms_1_7);
 
     // align stack to 16 boundary
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
     INIT_ENTITY(trans_struct, Align_stack_to_16);
 
     INIT_ENTITY(trans_struct, Rel_call);
@@ -452,7 +452,7 @@ int _trans_in     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     // Save xmm0 value 
     INIT_ENTITY(trans_struct, Movd_r15d_xmm0);
@@ -461,7 +461,7 @@ int _trans_in     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Push_xmms_1_7);
 
     // align stack to 16 boundary
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
     INIT_ENTITY(trans_struct, Align_stack_to_16);
 
     INIT_ENTITY(trans_struct, Rel_call);
@@ -493,7 +493,7 @@ int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     // save xmm0, xmm1 values in regular registers
     INIT_SAVE_XMM_0_1(trans_struct);
@@ -565,7 +565,7 @@ int _trans_compare(Trans_struct* trans_struct, unsigned char op_code
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     // Save xmm0, xmm13 values
     INIT_SAVE_XMM_0_13(trans_struct);
@@ -623,7 +623,7 @@ int _trans_jmp(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     INIT_ENTITY(trans_struct, Near_rel_jmp_N); 
 
@@ -644,7 +644,7 @@ int _trans_cond_jmp(Trans_struct* trans_struct, unsigned char op_code
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     INIT_ENTITY(trans_struct, Add_rsp_16);
 
@@ -703,7 +703,7 @@ int _trans_std_func(Trans_struct* trans_struct, unsigned char op_code
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     // Save xmm0
     INIT_ENTITY(trans_struct, Movd_r15d_xmm0);
@@ -715,7 +715,7 @@ int _trans_std_func(Trans_struct* trans_struct, unsigned char op_code
     INIT_ENTITY(trans_struct, Push_xmms_1_7);
 
     // align stack to 16 boundary
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
     INIT_ENTITY(trans_struct, Align_stack_to_16);
 
     INIT_ENTITY(trans_struct, Rel_call);
@@ -755,7 +755,7 @@ int _trans_call   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     INIT_ENTITY(trans_struct, Rel_call);
 
@@ -775,7 +775,7 @@ int _trans_ret    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     bintrans_log_report();
     assert(trans_struct);
 
-    INIT_ENTITY(trans_struct, Two_nops);
+    INSERT_NOPS(trans_struct);
 
     INIT_ENTITY(trans_struct, Return);
 

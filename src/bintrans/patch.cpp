@@ -27,6 +27,7 @@ int _binary_patch_instructions(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS)
     ret_val = ram_buffer_allocate(trans_struct);
     if (ret_val == -1) return -1;
 
+    trans_struct->consts_ct = 1;
     unsigned int cur_index = 0;
 
     for (;cur_index < trans_struct->patch.num ;
@@ -230,7 +231,7 @@ int _patch_const(Trans_struct* trans_struct, Patch_instr* patch_instr FOR_LOGS(,
 
     if (!value_ptr)
         value_ptr = add_const_to_buffer(trans_struct, value);
-
+        
     uint32_t destin_pos = (uint64_t) value_ptr;
 
     unsigned int   patch_size = 4;
