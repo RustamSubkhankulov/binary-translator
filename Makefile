@@ -116,7 +116,7 @@ obj/logs.o: 	 $(GLOBAL_DEP) $(LOG_DEP)
 	$(CC) src/logs/errors_and_logs.cpp  -c -o obj/logs.o      $(FLAGS)
 
 obj/general.o: 	 $(GLOBAL_DEP) $(GLOBAL_DEP)
-	$(CC) src/general/general.cpp 		-c -o obj/general.o   $(FLAGS)
+	$(CC) src/general/general.cpp 		-c -o obj/general.o   $(FLAGS) -mavx -mavx2 -msse4
 
 obj/bintrans.o:	 $(GLOBAL_DEP) $(BINTRANS_DEP) 
 	$(CC) src/bintrans/bintrans.cpp 	-c -o obj/bintrans.o  $(FLAGS)

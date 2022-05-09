@@ -288,11 +288,6 @@ int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned c
 int _patch_entity(Trans_entity* trans_entity, unsigned int   patch_pos, unsigned int  patch_size,
                                               unsigned char* patch_data FOR_LOGS(, LOG_PARAMS));
 
-int _write_listing(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
-
-int _listing_message(Trans_entity* trans_entity, unsigned int res_buf_pos, 
-                                    FILE* listing FOR_LOGS(, LOG_PARAMS));
-
 int _consts_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _ram_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
@@ -323,6 +318,11 @@ int _check_and_add_res_dest(Jumps* jumps, unsigned int inp_pos,
     int _init_listing_file     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
     int _end_listing_file      (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+    int _write_listing(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
+
+    int _listing_message(Trans_entity* trans_entity, unsigned int res_buf_pos, 
+                                        FILE* listing FOR_LOGS(, LOG_PARAMS));
 
 #endif 
 

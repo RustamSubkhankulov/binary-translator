@@ -3,6 +3,9 @@
 #include <time.h>
 #include <math.h>
 
+#include <immintrin.h>
+#include <emmintrin.h>
+
 //===============================================
 
 #include "general.h"
@@ -122,6 +125,28 @@ int _fast_cpy(void* dest, void* src, unsigned int size FOR_LOGS(, LOG_PARAMS))
 
     unsigned char* dest_ptr = (unsigned char*)dest;
     unsigned char* srce_ptr = (unsigned char*)src;
+
+    while (size >= 256)
+    {
+        __m256i data = _mm256_loadu_si256( (__m256i const*) srce_ptr);
+        _mm256_storeu_si256( (__m256i*) dest_ptr, data);
+
+        dest_ptr += 256;
+        srce_ptr += 256;
+
+        size     -= 256;
+    }
+
+    while (size >= 128)
+    {
+        __m128i data = _mm_loadu_si128( (__m128i const*) srce_ptr);
+        _mm_storeu_si128( (__m128i*) dest_ptr, data);
+
+        dest_ptr += 128;
+        srce_ptr += 128;
+
+        size     -= 128;
+    }
 
     while (size >= sizeof(int64_t))
     {

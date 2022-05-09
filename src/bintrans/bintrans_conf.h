@@ -6,7 +6,7 @@
 
 //===============================================
 
-#define BINTRANS_LISTING
+//#define BINTRANS_LISTING
 
 #ifdef BINTRANS_LISTING
 

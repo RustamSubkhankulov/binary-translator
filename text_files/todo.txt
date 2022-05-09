@@ -66,21 +66,25 @@ done 13. cmndline arguments
 none 14. change trans_struct input (from list directly)
 
 done 14. make quadratic and factorial
-14,5. fix optimizations
-14,6. peredelat' vsyo
-15. fast sse cpy
-16. use callgrind to optimize translator
+done 14,5. fix optimizations
+done 14,6. peredelat' vsyo ( jumps)
+done 15. fast sse cpy
+done 16. use callgrind to optimize translator
 17. change saving registers 
 18. readme
+
+check addresses in optimizations?
 
 none done 993. check what instructions are faster ( push/ pop xmm(i) using R(i)X)
 done 994. table with current values of registers
 none 995. list visiter
 none 996. list search ( gets function for comparing)
-997. fast cpy sse
+done 997. fast cpy sse
 done 998. add types for entities for optimizations 
 	 of last step
 none 999. add saving feature 
+
+
 
 
 

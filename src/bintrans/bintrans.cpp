@@ -239,8 +239,12 @@ int _binary_translate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     ret_val = translate_instructions(trans_struct);
     if (ret_val == -1) return -1;
 
-    ret_val = write_listing(trans_struct);
-    if (ret_val == -1) return -1;
+    #ifdef BINTRANS_LISTING
+
+        ret_val = write_listing(trans_struct);
+        if (ret_val == -1) return -1;
+
+    #endif 
 
     return 0;
 }
@@ -632,111 +636,119 @@ int _trans_struct_ctor(Trans_struct* trans_struct, Binary_input* binary_input
 
 //-----------------------------------------------
 
-int _init_listing_file(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report(); 
-    assert(trans_struct);
-
-    FILE* listing = open_file(Listing_filename, "ab");
-    if (!listing)
-    {
-        error_report(LISTING_CLOSE_ERR);
-        return -1;
-    }
-
-    trans_struct->listing = listing;
-
-    fprintf(listing, "\t Listing Start: ");
-    fprintf(listing, "%s \n", get_time_string());
-
-    return 0;
-}
+#ifdef BINTRANS_LISTING
 
 //-----------------------------------------------
 
-int _end_listing_file(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report(); 
-    assert(trans_struct);
-
-    fprintf(trans_struct->listing, "\t Listing End: ");
-    fprintf(trans_struct->listing, "%s \n", get_time_string());
-
-    int ret_val = close_file(trans_struct->listing);
-    if (ret_val == -1)
+    int _init_listing_file(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     {
-        error_report(LISTING_CLOSE_ERR);
-        return -1;
-    }
+        bintrans_log_report(); 
+        assert(trans_struct);
 
-    return 0;
-}
+        FILE* listing = open_file(Listing_filename, "ab");
+        if (!listing)
+        {
+            error_report(LISTING_CLOSE_ERR);
+            return -1;
+        }
+
+        trans_struct->listing = listing;
+
+        fprintf(listing, "\t Listing Start: ");
+        fprintf(listing, "%s \n", get_time_string());
+
+        return 0;
+    }
 
 //-----------------------------------------------
 
-int _write_listing(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report();
-    assert(trans_struct);
-
-    unsigned int res_buf_pos = 0;
-
-    Entities* entities = &trans_struct->entities;
-    FILE* listing      = trans_struct->listing;
-    
-    unsigned int cur_index    = 0;
-    unsigned int entities_num = entities->num;
-
-    int ret_val   = 0; 
-
-    do
+    int _end_listing_file(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     {
-        ret_val = listing_message(entities->data[cur_index], res_buf_pos, listing);
-        if (ret_val == -1) return -1;
+        bintrans_log_report(); 
+        assert(trans_struct);
 
-        res_buf_pos += entities->data[cur_index]->size;
-        cur_index   += 1;
+        fprintf(trans_struct->listing, "\t Listing End: ");
+        fprintf(trans_struct->listing, "%s \n", get_time_string());
 
-    } while (cur_index != entities_num);
+        int ret_val = close_file(trans_struct->listing);
+        if (ret_val == -1)
+        {
+            error_report(LISTING_CLOSE_ERR);
+            return -1;
+        }
 
-    return 0;
-}
+        return 0;
+    }
 
 //-----------------------------------------------
 
-int _listing_message(Trans_entity* trans_entity, unsigned int res_buf_pos, FILE* listing FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report();
-
-    assert(trans_entity);
-    assert(listing);
-
-    unsigned int size = trans_entity->size;
-
-    fprintf(listing, "Pos: %08xh | Size: %02d | ", res_buf_pos, size);
-    
-    for (unsigned int counter = 1;
-                      counter <= size;
-                      counter++)
+    int _write_listing(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     {
-        fprintf(listing, "%02x ", trans_entity->data[counter - 1]);
+        bintrans_log_report();
+        assert(trans_struct);
 
-        if ((counter  % 8) == 0)
-            fprintf(listing, "\n                            ");
+        unsigned int res_buf_pos = 0;
+
+        Entities* entities = &trans_struct->entities;
+        FILE* listing      = trans_struct->listing;
+        
+        unsigned int cur_index    = 0;
+        unsigned int entities_num = entities->num;
+
+        int ret_val   = 0; 
+
+        do
+        {
+            ret_val = listing_message(entities->data[cur_index], res_buf_pos, listing);
+            if (ret_val == -1) return -1;
+
+            res_buf_pos += entities->data[cur_index]->size;
+            cur_index   += 1;
+
+        } while (cur_index != entities_num);
+
+        return 0;
     }
 
-    fprintf(listing, "\n\n");
+//-----------------------------------------------
 
-    #ifdef ENTITY_ADD_NAME_STR
+    int _listing_message(Trans_entity* trans_entity, unsigned int res_buf_pos, FILE* listing FOR_LOGS(, LOG_PARAMS))
+    {
+        bintrans_log_report();
 
-        fprintf(listing, "\nEntity name: %s \n\n\n", trans_entity->name_str);
+        assert(trans_entity);
+        assert(listing);
 
-    #endif 
+        unsigned int size = trans_entity->size;
 
-    fprintf(listing, "\\--------------------------------------------------\n");
+        fprintf(listing, "Pos: %08xh | Size: %02d | ", res_buf_pos, size);
+        
+        for (unsigned int counter = 1;
+                        counter <= size;
+                        counter++)
+        {
+            fprintf(listing, "%02x ", trans_entity->data[counter - 1]);
 
-    return 0;
-}
+            if ((counter  % 8) == 0)
+                fprintf(listing, "\n                            ");
+        }
+
+        fprintf(listing, "\n\n");
+
+        #ifdef ENTITY_ADD_NAME_STR
+
+            fprintf(listing, "\nEntity name: %s \n\n\n", trans_entity->name_str);
+
+        #endif 
+
+        fprintf(listing, "\\--------------------------------------------------\n");
+
+        return 0;
+    }
+
+//-----------------------------------------------
+
+#endif 
 
 //-----------------------------------------------
 
