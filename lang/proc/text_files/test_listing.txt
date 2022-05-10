@@ -2,35 +2,39 @@ Current position: 10. Input string : CALL: MAIN Written bytes: 18 00 00 00 00
 
 Current position: 15. Input string : HLT Written bytes: 00 
 
-Current position: 16. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
+Current position: 16. Input string : IN Written bytes: 08 
 
-Current position: 1b. Input string : OUT Written bytes: 07 
+Current position: 17. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
 
-Current position: 1c. Input string : JMP: AHA Written bytes: 19 00 00 00 00 
+Current position: 1c. Input string : JE: SKIP Written bytes: 1b 00 00 00 00 
 
-Current position: 21. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
+Current position: 21. Input string : PUSH ax Written bytes: 45 01 
 
-Current position: 26. Input string : OUT Written bytes: 07 
+Current position: 23. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
 
-Current position: 27. Input string : JMP: HERE Written bytes: 19 1c 00 00 00 
+Current position: 28. Input string : MUL Written bytes: 03 
 
-Current position: 2c. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
+Current position: 29. Input string : OUT Written bytes: 07 
 
-Current position: 31. Input string : OUT Written bytes: 07 
+Current position: 2a. Input string : JMP: SUDA Written bytes: 19 00 00 00 00 
 
-Current position: 32. Input string : JMP: HERE Written bytes: 19 1c 00 00 00 
+Current position: 2f. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
 
-Current position: 37. Input string : JMP: AHA Written bytes: 19 00 00 00 00 
+Current position: 34. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
 
-Current position: 3c. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
+Current position: 39. Input string : ADD Written bytes: 01 
 
-Current position: 41. Input string : OUT Written bytes: 07 
+Current position: 3a. Input string : OUT Written bytes: 07 
 
-Current position: 42. Input string : RET Written bytes: 09 
+Current position: 3b. Input string : PUSH 9 Written bytes: 25 00 00 10 41 
+
+Current position: 40. Input string : OUT Written bytes: 07 
+
+Current position: 41. Input string : RET Written bytes: 09 
 
 Filled jump destination. Ip: 11. Destination Ip: 16 
 
-Filled jump destination. Ip: 1d. Destination Ip: 42 
+Filled jump destination. Ip: 1d. Destination Ip: 41 
 
-Filled jump destination. Ip: 38. Destination Ip: 42 
+Filled jump destination. Ip: 2b. Destination Ip: 3b 
 

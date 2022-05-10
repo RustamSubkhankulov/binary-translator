@@ -6,6 +6,17 @@
 
 //===============================================
 
+struct Dynamic_array
+{
+    unsigned int* inp_dst;
+    Instr** instr; 
+
+    unsigned int num;
+    unsigned int cap;
+};
+
+//-----------------------------------------------
+
 struct Instr_data
 {
     union
@@ -26,6 +37,8 @@ struct Instr
 
     struct Instr_data data;
 
+    unsigned int inp_pos;
+
     #ifdef ADD_INSTR_NAME
 
         char* name_str;
@@ -33,11 +46,15 @@ struct Instr
     #endif 
 };
 
+//-----------------------------------------------
+
+static const unsigned char Label_oper_code = 0xFF;
+
 //===============================================
 
 int _binary_optimize(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
-int _read_instructions(Input* input, List* list FOR_LOGS(, LOG_PARAMS));
+int _read_instructions(Input* input, List* list, Dynamic_array* inp_dst FOR_LOGS(, LOG_PARAMS));
 
 int _optimize_instructions(List* list FOR_LOGS(, LOG_PARAMS));
 
@@ -75,8 +92,8 @@ int _change_and_store_header(unsigned char* new_buf, unsigned char* old_buf,
 
 int _list_free_instr(List* list FOR_LOGS(, LOG_PARAMS));
 
-Instr* _init_instr(unsigned char oper_code, Input* input 
-                                            FOR_LOGS(, LOG_PARAMS));
+Instr* _init_instr(unsigned char oper_code, Input* input, Dynamic_array* jump_dst 
+                                                          FOR_LOGS(, LOG_PARAMS));
 
 #ifdef ADD_INSTR_NAME
 
@@ -93,7 +110,7 @@ int _load_unsigned_char_value(Input* input, Instr* instr FOR_LOGS(, LOG_PARAMS))
 int _load_int_value          (Input* input, Instr* instr FOR_LOGS(, LOG_PARAMS));
 
 int _load_instr_data         (unsigned char oper_code, Input* input, 
-                                            Instr* instr FOR_LOGS(, LOG_PARAMS));
+                              Instr* instr, Dynamic_array* jump_dst FOR_LOGS(, LOG_PARAMS));
 
 //-----------------------------------------------
 
@@ -109,7 +126,57 @@ int _store_unsigned_char_value(Instr* instr, unsigned char* new_buf,
 int _store_instr_data         (Instr* instr, unsigned char* new_buf,
                                              unsigned int*  new_buf_pos FOR_LOGS(, LOG_PARAMS));
 
+//-----------------------------------------------
+
+int _dynamic_array_ctor(Dynamic_array* dynamic_array FOR_LOGS(, LOG_PARAMS));
+
+int _dynamic_array_dtor(Dynamic_array* dynamic_array FOR_LOGS(, LOG_PARAMS));
+
+int _dynamic_array_increase(Dynamic_array* dynamic_array FOR_LOGS(, LOG_PARAMS));
+
+int _dynamic_array_add(Dynamic_array* dynamic_array, unsigned int value, Instr* instr 
+                                                              FOR_LOGS(, LOG_PARAMS));
+                                                              
+//-----------------------------------------------
+
+int _insert_labels_in_list(List* list, Dynamic_array* jump_dst FOR_LOGS(, LOG_PARAMS));
+
+Instr* _init_label(int inp_dst FOR_LOGS(, LOG_PARAMS));
+
+int _recalculate_jump_dst(List* list, Dynamic_array* jump_dst FOR_LOGS(, LOG_PARAMS));
+
+int _replace_jump_dst(Dynamic_array* jump_dst, int old_jump_dst, 
+                                               int new_jump_dst FOR_LOGS(, LOG_PARAMS));
+
 //===============================================
+
+#define replace_jump_dst(jump_dst, old_dst, new_dst) \
+       _replace_jump_dst(jump_dst, old_dst, new_dst FOR_LOGS(, LOG_ARGS))
+
+#define recalculate_jump_dst(list, jump_dst) \
+       _recalculate_jump_dst(list, jump_dst FOR_LOGS(, LOG_ARGS))
+
+#define init_label(inp_dst) \
+       _init_label(inp_dst FOR_LOGS(, LOG_ARGS))
+
+#define insert_labels_in_list(list, jump_dst) \
+       _insert_labels_in_list(list, jump_dst FOR_LOGS(, LOG_ARGS))
+
+//-----------------------------------------------
+
+#define dynamic_array_ctor(dynamic_array) \
+       _dynamic_array_ctor(dynamic_array FOR_LOGS(, LOG_ARGS))
+
+#define dynamic_array_dtor(dynamic_array) \
+       _dynamic_array_dtor(dynamic_array FOR_LOGS(, LOG_ARGS))
+
+#define dynamic_array_increase(dynamic_array) \
+       _dynamic_array_increase(dynamic_array FOR_LOGS(, LOG_ARGS))
+
+#define dynamic_array_add(dynamic_array, inp_dst, instr) \
+       _dynamic_array_add(dynamic_array, inp_dst, instr FOR_LOGS(, LOG_ARGS))
+
+//-----------------------------------------------
 
 #define store_int_value(instr, buf, buf_pos) \
        _store_int_value(instr, buf, buf_pos FOR_LOGS(, LOG_ARGS))
@@ -134,13 +201,13 @@ int _store_instr_data         (Instr* instr, unsigned char* new_buf,
 #define load_unsigned_char_value(input, instr) \
        _load_unsigned_char_value(input, instr FOR_LOGS(, LOG_ARGS))
 
-#define load_instr_data(oper_code, input, instr) \
-       _load_instr_data(oper_code, input, instr FOR_LOGS(, LOG_ARGS))
+#define load_instr_data(oper_code, input, instr, jump_dst) \
+       _load_instr_data(oper_code, input, instr, jump_dst FOR_LOGS(, LOG_ARGS))
 
 //-----------------------------------------------
 
-#define init_instr(oper_code, input) \
-       _init_instr(oper_code, input FOR_LOGS(, LOG_ARGS))
+#define init_instr(oper_code, input, jump_dst) \
+       _init_instr(oper_code, input, jump_dst FOR_LOGS(, LOG_ARGS))
 
 #define count_instructions_size(list) \
        _count_instructions_size(list FOR_LOGS(, LOG_ARGS))
@@ -148,8 +215,8 @@ int _store_instr_data         (Instr* instr, unsigned char* new_buf,
 #define list_free_instr(list) \
        _list_free_instr(list FOR_LOGS(, LOG_ARGS))
 
-#define read_instructions(input, list) \
-       _read_instructions(input, list FOR_LOGS(, LOG_ARGS))
+#define read_instructions(input, list, inp_dst) \
+       _read_instructions(input, list, inp_dst FOR_LOGS(, LOG_ARGS))
 
 #define optimize_instructions(list) \
        _optimize_instructions(list FOR_LOGS(, LOG_ARGS))

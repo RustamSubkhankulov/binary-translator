@@ -23,11 +23,38 @@ int _binary_optimize(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     int ret_val = list_ctor(&list);
     if (ret_val == -1) return -1;
 
+    struct Dynamic_array jump_dst = { 0 };
+
+    ret_val = dynamic_array_ctor(&jump_dst);
+    if (ret_val == -1) return -1;
+
     ret_val = read_instructions(&trans_struct->input, 
-                                &list);
+                                &list, &jump_dst);
+    if (ret_val == -1) return -1;
+
+    //-------------------------------------------
+
+    printf("\n gathered %d jumps \n", jump_dst.num);
+
+    for (unsigned int counter = 0;
+                      counter < jump_dst.num;
+                      counter++)
+    {
+        printf("\n #%u: inp_dst == %u \n", counter, jump_dst.inp_dst[counter]);
+    }
+
+    //-------------------------------------------
+
+    ret_val = insert_labels_in_list(&list, &jump_dst);
     if (ret_val == -1) return -1;
 
     ret_val = optimize_instructions(&list);
+    if (ret_val == -1) return -1;
+
+    ret_val = recalculate_jump_dst(&list, &jump_dst);
+    if (ret_val == -1) return -1;
+
+    ret_val = dynamic_array_dtor(&jump_dst);
     if (ret_val == -1) return -1;
 
     ret_val = flush_instructions_to_buf(trans_struct, 
@@ -119,7 +146,7 @@ int _load_int_value(Input* input, Instr* instr FOR_LOGS(, LOG_PARAMS))
 //-----------------------------------------------
 
 int _load_instr_data(unsigned char oper_code, Input* input, 
-                                              Instr* instr FOR_LOGS(, LOG_PARAMS))
+                     Instr* instr, Dynamic_array* jump_dst FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(instr);
@@ -131,6 +158,9 @@ int _load_instr_data(unsigned char oper_code, Input* input,
     if (oper_code >= CALL && oper_code <= JA)
     {
         int ret_val = load_int_value(input, instr);
+        if (ret_val == -1) return -1;
+
+        ret_val = dynamic_array_add(jump_dst, instr->data.int_value, instr);
         if (ret_val == -1) return -1;
 
         return 0;
@@ -184,8 +214,8 @@ int _load_instr_data(unsigned char oper_code, Input* input,
 
 //-----------------------------------------------
 
-Instr* _init_instr(unsigned char oper_code, Input* input
-                                            FOR_LOGS(, LOG_PARAMS))
+Instr* _init_instr(unsigned char oper_code, Input* input, Dynamic_array* jump_dst
+                                                          FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(input);
@@ -200,7 +230,7 @@ Instr* _init_instr(unsigned char oper_code, Input* input
     instr->oper_code = oper_code;
     instr->size     += 1;
 
-    int ret_val = load_instr_data(oper_code, input, instr);
+    int ret_val = load_instr_data(oper_code, input, instr, jump_dst);
     if (ret_val == -1) return NULL;    
 
     return instr;
@@ -251,7 +281,8 @@ int _add_instruction_name(Instr* instr FOR_LOGS(, LOG_PARAMS))
 
 //-----------------------------------------------
 
-int _read_instructions(Input* input, List* list FOR_LOGS(, LOG_PARAMS))
+int _read_instructions(Input* input, List* list, Dynamic_array* jump_dst 
+                                                 FOR_LOGS(, LOG_PARAMS))
 {
     bintrans_log_report();
     assert(input);
@@ -268,8 +299,10 @@ int _read_instructions(Input* input, List* list FOR_LOGS(, LOG_PARAMS))
         oper_code = *(buffer + input->pos);
         input->pos += 1;
 
-        Instr* instr = init_instr(oper_code, input);
+        Instr* instr = init_instr(oper_code, input, jump_dst);
         if (!instr) return -1;
+
+        instr->inp_pos = input->pos;
 
         #ifdef ADD_INSTR_NAME
 
@@ -411,6 +444,12 @@ int _fold_std_func(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAM
     list_pop_by_index(list, (unsigned int)nxt_index, &err);
     if (err == -1) return -1;
 
+    #ifdef ADD_INSTR_NAME
+    
+        free(func->name_str);
+    
+    #endif 
+
     free(func);
 
     return next_iter_index;
@@ -503,6 +542,13 @@ int _fold_arithm(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS)
     list_pop_by_index(list, (unsigned int)arithm_index, &err);
     if (err == -1) return -1;
 
+    #ifdef ADD_INSTR_NAME
+
+        free(arithm->name_str);
+        free(scnd_push->name_str);
+
+    #endif 
+
     free(arithm);
     free(scnd_push);
 
@@ -583,6 +629,9 @@ int _fold_mul_zero(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAM
 
     #endif 
 
+    Instr* nxt = list->data[nxt_index];
+    Instr* mul = list->data[mul_index];
+
     int err = 0;
 
     list_pop_by_index(list, (unsigned int) mul_index, &err);
@@ -591,8 +640,15 @@ int _fold_mul_zero(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAM
     list_pop_by_index(list, (unsigned int) nxt_index, &err);
     if (err == -1) return -1;
 
-    free(list->data[mul_index]);
-    free(list->data[nxt_index]);
+    #ifdef ADD_INSTR_NAME
+
+        free(mul->name_str);
+        free(nxt->name_str);
+
+    #endif 
+
+    free(mul);
+    free(nxt);
 
     return next_iter_index;
 }
@@ -672,6 +728,9 @@ int _fold_add_sub_zero(List* list, int zero_index, int oper_index FOR_LOGS(, LOG
 
     int next_iter_index = list->next[oper_index];
 
+    Instr* zero = list->data[zero_index];
+    Instr* oper = list->data[oper_index];
+
     int err = 0;
 
     list_pop_by_index(list, (unsigned int) zero_index, &err);
@@ -680,8 +739,15 @@ int _fold_add_sub_zero(List* list, int zero_index, int oper_index FOR_LOGS(, LOG
     list_pop_by_index(list, (unsigned int) oper_index, &err);
     if (err == -1) return -1;
 
-    free(list->data[zero_index]);
-    free(list->data[oper_index]);
+    #ifdef ADD_INSTR_NAME
+
+        free(zero->name_str);
+        free(oper->name_str);
+
+    #endif 
+
+    free(zero);
+    free(oper);
 
     return next_iter_index;
 }
@@ -744,6 +810,13 @@ int _optimize_reg_pop(List* list, int cur_index, float* registers
         list_pop_by_index(list, (unsigned int) nxt_index, &err);
         if (err == -1) return -1;
     
+        #ifdef ADD_INSTR_NAME
+
+            free(push->name_str);
+            free(pop->name_str);
+
+        #endif 
+
         free(push);
         free(pop);
 
@@ -957,6 +1030,12 @@ int _flush_instructions_to_buf(Trans_struct* trans_struct, List* list
 
     while(cur_index != 0)
     {
+        if (list->data[cur_index]->oper_code == Label_oper_code)
+        {
+            cur_index = list->next[cur_index];
+            continue;
+        }
+
         unsigned int size = list->data[cur_index]->size;
 
         *(new_buf + new_buf_pos) = list->data[cur_index]->oper_code;
@@ -978,4 +1057,223 @@ int _flush_instructions_to_buf(Trans_struct* trans_struct, List* list
 
 //===============================================
 
+int _insert_labels_in_list(List* list, Dynamic_array* jump_dst 
+                                       FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
 
+    assert(list);
+    assert(jump_dst);
+
+    for (unsigned int counter = 0;
+                      counter < jump_dst->num;
+                      counter ++)
+    {
+        unsigned int inp_dst = jump_dst->inp_dst[counter];
+
+        Instr* label = init_label(inp_dst);
+        if (!label) return -1;
+
+        int cur_list_index = list->head;
+
+        while(cur_list_index != 0)
+        {
+            if (list->data[cur_list_index]->inp_pos == inp_dst)
+            {
+                int ret_val = list_push_after_index(list, cur_list_index, label);
+                if (ret_val == -1) return -1;
+
+                break;
+            }
+
+            else
+                cur_list_index = list->next[cur_list_index];
+        }
+    }
+
+    list_dump(list, logs_file);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _recalculate_jump_dst(List* list, Dynamic_array* jump_dst FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    
+    assert(list);
+    assert(jump_dst);
+
+    int          cur_list_index   = list->head;
+    unsigned int position_counter = sizeof(Header);
+
+    while(cur_list_index != 0)
+    {
+        Instr* cur_instr = list->data[cur_list_index];
+
+        if (cur_instr->oper_code == Label_oper_code)
+        {
+            printf("\n vstretil label \n");
+
+            int old_jump_dst = cur_instr->inp_pos;
+
+            int ret_val = replace_jump_dst(jump_dst, old_jump_dst,
+                                                     position_counter);
+            if (ret_val == -1) return -1;
+        }
+
+        position_counter += cur_instr->size;
+        cur_list_index    = list->next[cur_list_index];
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _replace_jump_dst(Dynamic_array* jump_dst, int old_jump_dst, 
+                                               int new_jump_dst FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(jump_dst);
+
+    printf("\n about to replace: old == %d new == %d \n", old_jump_dst, new_jump_dst);
+
+    for (unsigned int counter = 0;
+                      counter < jump_dst->num;
+                      counter ++)
+    {
+        if (old_jump_dst == jump_dst->inp_dst[counter])
+        {
+            jump_dst->instr[counter]->data.int_value = new_jump_dst;
+
+            printf("\n replacing: old_jump_dst: %d new_jump_dst: %d \n", old_jump_dst, new_jump_dst);
+        }
+    }
+
+    return 0;
+}
+//-----------------------------------------------
+
+Instr* _init_label(int inp_dst FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+
+    Instr* label = (Instr*) calloc(1, sizeof(Instr));
+    if (!label)
+    {
+        error_report(CANNOT_ALLOCATE_MEM);
+        return NULL;
+    }
+
+    label->oper_code = Label_oper_code;
+    label->size      = 0;
+
+    label->inp_pos   = inp_dst;
+
+    #ifdef ADD_INSTR_NAME
+
+        label->name_str = strdup("LABEL");
+
+    #endif 
+
+    return label;
+}
+
+//-----------------------------------------------
+
+int _dynamic_array_ctor(Dynamic_array* dynamic_array FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(dynamic_array);
+
+    unsigned int* inp_dst = (unsigned int*) calloc(Dynamic_array_init_cap, 
+                                                   sizeof(unsigned int));
+    if (!inp_dst)
+    {
+        error_report(CANNOT_ALLOCATE_MEM);
+        return -1;
+    }
+
+    Instr** instr = (Instr**) calloc(Dynamic_array_init_cap, 
+                                     sizeof(Instr*));
+    if (!instr)
+    {
+        error_report(CANNOT_ALLOCATE_MEM);
+        return -1;
+    }
+
+    dynamic_array->cap     = Dynamic_array_init_cap;
+    dynamic_array->inp_dst = inp_dst;
+    dynamic_array->instr   = instr;
+    dynamic_array->num     = 0;
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _dynamic_array_dtor(Dynamic_array* dynamic_array FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(dynamic_array);
+
+    free(dynamic_array->inp_dst);
+    free(dynamic_array->instr);
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _dynamic_array_increase(Dynamic_array* dynamic_array FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(dynamic_array);
+
+    unsigned int prev_cap = dynamic_array->cap;
+    unsigned int incr_cap = prev_cap * 2;
+
+    unsigned int* prev_inp_dst = dynamic_array->inp_dst;
+    unsigned int* incr_inp_dst = (unsigned int*) my_recalloc( (void* ) prev_inp_dst,
+                                                              (size_t) incr_cap ,
+                                                              (size_t) prev_cap ,
+                                                               sizeof (unsigned int));
+    if (!incr_inp_dst) return -1;
+
+    Instr** prev_instr = dynamic_array->instr;
+    Instr** incr_instr = (Instr**) my_recalloc( (void* ) prev_instr,
+                                                (size_t) incr_cap ,
+                                                (size_t) prev_cap ,
+                                                 sizeof (unsigned int));
+
+    dynamic_array->inp_dst = incr_inp_dst;
+    dynamic_array->instr   = incr_instr;
+    dynamic_array->cap     = incr_cap;
+
+    return 0;
+}
+
+//-----------------------------------------------
+
+int _dynamic_array_add(Dynamic_array* dynamic_array, unsigned int inp_dst, Instr* instr 
+                                                                FOR_LOGS(, LOG_PARAMS))
+{
+    bintrans_log_report();
+    assert(dynamic_array);
+
+    if (dynamic_array->num == dynamic_array->cap)
+    {
+        int ret_val = dynamic_array_increase(dynamic_array);
+        if (ret_val == -1) return -1;
+    }
+
+    dynamic_array->inp_dst[dynamic_array->num] = inp_dst;
+    dynamic_array->instr  [dynamic_array->num] = instr;
+    dynamic_array->num += 1;
+
+    return 0;
+}
+
+//===============================================

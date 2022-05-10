@@ -12,7 +12,7 @@
 
 #ifdef LOGS
 
-    //#define LIST_LOGS
+    #define LIST_LOGS
 
 #endif 
 

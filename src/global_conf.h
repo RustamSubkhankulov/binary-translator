@@ -4,7 +4,7 @@
 
 #define LOG_DIR "/tmp/"
 
-//#define LOGS
+#define LOGS
 
 //-----------------------------------------------
 
