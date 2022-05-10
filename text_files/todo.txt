@@ -71,11 +71,13 @@ done 14,6. peredelat' vsyo ( jumps)
 done 15. fast sse cpy
 done 16. use callgrind to optimize translator
 17. change saving registers 
-18. readme
+
 done 19. fix jumps in optimizer
 done 20. free name_str in instr in optimizer
 21. increase speed in jumps in optimizer (struct, sort, bsearch)
-22. mul 1 optimization
+done 22. mul 1 optimization
+
+23. readme
 
 in prgress .check addresses in optimizations?
 

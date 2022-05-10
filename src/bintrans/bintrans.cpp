@@ -340,10 +340,20 @@ int _check_and_add_res_dest(Jumps* jumps, unsigned int inp_pos,
     if (!jumps->num)
         return 0;
 
+    if (jumps->cur_index == jumps->num)
+        return 0;
+
+    //printf("\n jumps->num %d inp_pos %u res_pos %u \n", jumps->num, inp_pos, res_pos);
+
     while (jumps->inp_dst[jumps->cur_index] == inp_pos)
     {
+        //printf("\n jumps->inp_dst[jumps->cur_index] %d cur_index %d \n",jumps->inp_dst[jumps->cur_index], jumps->cur_index);
+
         jumps->res_dst[jumps->cur_index] = res_pos;
         jumps->cur_index++;
+
+        if (jumps->cur_index == jumps->num)
+            break;
     }
 
     return 0;
@@ -800,6 +810,8 @@ int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         if (ret_val == -1) return -1;
 
     #endif 
+
+    free(trans_struct->input.buffer);   
 
     return 0;
 }

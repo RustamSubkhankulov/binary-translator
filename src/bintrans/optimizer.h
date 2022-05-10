@@ -70,6 +70,8 @@ int _optimize_mul_zero(List* list FOR_LOGS(, LOG_PARAMS));
 
 int _optimize_add_sub_zero(List* list FOR_LOGS(, LOG_PARAMS));
 
+int _optimize_mul_one (List* list FOR_LOGS(, LOG_PARAMS));
+
 int _fold_std_func(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS));
 
 int _fold_arithm  (List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAMS));
@@ -78,6 +80,9 @@ int _fold_mul_zero(List* list, int cur_index, int nxt_index FOR_LOGS(, LOG_PARAM
 
 int _fold_add_sub_zero(List* list, int zero_index, int oper_index 
                                                    FOR_LOGS(, LOG_PARAMS));
+
+int _fold_mul_one(List* list, int one_index, int mul_index 
+                                             FOR_LOGS(, LOG_PARAMS));
 
 int _optimize_reg_pop(List* list, int cur_index, float* registers
                                                  FOR_LOGS(, LOG_PARAMS));
@@ -239,6 +244,9 @@ int _replace_jump_dst(Dynamic_array* jump_dst, int old_jump_dst,
 #define optimize_mul_zero(list) \
        _optimize_mul_zero(list FOR_LOGS(, LOG_ARGS))
 
+#define optimize_mul_one(list) \
+       _optimize_mul_one(list FOR_LOGS(, LOG_ARGS))
+
 #define fold_std_func(list, cur, nxt) \
        _fold_std_func(list, cur, nxt FOR_LOGS(, LOG_ARGS))
 
@@ -250,6 +258,9 @@ int _replace_jump_dst(Dynamic_array* jump_dst, int old_jump_dst,
 
 #define fold_add_sub_zero(list, zero, oper) \
        _fold_add_sub_zero(list, zero, oper FOR_LOGS(, LOG_ARGS))
+
+#define fold_mul_one(list, zero, oper) \
+       _fold_mul_one(list, zero, oper FOR_LOGS(, LOG_ARGS))
 
 #define optimize_add_sub_zero(list) \
        _optimize_add_sub_zero(list FOR_LOGS(, LOG_ARGS))

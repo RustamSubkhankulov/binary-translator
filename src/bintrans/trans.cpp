@@ -422,7 +422,7 @@ int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Pop_dword_xmm0);
 
     // push xmm1 - xmm7 to stack
-    INIT_ENTITY(trans_struct, Push_xmms_1_7);
+    INIT_ENTITY(trans_struct, Push_xmms_1_15);
 
     // align stack to 16 boundary
     INSERT_NOPS(trans_struct);
@@ -436,7 +436,7 @@ int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Sub_stack_alignment);
 
     // rpop xmm1 - xmm7
-    INIT_ENTITY(trans_struct, Pop_xmms_1_7);
+    INIT_ENTITY(trans_struct, Pop_xmms_1_15);
     //restore xmm0
     INIT_ENTITY(trans_struct, Movd_xmm0_r15d);
 
@@ -458,7 +458,7 @@ int _trans_in     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Movd_r15d_xmm0);
 
     // push xmm1 - xmm7
-    INIT_ENTITY(trans_struct, Push_xmms_1_7);
+    INIT_ENTITY(trans_struct, Push_xmms_1_15);
 
     // align stack to 16 boundary
     INSERT_NOPS(trans_struct);
@@ -469,7 +469,7 @@ int _trans_in     (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     // needs to be patched
 
     // pop xmm0 - xmm7
-    INIT_ENTITY(trans_struct, Pop_xmms_1_7);
+    INIT_ENTITY(trans_struct, Pop_xmms_1_15);
 
     // sub rsp, 8 (if stack was not aligned to 16 boundary)
     INIT_ENTITY(trans_struct, Sub_stack_alignment);
@@ -505,13 +505,13 @@ int _trans_pow    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     INIT_ENTITY(trans_struct, Add_rsp_16);
 
     // push xmm1 - xmm7
-    INIT_ENTITY(trans_struct, Push_xmms_1_7);
+    INIT_ENTITY(trans_struct, Push_xmms_1_15);
 
     INIT_ENTITY(trans_struct, Rel_call);
     ADD_PATCH_STD_FUNC(trans_struct, POW);
 
     // pop xmm1 - xmm7
-    INIT_ENTITY(trans_struct, Pop_xmms_1_7);
+    INIT_ENTITY(trans_struct, Pop_xmms_1_15);
 
     // needs to be patched
     INIT_ENTITY(trans_struct, Push_dword_xmm0);
@@ -716,7 +716,7 @@ int _trans_std_func(Trans_struct* trans_struct, unsigned char op_code
     INIT_ENTITY(trans_struct, Pop_dword_xmm0);
 
     // push xmm1 - xmm7 to stack
-    INIT_ENTITY(trans_struct, Push_xmms_1_7);
+    INIT_ENTITY(trans_struct, Push_xmms_1_15);
 
     // align stack to 16 boundary
     INSERT_NOPS(trans_struct);
@@ -730,7 +730,7 @@ int _trans_std_func(Trans_struct* trans_struct, unsigned char op_code
     INIT_ENTITY(trans_struct, Sub_stack_alignment);
 
     // pop xmm1 - xmm7
-    INIT_ENTITY(trans_struct, Pop_xmms_1_7);
+    INIT_ENTITY(trans_struct, Pop_xmms_1_15);
     // push xmm0
     INIT_ENTITY(trans_struct, Push_dword_xmm0);
 

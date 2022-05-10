@@ -8,33 +8,25 @@ Current position: 17. Input string : PUSH 0 Written bytes: 25 00 00 00 00
 
 Current position: 1c. Input string : JE: SKIP Written bytes: 1b 00 00 00 00 
 
-Current position: 21. Input string : PUSH ax Written bytes: 45 01 
+Current position: 21. Input string : PUSH 20 Written bytes: 25 00 00 a0 41 
 
-Current position: 23. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+Current position: 26. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
 
-Current position: 28. Input string : MUL Written bytes: 03 
+Current position: 2b. Input string : ADD Written bytes: 01 
 
-Current position: 29. Input string : OUT Written bytes: 07 
+Current position: 2c. Input string : POP bx Written bytes: 46 02 
 
-Current position: 2a. Input string : JMP: SUDA Written bytes: 19 00 00 00 00 
+Current position: 2e. Input string : PUSH bx Written bytes: 45 02 
 
-Current position: 2f. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
+Current position: 30. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
 
-Current position: 34. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
+Current position: 35. Input string : MUL Written bytes: 03 
 
-Current position: 39. Input string : ADD Written bytes: 01 
+Current position: 36. Input string : OUT Written bytes: 07 
 
-Current position: 3a. Input string : OUT Written bytes: 07 
-
-Current position: 3b. Input string : PUSH 9 Written bytes: 25 00 00 10 41 
-
-Current position: 40. Input string : OUT Written bytes: 07 
-
-Current position: 41. Input string : RET Written bytes: 09 
+Current position: 37. Input string : RET Written bytes: 09 
 
 Filled jump destination. Ip: 11. Destination Ip: 16 
 
-Filled jump destination. Ip: 1d. Destination Ip: 41 
-
-Filled jump destination. Ip: 2b. Destination Ip: 3b 
+Filled jump destination. Ip: 1d. Destination Ip: 37 
 
