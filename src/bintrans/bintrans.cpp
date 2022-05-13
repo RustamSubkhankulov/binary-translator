@@ -809,9 +809,7 @@ int _trans_struct_dtor(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         int ret_val = end_listing_file(trans_struct);
         if (ret_val == -1) return -1;
 
-    #endif 
-
-    free(trans_struct->input.buffer);   
+    #endif   
 
     return 0;
 }

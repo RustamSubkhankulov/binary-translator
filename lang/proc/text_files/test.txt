@@ -3,21 +3,26 @@ HLT
 
 MAIN:
 
-IN
-PUSH 0
-JE: SKIP
-
-PUSH 20
-PUSH 10
-ADD
-POP bx
-
-PUSH bx
 PUSH 1
-MUL
-OUT
+POP cx
 
-SKIP:
+LOOP:
+
+PUSH cx
+PUSH 1000000
+JE: END
+
+PUSH cx
+PUSH 1
+ADD
+POP cx
+
+JMP: LOOP
+
+END:
+
+PUSH cx
+OUT
 
 RET
 

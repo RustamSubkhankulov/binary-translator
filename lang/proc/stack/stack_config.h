@@ -23,7 +23,7 @@ typedef float elem_t;
 
 //STACK
 
-#define DEBUG
+//#define DEBUG
 
 ///LOGS definition
 ///

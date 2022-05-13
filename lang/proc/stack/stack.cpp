@@ -251,11 +251,15 @@ int stack_validator_(struct Stack* stack, LOG_PARAMS) {
 
     #endif
 
+    #ifdef DEBUG
+
     if (stack->self_ptr != stack) {
 
         error_report(STK_INV_SELF_PTR);
         check_val++;
     }
+
+    #endif 
 
     #ifdef CANARIES
 

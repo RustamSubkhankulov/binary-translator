@@ -32,6 +32,9 @@ asmexecute:
 bin:
 	./proc/asm.exe proc/text_files/test.txt ../binary/test.code asm_logs.html proc/text_files/test_listing.txt
 
+binexec:
+	./proc/cpu.exe ../binary/test.code proc/text_files/proc_input.txt proc/text_files/proc_output.txt  proc_logs.html
+
 fact:
 	./proc/asm.exe proc/text_files/factorial.txt ../binary/fact.code asm_logs.html proc/text_files/fact_listing.txt
 

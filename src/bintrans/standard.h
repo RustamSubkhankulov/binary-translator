@@ -20,22 +20,6 @@
 
 //===============================================
 
-// enum Std_func_codes
-// {
-//     IN_FUNC   = 1,
-//     OUT_FUNC  = 2,
-//     SIN_FUNC  = 3,
-//     COS_FUNC  = 4,
-//     TG_FUNC   = 5,
-//     LN_FUNC   = 6,
-//     ASIN_FUNC = 7,
-//     ATG_FUNC  = 8,
-//     POW_FUNC  = 9,
-//     FABS_FUNC = 10
-// };
-
-//===============================================
-
 float standard_in(void);
 
 int   standard_out(float argument);
