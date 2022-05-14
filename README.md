@@ -56,6 +56,9 @@ Before translated version of instructions, integer registers are saved in stack 
 
 After translated instructions, if there is no HLT in binary code, saved integer registers are poped from stack and RET ( x86 ) exexcuted.
 
+### HLT
+Instructions HLT of r86 instruction set is translated into restoring ( poping ) from stack saved integer registers according to calling convention and ret ( x86 instruction )
+
 ### Arithmetics
 
 Arithmetics in translated code is also Push-Pop. Before calculating, value of one of XMM registers is saved in integer register, one of the values from stack is moved to this XMM registers. Ther arithmetic instructions is performed, and result is XMM registers. Then RSP is increased by 8 ( poping one of the values from stack ).Then result of calculation is moved from XMM registers back to the stack and value of XMM register is restored.
