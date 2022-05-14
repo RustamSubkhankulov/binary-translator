@@ -421,7 +421,7 @@ int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     // movss xmm0, dword[rsp]; add rsp, 8;
     INIT_ENTITY(trans_struct, Pop_dword_xmm0);
 
-    // push xmm1 - xmm7 to stack
+    // push xmm1 - xmm15 to stack
     INIT_ENTITY(trans_struct, Push_xmms_1_15);
 
     // align stack to 16 boundary
@@ -435,7 +435,7 @@ int _trans_out    (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
     // sub rsp, 8 (if stack was not aligned to 16 boundary)
     INIT_ENTITY(trans_struct, Sub_stack_alignment);
 
-    // rpop xmm1 - xmm7
+    // pop xmm1 - xmm15
     INIT_ENTITY(trans_struct, Pop_xmms_1_15);
     //restore xmm0
     INIT_ENTITY(trans_struct, Movd_xmm0_r15d);
@@ -603,7 +603,7 @@ int _trans_compare(Trans_struct* trans_struct, unsigned char op_code
     ADD_PATCH_CONST(trans_struct, 1.0f);
     // needs to be patched
 
-    // Clear stakc from comparing values
+    // Clear stack from comparing values
     INIT_ENTITY(trans_struct, Add_rsp_16);
 
     INIT_ENTITY(trans_struct, Push_dword_xmm13);

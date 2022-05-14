@@ -6,31 +6,13 @@ HLT
 main:
 
     ;IN           ;argument 
-    PUSH 34
-    POP dx 
-
-    PUSH 1000000
-    POP ex 
-
-    LOOP:
-
-    PUSH dx
-
+    PUSH 6
     POP bx
+
     PUSH 1
     POP cx 
     CALL: factorial 
     
-    PUSH ex
-    PUSH 1
-    SUB
-
-    POP ex
-    PUSH ex
-
-    PUSH 0
-    JBE: LOOP
-
     PUSH cx
     OUT
 

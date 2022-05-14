@@ -222,7 +222,7 @@ memory - array of float-point values
 		// get number of register (for example xmm0)
 
 
-    cvtss2si r13d, xmm0
+        cvtss2si r13d, xmm0
 		push qword[Start_addr + r13d * 4]
 
 
