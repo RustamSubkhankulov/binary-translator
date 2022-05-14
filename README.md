@@ -213,6 +213,40 @@ For each used needed function for <math.h> to calculate value. Firstly only empt
 Every call is accompanied by forced pushing and poping using stack all XMM registers, due to the fact, that all XMMs are not preserved during call according to calling convention. 
 Also call of calculating functions is accompanied by alignment stack to 16 boundary by calculating remainder of the division RSP by 16 and adding result to RSP ( 8 or 0 if stack is already aligned ). After return alignment, which is saved in one of the preserved during call integer registers, is subtracted from RSP.
 
+##### Example of translating SIN:
+  - saving xmm0 value
+ 
+  <code> movd r15d, xmm0 </code>
+  
+  - pop from stack to xmm0
+   
+  <code> movss xmm0, dword [ rsp ] </code>
+  
+  <code> add rsp, 8 </code>
+  
+  - push XMM registers from 1 to 15
+  
+  - align stack to 16-boundary
+   
+  <code> mov r14, rsp </code>
+  
+  <code> and r14, 0xF </code>
+  
+  <code> and rsp, r14 </code>
+  
+  - relative near call, address will be patched later
+  call Arithmetic_function
+  
+  - pop XMM 1 - 15 from stack, restore values
+  
+  - push XMM0 value to stack 
+
+  <code> sub rsp, 8 </code>
+  <code> movss dword [ rsp ], xmm0 </code>
+  
+  - restore xmm0 value from r15d
+  <code> movd xmm0, r15d </code>
+  
 ## Optimization feature
 
 My JIT-compiler includes additional feature, that optimize binary code of r86 architecture before translating. Operations from input are read to list amd then redudant instructions are removed from list. Then remaining instructions are flushed back to buffer, that is used then for translating. 
