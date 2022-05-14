@@ -4,7 +4,7 @@ Binary translator from binary code for virtual processor to x86 made as a task a
 ## Formulation of the problem
 The task was to write binary translator from architecture of virtual processor, that was made as task too previously, to x86 architecture. Binary translater is made in form of [JIT]( https://en.wikipedia.org/wiki/Just-in-time_compilation "Wikipedia" ) ( Just-in-time ) compiler. By link one can read more about jit compilation.
 
-The amain idea of jut compiler - translated code from one another to native code of CPU, executing JIT-compiler, is stored and array and called as function. 
+The main idea of jit compiler - translated code from one another to native code of CPU, executing JIT-compiler, is stored and array and called as function. 
 
 The main result of translating, that we want to achieve, is increasing in performance. Therefore, after talking about translating process, we will test performance and make conclusion.
 
