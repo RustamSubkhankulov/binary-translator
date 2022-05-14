@@ -1,50 +1,71 @@
-# BinaryTranslator
-Binary translator from binary code for virtual processor to x86 made as a task at programming course in MIPT DREC 1st grade.
+# JIT-компилятор
+JIT-компилятор, транслирующий бинарный код, предназначенный для исполнения виртуальным процессором, который был написан в первом семестре в качестве одной из учебных задач, в инструкции архитектуры x86.
 
-## Formulation of the problem
-The task was to write binary translator from architecture of virtual processor, that was made as task too previously, to x86 architecture. Binary translater is made in form of [JIT]( https://en.wikipedia.org/wiki/Just-in-time_compilation "Wikipedia" ) ( Just-in-time ) compiler. By link one can read more about jit compilation.
+Главная особенность JIT (Just-in-time) компилятора состоит в том, что результат трансляции - бинарный код, содержащий инструкции архитектуры, в которую происходит трансляция, исполняется сразу же после процесса трансляции. Для этого бинарный код сохраняется в массиве и вызывается в качестве функции. 
 
-The main idea of jit compiler - translated code from one another to native code of CPU, executing JIT-compiler, is stored and array and called as function. 
+Главным результатом, которого мы хотим добиться при написании JIT-компилятора, это повышение быстродействия исполнения. Сравнение времени исполнения тестовой задачи будет заключающим пунктом работы.
 
-The main result of translating, that we want to achieve, is increasing in performance. Therefore, after talking about translating process, we will test performance and make conclusion.
+## Архитектура виртуального процессора
+Для того, чтобы быть более краткими в обсуждениях трансляции, будем называть архитектуру виртуального процессора, из которой происходит трансляция, r86.
 
-## My virtual CPU architecture
-To be more concise, let's call this architecture r86. 
-Firstly, before making plans of translating, necessary step is to examine r86 instructions set and decide which instructions we will translate and which won't be supported by our translator.
+Перед тем, как описывать процесс транляции инструкций r86 в инструкции архитектуры x86, опишем инструкции архитектуры r86.
 
-| HLT | ADD | SUB | MUL | DIV | PUSH | POP | OUT | IN   | RET | POW  | EQ  | MR   | JA  | JB  | JE  |
-|-----|-----|-----|-----|-----|------|-----|-----|------|-----|------|-----|------|-----|-----|-----|
-| MRE | LS  | LSE | NEQ | SIN | COS  | TG  | LN  | ASIN | ATG | DRAW | JMP | CALL | JAE | JBE | JNE |
+Инструкции архитектуры r86 могут быть поделены на несколько групп: 
+1) Инструкции, используемые для арифметических операций: эта группа включает в себя как инструкции, производящие простейшие арифметические операции - ADD, SUB, MUL, DIV, так и инструкции, вычисляющие значения некоторых математчиских функций - SIN, COS, TG, LN, ASIN, ATG, POW - и инструкции, результатом которых является bool значение выражения сравнения - MR, MRE, LS, LSE, EQ, NEQ.
+2) Инструкции управления потоком исполнения - безусловный 'jump' - JMP, условные 'jump'ы - JA, JAE, JB, JBE, JE, JNE, а также вызов функции CALL, возврат из функции RET и прекращение работы процессора HLT. 
+3) Инструкции перемещения данных - PUSH и POP
 
-My virtual processor includes array of constant size - RAM, 16 froat registers, each can be used on general purposes.
+Необходимыми для исполнения инструкций виртуальным процессоров являются:
+- 16 регистров общего назначения, содержащие в себе значения с плавающей точкой (float)
+- Оперативная память определенного размера, представляющая из себя массив типа float
+-  Структура данных стек, использующийся для арифметики, построенной на PUSH и POP инструкциях, а также для хранения адреса возврата при вызове функций.
 
-Instruction set of r86 can be divied in three main parts - arithmetics part, data movement and control instructions ( jumps, call and ret )
-My virtual CPU includes stack used for Push-Pop arithmetics. Also return address is stored in stack during call. 
+#### Арифметика 
+Особенность арифметических операций в архитектуре r86 - все инструкции, использующиеся для вычисления арифметических выражений, принимает аргументы со стека. Это означает, что инструкции, требующие два аргумента, используют для вычислений два значения, которые сейчас находятся на вершине стека. После выполнения инструкции результат также находится на вершине стека.
 
-#### Arithmetics
+ADD, SUB, MUL и DIV  исполняются простейшие арифметические действия - сложение, вычитание, умножение и деление. При этом если до выполнения инстукции в стеке лежало два числа - два аргумента, то после на вершине стека будет находиться только одно значение - результат вычисления.
 
-Push-pop arithmetic instructions take two float values from stack, perform calculation and returns result in stack.
-Some of arithmetic although need only one argument - SIN, COS etc. These instructions takess only one float value from stack, performes calculation using functions from <math.h> and returns result on the top of the stack. 
+Команды SIN, COS, TG, LN, ASIN, ATG вычисляют соответсвенно синус, косинус, тангенс, натуральный логарифм, арктангенс и арксинус от аргумента с вершины стека и там же возвращают результат. Фактически, аргумент, находящийся на вершине стека, заменяется результатом применения к нему соответствующей функции. Для вычисления результата используются функции из библеотеки <math.h>. 
 
-Instructions MR, MRE, LS, LSE, EQ and NEQ take two float values from stack, perform comparing and returns bool result of comapring - 0 or 1 - on the top of stack.
+Инструкции MR, MRE, LS, LSE, EQ, NEQ сравнивают два значения, находящиеся на вершине стека и в зависимости от результата, возвращают единицу или ноль на вершине стека. Если сравнение верно, то результатом является 1, иначе результат равен 0.
 
-#### Control instructions
+#### Инструкции управления потоком 
 
-Call and ret basically work the same as CALL and RET in x86 ( details will be discussed later ). Jumps instructions includes conditionals jumps, that are takes two float values from stack, perform comparing and change current instruction position depending on result of compare. Unlike x86, r86 architecture does not have flags. Also in binary code there are always absolute value of destination of jump, unlike relative version of jumps in x86. 
+Инструкция HLT является обазятельным условием завершения работы виртуального процессора. Как только виртуальный процессор встречается инструкцию HLT, вне зависимости от состояния стека ( его сбалансированности ) исполнение дальнейших инструкций прекращается.  
 
-HLT is necessary instruction at the end of programm. Without is, virtual CPU won't stop executing.
+Инструкция вызова функции CALL сохраняет адрес следующей после нее инструкции в стеке, а после этого исполнение инструкций продолжается с адреса, который является аргументом инструкции CALL. Инструкция RET принимает значение с вершины стека, после чего исполнение инструкций происходит с адреса, равного этому значению. С помощью двух этих инструкций происходят вызов функции и возврат из нее в r86 архитектуре.
 
-#### Data movement
+Безусловный 'jump' вне зависимости от состояния виртуального процессора изменяет текущую позицию в коде, инструкции продолжают исполнятся с другого адреса. В отличие от безусловного, условные 'jump'ы происходят только если результатом соответствующего сравнения двух аргументов - двух значений с вершины стека - является true. Иначе прыжок не происходит и исполнение инструкций продолжается со следующей после условного 'jump'а. При сравнении аргументы пропадают из стека. 
 
-Two instructions - push and pop - used for data movement. Depending on operation code in binary, different data movement is performed. Unlike x86, in r86 there is no way to move value from one place to another not using stack.
-PUSH pushes value to stack from:  1) one of 16 float registers 2) from ram by index containing in register 3) from ram by index containing in binary code 4) from memory by index = immediate value from binary + value in one of 16 registers. Also PUSH can store immediate value from binary code on the top os stack. 
-POP performs reverse action, except there is no POP to immediate value.
+Аргументами условного и безусловных 'jump'ов являтся абсолютные адреса - позиции в бинарном коде относительно начала.
 
-#### Unsupported instructions
+#### Перемещение данных
 
-DRAW instruction is used for printing values from special part of RAM - video memory - in terminal. This instruction is too complicated for translating, so this instruction won't be supported in our translator. Actually, this instrucion will be translated to just nothing. So translating will not stop executing, just nothing will be performed. 
+Для перемещения данных используются две инструкции - PUSH и POP.
+Важно отметить, что в архитектуре r86 отсутствует возможность перемещения данных из регистра или оперативной памяти в регистр или оперативную память без использования стека. 
 
-## Translating instructions
+Инструкция PUSH добавляет значения в стек, а POP - удаляет его из стека.
+
+В архитектуре r86 сущесвуют различные разновидности данных инструкций.
+
+PUSH в стек:
+- из регистра
+- из оперативной памяти по индексу, равному значению в одном из регистров
+- из оперативной памяти по индексу, равному аргументу инструкции из бинарного кода
+- из оперативной памяти по индексу, равному сумме значения в одном из регистров и значения из бинарного кода 
+- константного значения из бинарного кода
+
+ POP из стека в:
+- в регистр
+- в оперативную памяти по индексу, равному значению в одном из регистров
+- в оперативную памяти по индексу, равному аргументу инструкции из бинарного кода
+- в оперативную памяти по индексу, равному сумме значения в одном из регистров и значения из бинарного кода 
+
+#### Неподдерживаемые инструкции
+
+Инструкция DRAW выводит в терминале содержание определленной области оперативной памяти по строчкам длины, заданной конфигурацией виртуального процессора. Данная область оперативной памяти является зарезервированной в качестве видеопамяти. Трансляция этой инструкции слишком затруднительна, поэтому на данный момент она не поддерживается JIT-компилятором. При трансляции даннная инструкция игнорируется и пропускается.
+
+## Трансляция инструкций
 
 For translating instructions with float registers in r86, XMM registers are used. If in binary code there are instructions using RAM, float array the same size as RAM in r86 is allocated and used during executing. 
 
