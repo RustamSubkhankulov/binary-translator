@@ -22,10 +22,10 @@
 //#define TREE_DEBUG
 
 //GRAPHVIZ
-#define TREE_GRAPHVIZ
+//#define TREE_GRAPHVIZ
 
 //Definition for hash calculating
-#define HASH_POINTER_TO_CHAR
+//#define HASH_POINTER_TO_CHAR
 
 //==================================================================
 

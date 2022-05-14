@@ -35,8 +35,8 @@ int main(int argc, char* argv[]) {
     if (!tokens)
         return -1;
 
-    ret = tokens_dump(tokens, logs_file); 
-    RETURN_CHECK(ret);
+    // ret = tokens_dump(tokens, logs_file); 
+    // RETURN_CHECK(ret);
 
     struct Tree tree = { 0 };
     ret = tree_ctor(&tree);

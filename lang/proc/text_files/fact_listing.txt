@@ -6,7 +6,7 @@ Current position: 16. Input string : PUSH 34 Written bytes: 25 00 00 08 42
 
 Current position: 1b. Input string : POP dx  Written bytes: 46 04 
 
-Current position: 1d. Input string : PUSH 10000000 Written bytes: 25 80 96 18 4b 
+Current position: 1d. Input string : PUSH 1000000 Written bytes: 25 00 24 74 49 
 
 Current position: 22. Input string : POP ex  Written bytes: 46 05 
 

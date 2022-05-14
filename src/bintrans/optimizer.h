@@ -60,8 +60,6 @@ int _optimize_instructions(List* list FOR_LOGS(, LOG_PARAMS));
 
 int _optimize_consts  (List* list FOR_LOGS(, LOG_PARAMS));
 
-int _optimize_reg_pops(List* list FOR_LOGS(, LOG_PARAMS));
-
 int _optimize_arithm  (List* list FOR_LOGS(, LOG_PARAMS));
 
 int _optimize_std_func(List* list FOR_LOGS(, LOG_PARAMS));
@@ -83,9 +81,6 @@ int _fold_add_sub_zero(List* list, int zero_index, int oper_index
 
 int _fold_mul_one(List* list, int one_index, int mul_index 
                                              FOR_LOGS(, LOG_PARAMS));
-
-int _optimize_reg_pop(List* list, int cur_index, float* registers
-                                                 FOR_LOGS(, LOG_PARAMS));
 
 int _count_instructions_size(List* list FOR_LOGS(, LOG_PARAMS));
 
@@ -234,12 +229,6 @@ int _replace_jump_dst(Dynamic_array* jump_dst, int old_jump_dst,
 
 #define optimize_std_func(list) \
        _optimize_std_func(list FOR_LOGS(, LOG_ARGS))
-
-#define optimize_reg_pops(list) \
-       _optimize_reg_pops(list FOR_LOGS(, LOG_ARGS))
-
-#define optimize_reg_pop(list, cur_index, registers) \
-       _optimize_reg_pop(list, cur_index, registers FOR_LOGS(, LOG_ARGS))
 
 #define optimize_mul_zero(list) \
        _optimize_mul_zero(list FOR_LOGS(, LOG_ARGS))

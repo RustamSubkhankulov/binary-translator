@@ -1,0 +1,284 @@
+Current position: 10. Input string : PUSH 100  Written bytes: 25 00 00 c8 42 
+
+Current position: 15. Input string : POP  dx  Written bytes: 46 04 
+
+Current position: 17. Input string : CALL: main Written bytes: 18 00 00 00 00 
+
+Current position: 1c. Input string : HLT  Written bytes: 00 
+
+Current position: 1d. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 22. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 27. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 29. Input string : ADD  Written bytes: 01 
+
+Current position: 2a. Input string : ADD  Written bytes: 01 
+
+Current position: 2b. Input string : POP cx   Written bytes: 46 03 
+
+Current position: 2d. Input string : PUSH [ cx ]  Written bytes: c5 03 
+
+Current position: 2f. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 34. Input string : EQ  Written bytes: 0b 
+
+Current position: 35. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 3a. Input string : JAE: FALSE275075853  Written bytes: 1e 00 00 00 00 
+
+Current position: 3f. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
+
+Current position: 44. Input string : POP ex  Written bytes: 46 05 
+
+Current position: 46. Input string : RET  Written bytes: 09 
+
+Current position: 47. Input string : JMP: CONDEND275075853  Written bytes: 19 00 00 00 00 
+
+Current position: 4c. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 51. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 56. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 58. Input string : ADD  Written bytes: 01 
+
+Current position: 59. Input string : ADD  Written bytes: 01 
+
+Current position: 5a. Input string : POP cx   Written bytes: 46 03 
+
+Current position: 5c. Input string : PUSH [ cx ]  Written bytes: c5 03 
+
+Current position: 5e. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
+
+Current position: 63. Input string : EQ  Written bytes: 0b 
+
+Current position: 64. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 69. Input string : JAE: FALSE903438264  Written bytes: 1e 00 00 00 00 
+
+Current position: 6e. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
+
+Current position: 73. Input string : POP ex  Written bytes: 46 05 
+
+Current position: 75. Input string : RET  Written bytes: 09 
+
+Current position: 76. Input string : JMP: CONDEND903438264  Written bytes: 19 00 00 00 00 
+
+Current position: 7b. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 80. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 85. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 87. Input string : ADD  Written bytes: 01 
+
+Current position: 88. Input string : ADD  Written bytes: 01 
+
+Current position: 89. Input string : POP cx   Written bytes: 46 03 
+
+Current position: 8b. Input string : PUSH [ cx ]  Written bytes: c5 03 
+
+Current position: 8d. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 92. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 97. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 99. Input string : ADD  Written bytes: 01 
+
+Current position: 9a. Input string : ADD  Written bytes: 01 
+
+Current position: 9b. Input string : POP cx   Written bytes: 46 03 
+
+Current position: 9d. Input string : PUSH [ cx ]  Written bytes: c5 03 
+
+Current position: 9f. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
+
+Current position: a4. Input string : SUB  Written bytes: 02 
+
+Current position: a5. Input string : POP [dx + 1]  Written bytes: e6 04 00 00 80 3f 
+
+Current position: ab. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: ad. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
+
+Current position: b2. Input string : ADD  Written bytes: 01 
+
+Current position: b3. Input string : POP dx  Written bytes: 46 04 
+
+Current position: b5. Input string : CALL: 1843882628  Written bytes: 18 1d 00 00 00 
+
+Current position: ba. Input string : PUSH ex  Written bytes: 45 05 
+
+Current position: bc. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: be. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
+
+Current position: c3. Input string : SUB  Written bytes: 02 
+
+Current position: c4. Input string : POP dx  Written bytes: 46 04 
+
+Current position: c6. Input string : MUL  Written bytes: 03 
+
+Current position: c7. Input string : POP ex  Written bytes: 46 05 
+
+Current position: c9. Input string : RET  Written bytes: 09 
+
+Current position: ca. Input string : RET  Written bytes: 09 
+
+Current position: cb. Input string : PUSH 34  Written bytes: 25 00 00 08 42 
+
+Current position: d0. Input string : POP [dx + 0]  Written bytes: e6 04 00 00 00 00 
+
+Current position: d6. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: db. Input string : POP [dx + 1]  Written bytes: e6 04 00 00 80 3f 
+
+Current position: e1. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: e6. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
+
+Current position: eb. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: ed. Input string : ADD  Written bytes: 01 
+
+Current position: ee. Input string : ADD  Written bytes: 01 
+
+Current position: ef. Input string : POP cx   Written bytes: 46 03 
+
+Current position: f1. Input string : PUSH [ cx ]  Written bytes: c5 03 
+
+Current position: f3. Input string : PUSH 100000  Written bytes: 25 00 50 c3 47 
+
+Current position: f8. Input string : MR  Written bytes: 0c 
+
+Current position: f9. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: fe. Input string : JAE: CYCLEEND1632787550  Written bytes: 1e 00 00 00 00 
+
+Current position: 103. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 108. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 10d. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 10f. Input string : ADD  Written bytes: 01 
+
+Current position: 110. Input string : ADD  Written bytes: 01 
+
+Current position: 111. Input string : POP cx   Written bytes: 46 03 
+
+Current position: 113. Input string : PUSH [ cx ]  Written bytes: c5 03 
+
+Current position: 115. Input string : POP [dx + 3]  Written bytes: e6 04 00 00 40 40 
+
+Current position: 11b. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 11d. Input string : PUSH 3  Written bytes: 25 00 00 40 40 
+
+Current position: 122. Input string : ADD  Written bytes: 01 
+
+Current position: 123. Input string : POP dx  Written bytes: 46 04 
+
+Current position: 125. Input string : CALL: 1843882628  Written bytes: 18 1d 00 00 00 
+
+Current position: 12a. Input string : PUSH ex  Written bytes: 45 05 
+
+Current position: 12c. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 12e. Input string : PUSH 3  Written bytes: 25 00 00 40 40 
+
+Current position: 133. Input string : SUB  Written bytes: 02 
+
+Current position: 134. Input string : POP dx  Written bytes: 46 04 
+
+Current position: 136. Input string : POP [dx + 2]  Written bytes: e6 04 00 00 00 40 
+
+Current position: 13c. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 141. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
+
+Current position: 146. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 148. Input string : ADD  Written bytes: 01 
+
+Current position: 149. Input string : ADD  Written bytes: 01 
+
+Current position: 14a. Input string : POP cx   Written bytes: 46 03 
+
+Current position: 14c. Input string : PUSH [ cx ]  Written bytes: c5 03 
+
+Current position: 14e. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
+
+Current position: 153. Input string : ADD  Written bytes: 01 
+
+Current position: 154. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 159. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
+
+Current position: 15e. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 160. Input string : ADD  Written bytes: 01 
+
+Current position: 161. Input string : ADD  Written bytes: 01 
+
+Current position: 162. Input string : POP cx   Written bytes: 46 03 
+
+Current position: 164. Input string : POP [ cx ]  Written bytes: c6 03 
+
+Current position: 166. Input string : JMP: REPEAT1632787550  Written bytes: 19 e1 00 00 00 
+
+Current position: 16b. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 170. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
+
+Current position: 175. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 177. Input string : ADD  Written bytes: 01 
+
+Current position: 178. Input string : ADD  Written bytes: 01 
+
+Current position: 179. Input string : POP cx   Written bytes: 46 03 
+
+Current position: 17b. Input string : PUSH [ cx ]  Written bytes: c5 03 
+
+Current position: 17d. Input string : POP [dx + 2]  Written bytes: e6 04 00 00 00 40 
+
+Current position: 183. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 185. Input string : PUSH 2  Written bytes: 25 00 00 00 40 
+
+Current position: 18a. Input string : ADD  Written bytes: 01 
+
+Current position: 18b. Input string : POP dx  Written bytes: 46 04 
+
+Current position: 18d. Input string : CALL: 1843882628  Written bytes: 18 1d 00 00 00 
+
+Current position: 192. Input string : PUSH ex  Written bytes: 45 05 
+
+Current position: 194. Input string : PUSH dx  Written bytes: 45 04 
+
+Current position: 196. Input string : PUSH 2  Written bytes: 25 00 00 00 40 
+
+Current position: 19b. Input string : SUB  Written bytes: 02 
+
+Current position: 19c. Input string : POP dx  Written bytes: 46 04 
+
+Current position: 19e. Input string : OUT  Written bytes: 07 
+
+Current position: 19f. Input string : RET  Written bytes: 09 
+
+Filled jump destination. Ip: 18. Destination Ip: cb 
+
+Filled jump destination. Ip: 3b. Destination Ip: 4c 
+
+Filled jump destination. Ip: 48. Destination Ip: 4c 
+
+Filled jump destination. Ip: 6a. Destination Ip: 7b 
+
+Filled jump destination. Ip: 77. Destination Ip: ca 
+
+Filled jump destination. Ip: ff. Destination Ip: 16b 
+

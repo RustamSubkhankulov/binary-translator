@@ -323,9 +323,6 @@ int _optimize_instructions(List* list FOR_LOGS(, LOG_PARAMS))
 
     } while(is_opt == 1);
 
-    int ret_val = optimize_reg_pops(list);
-    if (ret_val == -1) return -1;
-
     return 0;
 }
 
@@ -839,84 +836,6 @@ int _fold_add_sub_zero(List* list, int zero_index, int oper_index FOR_LOGS(, LOG
     free(oper);
 
     return next_iter_index;
-}
-
-//-----------------------------------------------
-
-int _optimize_reg_pops(List* list FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report();
-    assert(list);
-
-    float registers[16] = { 0 };
-
-    int cur_index = list->head;
-    
-    while (cur_index != 0)
-    {
-        int nxt_index = list->next[cur_index];
-        if (nxt_index == 0) break;
-
-        if (list->data[cur_index]->oper_code == (PUSH | IMM_MASK)
-        &&  list->data[nxt_index]->oper_code == (POP  | REGISTER_MASK))
-        {
-            cur_index = optimize_reg_pop(list, cur_index, registers);
-            if (cur_index == -1) return -1;
-        }
-
-        else
-            cur_index = nxt_index;
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------
-
-int _optimize_reg_pop(List* list, int cur_index, float* registers 
-                                          FOR_LOGS(, LOG_PARAMS))
-{
-    bintrans_log_report();
-    assert(registers);
-    assert(list);
-
-    int nxt_index = list->next[cur_index];
-    Instr* push   = list->data[cur_index];
-    Instr* pop    = list->data[nxt_index];
-
-    float    pushed_value = push->data.float_value;
-    unsigned char reg_num = pop ->data.unsigned_char_value - 1;
-
-    if (pushed_value == registers[reg_num])
-    {
-        int next_iter_index = list->next[nxt_index];
-
-        int err = 0;
-
-        list_pop_by_index(list, (unsigned int) cur_index, &err);
-        if (err == -1) return -1;
-
-        list_pop_by_index(list, (unsigned int) nxt_index, &err);
-        if (err == -1) return -1;
-    
-        #ifdef ADD_INSTR_NAME
-
-            free(push->name_str);
-            free(pop->name_str);
-
-        #endif 
-
-        free(push);
-        free(pop);
-
-        return next_iter_index;
-    }
-
-    else
-    {
-        registers[reg_num] = pushed_value;
-        return nxt_index;
-    }
 }
 
 //-----------------------------------------------

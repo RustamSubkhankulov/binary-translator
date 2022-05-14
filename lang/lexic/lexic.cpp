@@ -534,8 +534,8 @@ int _delete_comments(Tokens* tokens FOR_LOGS(, LOG_PARAMS))
     lang_log_report();
     TOKENS_STRUCT_PTR_CHECK(tokens);
 
-    tokens_dump(tokens, logs_file);
-    fflush(logs_file);
+    // tokens_dump(tokens, logs_file);
+    // fflush(logs_file);
 
     int open  = 0;
     int close = 0;

@@ -60,7 +60,7 @@ int _build_a_tree(Tree* tree, Tokens* tokens FOR_LOGS(, LOG_PARAMS))
         return -1;
 
     tree->root = root;
-    tree_draw_graph(tree);
+    //tree_draw_graph(tree);
 
     ret = kill_names_struct(&names);
     RETURN_CHECK(ret);
@@ -108,7 +108,7 @@ Node* _get_g(Tokens* tokens, Names* names FOR_LOGS(, LOG_PARAMS))
     }
 
     //
-    names_struct_dump(names);
+    //names_struct_dump(names);
     //
 
     check = clear_var_spaces(names->var_cluster);
@@ -134,15 +134,15 @@ Node* _get_definitions(Tokens* tokens, Names* names FOR_LOGS(, LOG_PARAMS))
     Node* defn = get_defn(tokens, names);
     NULL_CHECK(defn);
 
-            //
-        names_struct_dump(names);
+        //
+        //names_struct_dump(names);
         //
 
     int check = clear_var_spaces(names->var_cluster);
     RET_VALUE_CHECK(check);
 
-            //
-        names_struct_dump(names);
+        //
+        //names_struct_dump(names);
         //
 
     Node* first_defn = defn;
@@ -413,14 +413,14 @@ Node* _get_instruction(Tokens* tokens, Names* names FOR_LOGS(, LOG_PARAMS))
     SYNTAX_READ_FUNC_START(tokens, names);
 
     //
-    names_struct_dump(names);
+    //names_struct_dump(names);
     //
 
     int ret = add_var_space(names->var_cluster);
     RET_VALUE_CHECK(ret);
 
     //
-    names_struct_dump(names);
+    //names_struct_dump(names);
     //
 
     Node* node = 0;
@@ -438,14 +438,14 @@ Node* _get_instruction(Tokens* tokens, Names* names FOR_LOGS(, LOG_PARAMS))
     }
 
     //
-    names_struct_dump(names);
+    //names_struct_dump(names);
     //
 
     ret = rm_var_space(names->var_cluster);
     RET_VALUE_CHECK(ret);
 
     //
-    names_struct_dump(names);
+    //names_struct_dump(names);
     //
 
     return node;
@@ -1149,7 +1149,7 @@ Node* _get_func_call_args(Tokens* tokens, Names* names, int arg_num FOR_LOGS(, L
         arg_counter++;
     }
 
-    fprintf(logs_file, "\n<pre>\n\n\n\n arg_num %d arg_ct %d \n\n\n </pre>\n", arg_num, arg_counter);
+    //fprintf(logs_file, "\n<pre>\n\n\n\n arg_num %d arg_ct %d \n\n\n </pre>\n", arg_num, arg_counter);
 
     if (arg_counter != arg_num)
     {

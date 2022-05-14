@@ -1,0 +1,32 @@
+colorvaria factorial avada n cedavra
+    wingardium
+
+        reducto avada n == 0 cedavra imperio
+            expelliarmus 1 flipendo
+        flipendo
+        
+        reducto avada n == 1 cedavra imperio
+            expelliarmus 1 flipendo
+        aguamenti
+            expelliarmus n * factorial avada n - 1 cedavra flipendo
+        flipendo
+
+    leviosa
+
+lumos 
+
+    stupefy n       riddikulus 34 flipendo
+    stupefy counter riddikulus 0  flipendo
+
+    confundo avada counter < 100000 cedavra imperio
+        wingardium
+
+            stupefy result riddikulus factorial avada n cedavra flipendo 
+
+            counter riddikulus counter + 1 flipendo 
+
+        leviosa flipendo
+
+    protego avada factorial avada n cedavra cedavra flipendo
+
+obliviate

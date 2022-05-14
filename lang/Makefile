@@ -11,6 +11,19 @@ logfile:
 exec: 
 	./temp.exe calc_logs.html txt_files/circle.txt txt_files/trans.txt 
 
+#################################################
+
+langtest:
+	./temp.exe calc_logs.html txt_files/testfactorial.txt txt_files/trans.txt
+
+proctest:
+	./proc/cpu.exe  txt_files/trans.code txt_files/in.txt txt_files/out.txt proc_logs.html
+
+jittest:
+	.././bintrans -i txt_files/trans.code 
+
+#################################################
+
 noflags:
 	g++ syntax/*.cpp trans/*.cpp tree_simp/*.cpp tree/*.cpp general/*.cpp text_processing/*.cpp main.cpp logs/*.cpp lang_common/*.cpp lexic/*.cpp -O0 -o temp.exe 
 
@@ -34,6 +47,9 @@ bin:
 
 binexec:
 	./proc/cpu.exe ../binary/test.code proc/text_files/proc_input.txt proc/text_files/proc_output.txt  proc_logs.html
+
+factexec:
+	./proc/cpu.exe ../binary/fact.code proc/text_files/proc_input.txt proc/text_files/proc_output.txt  proc_logs.html
 
 fact:
 	./proc/asm.exe proc/text_files/factorial.txt ../binary/fact.code asm_logs.html proc/text_files/fact_listing.txt
