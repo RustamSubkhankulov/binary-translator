@@ -56,7 +56,7 @@ Before translated version of instructions, integer registers are saved in stack 
 
 After translated instructions, if there is no HLT in binary code, saved integer registers are poped from stack and RET ( x86 ) exexcuted.
 
-#### Arithmetics
+### Arithmetics
 
 Arithmetics in translated code is also Push-Pop. Before calculating, value of one of XMM registers is saved in integer register, one of the values from stack is moved to this XMM registers. Ther arithmetic instructions is performed, and result is XMM registers. Then RSP is increased by 8 ( poping one of the values from stack ).Then result of calculation is moved from XMM registers back to the stack and value of XMM register is restored.
 
@@ -76,7 +76,139 @@ Example: ADD
 
 <code>  movd xmm15, r15d                  </code>
 
-#### Data movement - PUSH and POP
+### Data movement - PUSH and POP
+
+##### PUSH
+
+1) PUSH from RAM by index in register:
+  Firstly char value is took from binary code - number of register - one of 16. Value in XMM registers is float, so we need to convert it in integer value. Size of float == 4.
+  
+  <code> cvtss2si r13d, xmm(i) </code>
+  
+  <code> push qword[ Start_addr + r13d * 4] </code>
+
+2) Push from register:
+
+  <code> sub rsp, 8 </code>
+  <code> movss dword [rsp], xmm(i) </code>
+  
+3) Push from RAM by index equal immediate value from binary code:
+  Firstly get flaot value from binary code == index in RAM
+  
+  <code> mov r13d, index </code>
+  
+  <code> push qword [ Start_addr + r13d * 4] </code>
+  
+4) Push immediate value:
+  Firstly get float immediate value from binary code, then add this value to specially allocated array of constant values and patch instruction with addres of this patrocular flaot value in array
+  
+  <code> push qword [Address_of_imm] </code>
+  
+5) Push from RAM by summ of value in register and immediate value in binary code
+  Firstly get char value == number of register, then float value == index in array. This float value is converted into integer value, multiplied by 4 == sizeof(float) and  stored in r14d register. Convert value in xmm(i) registers to integer value in r13d. 
+
+  <code> cvtss2si r13d, xmm(i) </code>
+  
+  <code> mov r14d, Imm_value_from_binary_code </code>
+  
+  <code> push qword [ Start_addr + r13d * 4 + r14d ] </code>
+
+##### POP
+
+1) Pop to RAM by index in register:
+  Convert float value from xmm register to integer value in r13d, pop from stack to r14, then move value from r14d to RAM
+
+  <code> cvtss2si r13d, xmm(i) </code>
+  
+  <code> pop r14 </code>
+  
+  <code> mov dword [ Start_addr + 4 * r13d ], r14d </code>
+
+2) Pop to register:
+
+  <code> movss xmm(i), dword [ rsp ] </code>
+  
+  <code> add rsp, 8 </code>
+
+3) Pop to RAM by immediate index in bynary code:
+  Float value from binary code converted into integer value and stored in r13d
+  
+  <code> mov r13d, Index_from_binary_code </code>
+  
+  <code> pop r14 </code>
+  
+  <code> mov dword [ Start_addr + r13d * 4 ], r14d </code>
+
+4) Pop to RAM by index == summ of immediate value from binary code and value im one of 16 registers:
+  Char value from binary == number of register, float value == index 
+  
+  <code> cvtss2si r13d, xmm(i) </code>
+  
+  <code> mov r15d, (unsigned int) (float value from binary) * 4 </code>
+
+  <code> pop r14 </code>
+  
+  <code> mov dword [ Start_addr + r13d * 4 + r15d ], r14d </code>
+
+### Comparing instructions: EQ, NEQ, MR, MRE, LS, LSE
+
+1) Save xmm0, xmm13 values in integer registers:
+  
+  <code> movd r15d, xmm0  </code>
+  <code> movd r13d, xmm13 </code>
+
+2) Null xmm13
+
+  <code> pxor xmm13, xmm13 </code>
+ 
+3) Compare two values on the top of the stack
+ 
+  <code> movss xmm0, dword [ rsp ] </code>
+  
+  <code> comiss xmm0, dword [ rsp + 8 ] </code>
+ 
+4) Example of translating MR:
+
+  <code> jbe $ + sizeof (next instruction ) </code>
+
+5) Store 1 in xmm13 as result if comapre is true
+
+  <code> movss xmm13, dword [ Address of 1 constant value ] </code>
+
+6) Clear stack from compared values by adding to rsp 16
+  
+7) Push xmm13 to stack
+
+  <code> sub rsp, 8 </code>
+  
+  <code> movss dword [ rsp ], xmm13 </code>
+
+8) Restore xmm13 and xmm0 values from integer registers where they were saved.
+
+### Jumps, conditional jumps, call and ret
+
+1) Using system of calculating relative offset from jump to jump destination during translating, all jumps and conditional jumps are translated into near relative versions. Firstly these instructions are initialized in dynamic array of instructions with NULL offset, then during patching offsets are fixed. 
+2) Jump, call and ret are translated directly to near relative call and jump and native x86 ret instructions.
+3) Conditiolnal jumps in x86 are only short, so conditional jump translated as in example of translating JA (r86):
+  
+  <code> add rsp, 16 </code>
+  
+  <code> movd r15d, xmm0 </code>
+
+  <code> movss xmm0, dword [ rsp - 16 ] </code>
+  
+  <code> comiss xmm0, dword [ rsp - 8 ] </code>
+
+  <code> movd xmm0, r15d </code>
+
+  <code> jbe $ + sizeof (near relative jump) </code>
+
+### Arithmetic instructions - functions and IN/OUT
+
+Input-output instructions and arithmetic functions - POW, SIN, COS, LN and other - are translated to call of needed function in my own standard library.
+For each used needed function for <math.h> to calculate value. Firstly only empty call is initialized, but at patching stage of translating addresses are fixed up.
+Every call is accompanied by forced pushing and poping using stack all XMM registers, due to the fact, that all XMMs are not preserved during call according to calling convention. 
+Also call of calculating functions is accompanied by alignment stack to 16 boundary by calculating remainder of the division RSP by 16 and adding result to RSP ( 8 or 0 if stack is already aligned ). After return alignment, which is saved in one of the preserved during call integer registers, is subtracted from RSP.
 
 ## Optimization feature
 
@@ -90,6 +222,16 @@ Optimizations include constant folding in various situations. Examples below:
 4) <code> PUSH [ax+5]; PUSH 1; MUL </code> --> <code> PUSH [ax+5] </code>
 5) <code> PUSH [ax+5]; PUSH 0; ADD </code> --> <code> PUSH [ax+5] </code> 
 
+
+### Testing optimization increasing in performance. 
+To test, how these simple optimization can increase performce, let's run programm, that calculates 2^10 in cycle 10,000,000 times and measure time of JIT-performance.
+
+|           | no opt | -opt flag |
+|-----------|--------|-----------|
+| time, sec | 0,100  | 0,285     |
+
+We can see increasing in performance by more then 2 times in this simple calculation programm. 
+
 ## Comparing performace
 
 Due to the fact, that jit compiler includes executing translating every time it executed, we will test performance using very difficult and big calculations. 
@@ -97,8 +239,7 @@ Performance comparing will be between JIT-compiler and compiler for my own langu
 
 As test we will calculate factorial of 34 in cycle 100,000 times. For measuring time linux terminal built-in feature 'time' and save as result 'real' time given by 'time'. Every measurement will be hold several times to decrease random error and as time to compare will be used average of all of the measurements.
 
-Here is programm on my own 'harry potter' language, that was used for tests. For testing CPU and JIT generated by my own assembler using this programm r86 binary code was used. 
-
+Here is [programm](https://github.com/RustamSubkhankulov/BinaryTranslator/blob/main/lang/txt_files/testfactorial.txt "testfactorial.txt") on my own 'harry potter' language, that was used for tests. For testing CPU and JIT generated by my own assembler using this programm r86 binary code was used. 
 
 #### Compiler
 
@@ -133,5 +274,12 @@ Here is programm on my own 'harry potter' language, that was used for tests. For
 | 5       | 0,098     |
 | AVERAGE | 0,1064    |
 
-#### Comparing results
+#### Comparing results and conclusion
 
+|             | Compiler | CPU     | JIT    |
+|-------------|----------|---------|--------|
+| <time>, sec | 25,7546  | 25,3882 | 0,1064 |
+  
+As we can see in measured results, difference between compiler and CPU is negligible, calculations takes much more time then syntax and lexic analysis in compiler. Although, difference in performance between JIT and Compiler with CPU is huge. Performing calculation in native commands is increasing performace of programm very effectively. 
+  
+Total increasing in performace is about 240 times.
