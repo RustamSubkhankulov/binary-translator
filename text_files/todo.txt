@@ -77,8 +77,11 @@ done 20. free name_str in instr in optimizer
 21. increase speed in jumps in optimizer (struct, sort, bsearch)
 done 22. mul 1 optimization
 
-23. readme
-24. переделать инструкциб сравнения 
+done 23. readme
+done 24. переделать инструкциб сравнения 
+
+done 25. константы сразу же
+done 26. убрать лишний проход
 
 done .check addresses in optimizations?
 
