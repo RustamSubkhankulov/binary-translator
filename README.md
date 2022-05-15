@@ -266,8 +266,10 @@ Also call of calculating functions is accompanied by alignment stack to 16 bound
   <code> movss dword [ rsp ], xmm0 </code>
   
   - restore xmm0 value from r15d
-  <code> movd xmm0, r15d </code>
-  
+  <code> movd xmm0, r15d </code >
+
+### Патчинг адресов 
+
 ## Оптимизатор 
 
 JIT-компилятор также предлагает возможность использовать оптимизации бинарного кода, в частности свёртку констант. 
