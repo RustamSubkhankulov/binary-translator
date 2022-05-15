@@ -67,26 +67,24 @@ PUSH в стек:
 
 ## Трансляция инструкций
 
-For translating instructions with float registers in r86, XMM registers are used. If in binary code there are instructions using RAM, float array the same size as RAM in r86 is allocated and used during executing. 
+В соответствие 16-ти регистрам архитектуры r86 поставлены 16 XMM регистров архитектуры x86. Если в процессе трансляции устанавливается, что в кода присутствуют инструкции, обращающиеся к RAM, то аллоцируется массив типа float того же размера, что и RAM в архитектуре r86.
 
-Because of the fact, that XMM registers are used for containing values of registers in r86, regular integer registers of x86 are used for saving value of xmms registers. This will be discussed in details later.
+Целочисленные регистры x86 используются для сохранения значений XMM регистров при исполнении некоторых инструкций.
 
-as a stack for arithmetic is used native x86 stack.
+В качестве стек используется стек аппаратный стек архитектуры х86.
 
-Before translated version of instructions, integer registers are saved in stack according to calling convention. Also all XMM registers are set to zeros, because in r86 at the start of programm all of flaot registers are zeros. 
+Начало трансляции сопровождается инициализацией инструкций, сохраняющих целочисленные регистры в соответствием с соглашением о вызовах System V AMD64 ABI и устанавливающих все XMM регистры в нулевое значение ( инструкции pxor xmm(i), xmm(i) | 0 < i < 15 ). 
 
-After translated instructions, if there is no HLT in binary code, saved integer registers are poped from stack and RET ( x86 ) exexcuted.
+Если по завершении трансляции последней транслированной инструкцией являлась не инструкция HLT, то корректного завершения программы не будет произведено.
 
 ### HLT
-Instructions HLT of r86 instruction set is translated into restoring ( poping ) from stack saved integer registers according to calling convention and ret ( x86 instruction )
+Инструкция HLT транслируется в инструкции x86, которые восстанавливают значения целочисленных регистров из стека по значениям, которые были сохранены на входе. Завершающей инструкцией является ret (x86).
 
-### Arithmetics
+### Арифметика
 
-Arithmetics in translated code is also Push-Pop. Before calculating, value of one of XMM registers is saved in integer register, one of the values from stack is moved to this XMM registers. Ther arithmetic instructions is performed, and result is XMM registers. Then RSP is increased by 8 ( poping one of the values from stack ).Then result of calculation is moved from XMM registers back to the stack and value of XMM register is restored.
+Арифметика в оттранслированном коде функционирует аналогично арифметике в архитектуре r86. На момент произведения арифметического действия, на вершине стека ожидаются два аргумента. Одно из значений перемещается в XMM0 регистр, далее производится арифметическая операция со вторым значением, находящимся в стеке. После этого регистр RSP увеличивается на 8, тем самым удаляя один из аргументов из стека. Результат вычисления располагается на вершине стека, занимая место одного из аргументов. Так как все 16 XMM регистров содержат в себе значения, которые не должны изменяться, если не исполняется соотвествующая инструкция перемещения данных, значение XMM0 сохраняется в регистре r15d, а по завершении восстанавливается.
 
-Note: xmm15 and r15d registers are always used in arithmetics.
-
-Example: ADD
+Пример: ADD
 
 <code>  movd r15d, xmm15                  </code>
 
@@ -100,37 +98,39 @@ Example: ADD
 
 <code>  movd xmm15, r15d                  </code>
 
-### Data movement - PUSH and POP
+### Инструкции перемещения данных - PUSH и POP
+В примерах трансляции ниже Start_addr - условное обозначение адреса начала float массива, который используется в качестве оперативной памяти. 
 
 ##### PUSH
 
-1) PUSH from RAM by index in register:
-  Firstly char value is took from binary code - number of register - one of 16. Value in XMM registers is float, so we need to convert it in integer value. Size of float == 4.
+1) PUSH в стек из оперативной памяти по индексу, равному значению одного из 16 регистров:
+ Сначала определяется, значение какого из 16 регистров будет использоваться в команде. Для этого используется unsigned char значение из бинарного кода. Далее значение из выбранного XMM регистра конвертируется в один из целочисленных регистров в свое целочисленное представление. Далее происходит push из соответствующей ячейки оперативной памяти.
   
   <code> cvtss2si r13d, xmm(i) </code>
   
   <code> push qword[ Start_addr + r13d * 4] </code>
 
-2) Push from register:
-
+2) Push из регистра в стек:
+ Аналогично предыдущему случаю, используемый в интсрукции регистр определяется по unsigned char значению из бинарного кода.
+ 
   <code> sub rsp, 8 </code>
   <code> movss dword [rsp], xmm(i) </code>
   
-3) Push from RAM by index equal immediate value from binary code:
-  Firstly get flaot value from binary code == index in RAM
+3) Push в стек из оперативной памяти по определенному индексу, определяемому float значением из бинарного кода:
+  Float значение считывается из бинарного кода, конвертируется в целочисленное представление. Далее инициализируется инструкция, которая кладет полученное значение в целочисленный регистр r13d. После этого происходит push.
   
   <code> mov r13d, index </code>
   
   <code> push qword [ Start_addr + r13d * 4] </code>
   
-4) Push immediate value:
-  Firstly get float immediate value from binary code, then add this value to specially allocated array of constant values and patch instruction with addres of this patrocular flaot value in array
+4) Push константного значения в стек:
+ В данном случае значение, которое будет добавлено в стек, определяется float значением в бинарном коде. Это значение считывается из бинарного кода и добавляется в специализированный массив констант. На этапе патчинга в данную инструкцию подставляется адрес нужного элемента этого массива.
   
   <code> push qword [Address_of_imm] </code>
   
-5) Push from RAM by summ of value in register and immediate value in binary code
-  Firstly get char value == number of register, then float value == index in array. This float value is converted into integer value, multiplied by 4 == sizeof(float) and  stored in r14d register. Convert value in xmm(i) registers to integer value in r13d. 
-
+5) Push в стек из оперативной памяти по индексу, равному сумме значения одного из регистров и значения float из бинарного кода.
+ Из бинарного кода считываются два значения, первое - unsigned char - определяет используемый в инструкции XMM регистр, его значение конвертируется в целочисленное представление в регистр r13d. Второе - float - приводится к целочисленному представлению и умножается на 4, т.к. sizeof(float) == 4. Полученное значение подставляется в инструкцию, перемещающую его в r14d. После этого происходит push.
+ 
   <code> cvtss2si r13d, xmm(i) </code>
   
   <code> mov r14d, Imm_value_from_binary_code </code>
@@ -139,8 +139,9 @@ Example: ADD
 
 ##### POP
 
-1) Pop to RAM by index in register:
-  Convert float value from xmm register to integer value in r13d, pop from stack to r14, then move value from r14d to RAM
+Трансляция инструкции POP происходит во многом схоже с трансляцией инструкции PUSH, поэтому ограничимся примерами инструкций без комментариев.
+
+1) Pop из стека в оперативную память по индексуБ равному значению одного из регистров:
 
   <code> cvtss2si r13d, xmm(i) </code>
   
@@ -148,23 +149,21 @@ Example: ADD
   
   <code> mov dword [ Start_addr + 4 * r13d ], r14d </code>
 
-2) Pop to register:
+2) Pop из стека в регистр:
 
   <code> movss xmm(i), dword [ rsp ] </code>
   
   <code> add rsp, 8 </code>
 
-3) Pop to RAM by immediate index in bynary code:
-  Float value from binary code converted into integer value and stored in r13d
-  
+3) Pop из стека в оперативную память по индексу, определяемому значением из бинарного кода:
+
   <code> mov r13d, Index_from_binary_code </code>
   
   <code> pop r14 </code>
   
   <code> mov dword [ Start_addr + r13d * 4 ], r14d </code>
 
-4) Pop to RAM by index == summ of immediate value from binary code and value im one of 16 registers:
-  Char value from binary == number of register, float value == index 
+4) Pop из стека в оперативную память по индексу, равному сумме значения одного из регистров и значения из бинарного кода
   
   <code> cvtss2si r13d, xmm(i) </code>
   
@@ -174,46 +173,54 @@ Example: ADD
   
   <code> mov dword [ Start_addr + r13d * 4 + r15d ], r14d </code>
 
-### Comparing instructions: EQ, NEQ, MR, MRE, LS, LSE
+### Инструкции сравнения: EQ, NEQ, MR, MRE, LS, LSE
+Результатом выполнения данных инструкций должны быть ноль или единица ( их float представление ) на вершине стека в зависимости от сравнения двух аргументов с вершины стека.
 
-1) Save xmm0, xmm13 values in integer registers:
+1) Сохраняем значения XMM0 и  ХММ13 в целочисленных регистрах:
   
   <code> movd r15d, xmm0  </code>
+  
   <code> movd r13d, xmm13 </code>
 
-2) Null xmm13
+2) Обнуляем регистр XMM13 
 
   <code> pxor xmm13, xmm13 </code>
  
-3) Compare two values on the top of the stack
+3) Сравниваем два значения с вершины стека, устанавливаются флаги x86
  
   <code> movss xmm0, dword [ rsp ] </code>
   
   <code> comiss xmm0, dword [ rsp + 8 ] </code>
  
-4) Example of translating MR:
+4) Условный джамп, соответствующий условию, противоположному инструкции сравнения:
 
   <code> jbe $ + sizeof (next instruction ) </code>
 
-5) Store 1 in xmm13 as result if comapre is true
+5) В случае, если условный джамп не произошел, а значит сравнение верно, устанавливаем значение регистра ХММ13 в единицу
 
   <code> movss xmm13, dword [ Address of 1 constant value ] </code>
 
-6) Clear stack from compared values by adding to rsp 16
+6) Очищаем стек от аргументов инструкции сравнения
   
-7) Push xmm13 to stack
+  <code> add rsp, 16 </code>
+  
+7) Push значения xmm13 регистра в стек
 
   <code> sub rsp, 8 </code>
   
   <code> movss dword [ rsp ], xmm13 </code>
 
-8) Restore xmm13 and xmm0 values from integer registers where they were saved.
+8) Восстанавливаем значения ХММ0 и ХММ13 из целочисленных регистров
 
-### Jumps, conditional jumps, call and ret
+  <code> movd xmm0,  r15d </code>
+  
+  <code> movd xmm13, r13d </code>
 
-1) Using system of calculating relative offset from jump to jump destination during translating, all jumps and conditional jumps are translated into near relative versions. Firstly these instructions are initialized in dynamic array of instructions with NULL offset, then during patching offsets are fixed. 
-2) Jump, call and ret are translated directly to near relative call and jump and native x86 ret instructions.
-3) Conditiolnal jumps in x86 are only short, so conditional jump translated as in example of translating JA (r86):
+### Условные и безусловный 'jump'ы, CALL и RET
+
+1) При трансляции все абсолютные адреса, являющиеся аргументами 'jump'ов, пересчитываются в смещения от адреса инструкции 'jump'а до его места назначения. Эти величины являются аргументами для near relative 'jump'ов архитектуры x86. Максимальное смещение, на которое может происхожить 'jump' ограничивается размером одного сегмента. 
+3) Результатами трансляции инструкция r86 JMP, CALL и RET являются соответсвенно near relative версии jmp, call и ret инструкций архитектуры x86.
+4) Так как смещение, на которое может происходить условный 'jump' в архитектуре х86 меньше, чем размер сегмента кода, условные 'jump'ы транлируются особым образом. Ниже пример трансляции JA (r86) в архитектуру x86. 
   
   <code> add rsp, 16 </code>
   
@@ -226,28 +233,31 @@ Example: ADD
   <code> movd xmm0, r15d </code>
 
   <code> jbe $ + sizeof (near relative jump) </code>
+  
+  <code> jmp (Offset to destination) </code>
 
-### Arithmetic instructions - functions and IN/OUT
+### Математические функции, вывод и ввод
 
-Input-output instructions and arithmetic functions - POW, SIN, COS, LN and other - are translated to call of needed function in my own standard library.
-For each used needed function for <math.h> to calculate value. Firstly only empty call is initialized, but at patching stage of translating addresses are fixed up.
-Every call is accompanied by forced pushing and poping using stack all XMM registers, due to the fact, that all XMMs are not preserved during call according to calling convention. 
-Also call of calculating functions is accompanied by alignment stack to 16 boundary by calculating remainder of the division RSP by 16 and adding result to RSP ( 8 or 0 if stack is already aligned ). After return alignment, which is saved in one of the preserved during call integer registers, is subtracted from RSP.
+Инструкции, вычисляющие математические функции -  POW, SIN, COS и другие, а также IN и  OUT транслируются в вызовы соответсвутющих функций стандартной библеотеки функций, написанной специально для этих инструкций. Функии, вычисляющие синус, косинус и другие математисческие функции, используют библеотеку <math.h>. 
 
-##### Example of translating SIN:
-  - saving xmm0 value
+Для некоторых из таких функций требуется стек, выровненный на границу 16 байт, поэтому каждый вызов сопровождается выравниваем стека путём вычисления остатка от деления значения регистра RSP на 16. Полученное значение прибавляется к RSP и сохраняется в одном из целочисленных регистров, которые не изменяются своего значения при вызове функций по соглашению о вызовах. После возвращения из функии, величина, прибавленная к rsp, вычитается из этого регистра.
+
+Кроме того, каждый вызов функции сопровождается сохранением всех ХММ регистров в стеке, так как согласно соглашению о вызовах ни один из ХММ регистров не сохраняется по соглашению о вызовах
+
+##### Пример трансляции SIN:
+  - сохраняем значение ХММ0
  
   <code> movd r15d, xmm0 </code>
   
-  - pop from stack to xmm0
+  - производим РОР из стека в ХММ0
    
   <code> movss xmm0, dword [ rsp ] </code>
   
   <code> add rsp, 8 </code>
   
-  - push XMM registers from 1 to 15
+  - сохраняем ХММ регистры с 1-го по 15-ый в стеке
   
-  - align stack to 16-boundary
+  - выравниваем стек на границу 16
    
   <code> mov r14, rsp </code>
   
@@ -255,20 +265,25 @@ Also call of calculating functions is accompanied by alignment stack to 16 bound
   
   <code> and rsp, r14 </code>
   
-  - relative near call, address will be patched later
-  call Arithmetic_function
+  - call соответствующей функции стандратной библеотеки
   
-  - pop XMM 1 - 15 from stack, restore values
+  - восстанавливаем значения ХММ регистров с 1-го по 15-ый из стека
   
-  - push XMM0 value to stack 
+  - производим PUSH из ХММ0 в стек
 
   <code> sub rsp, 8 </code>
   <code> movss dword [ rsp ], xmm0 </code>
   
-  - restore xmm0 value from r15d
+  - восстанавливаем значением ХММ0 регистра, сохраненное в целочисленном регистре
   <code> movd xmm0, r15d </code >
 
-### Патчинг адресов 
+### Патчинг адресов 'jump'ов и 'call'ов
+
+Для того, чтобы правильно вычислить смещения всех условных и безусовных jump'ов и  'call'ов, производятся дествия в несколько шагов
+- В отдельном проходе по бинарному коду собраются все значения адресов назначения 'jump'ов и  'call'ов. 
+- Далее при помощи qsort эти адреса сортируются по возврастанию
+- При втором проходе происходит трансляция, и в случае, если в данный момент транслятор находится на индексе во входном бинарном коде, который равен адресу назначения, который был сохранен ранее, в соответсвие данному адресу ставится текующая позиция в оттранслированном коде.
+- Финальным шагов является проход по всем 'jump'ам и 'call'ам, высчитывание смещений и подстановка полученных значений в транслированный код.
 
 ## Оптимизатор 
 
