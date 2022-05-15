@@ -78,6 +78,7 @@ done 20. free name_str in instr in optimizer
 done 22. mul 1 optimization
 
 23. readme
+24. переделать инструкциб сравнения 
 
 done .check addresses in optimizations?
 

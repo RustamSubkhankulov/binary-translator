@@ -2,51 +2,51 @@ Current position: 10. Input string : CALL: main  Written bytes: 18 00 00 00 00
 
 Current position: 15. Input string : HLT  Written bytes: 00 
 
-Current position: 16. Input string : PUSH 6 Written bytes: 25 00 00 c0 40 
+Current position: 16. Input string : IN            Written bytes: 08 
 
-Current position: 1b. Input string : POP bx Written bytes: 46 02 
+Current position: 17. Input string : POP bx Written bytes: 46 02 
 
-Current position: 1d. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+Current position: 19. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
 
-Current position: 22. Input string : POP cx  Written bytes: 46 03 
+Current position: 1e. Input string : POP cx  Written bytes: 46 03 
 
-Current position: 24. Input string : CALL: factorial  Written bytes: 18 00 00 00 00 
+Current position: 20. Input string : CALL: factorial  Written bytes: 18 00 00 00 00 
 
-Current position: 29. Input string : PUSH cx Written bytes: 45 03 
+Current position: 25. Input string : PUSH cx Written bytes: 45 03 
 
-Current position: 2b. Input string : OUT Written bytes: 07 
+Current position: 27. Input string : OUT Written bytes: 07 
 
-Current position: 2c. Input string : RET Written bytes: 09 
+Current position: 28. Input string : RET Written bytes: 09 
 
-Current position: 2d. Input string : PUSH bx  Written bytes: 45 02 
+Current position: 29. Input string : PUSH bx  Written bytes: 45 02 
 
-Current position: 2f. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+Current position: 2b. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
 
-Current position: 34. Input string : JAE: END Written bytes: 1e 00 00 00 00 
+Current position: 30. Input string : JAE: END Written bytes: 1e 00 00 00 00 
 
-Current position: 39. Input string : PUSH cx    Written bytes: 45 03 
+Current position: 35. Input string : PUSH cx    Written bytes: 45 03 
 
-Current position: 3b. Input string : PUSH bx  Written bytes: 45 02 
+Current position: 37. Input string : PUSH bx  Written bytes: 45 02 
 
-Current position: 3d. Input string : MUL   Written bytes: 03 
+Current position: 39. Input string : MUL   Written bytes: 03 
 
-Current position: 3e. Input string : POP cx   Written bytes: 46 03 
+Current position: 3a. Input string : POP cx   Written bytes: 46 03 
 
-Current position: 40. Input string : PUSH bx  Written bytes: 45 02 
+Current position: 3c. Input string : PUSH bx  Written bytes: 45 02 
 
-Current position: 42. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
+Current position: 3e. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
 
-Current position: 47. Input string : SUB  Written bytes: 02 
+Current position: 43. Input string : SUB  Written bytes: 02 
 
-Current position: 48. Input string : POP bx   Written bytes: 46 02 
+Current position: 44. Input string : POP bx   Written bytes: 46 02 
 
-Current position: 4a. Input string : CALL: factorial Written bytes: 18 2d 00 00 00 
+Current position: 46. Input string : CALL: factorial Written bytes: 18 29 00 00 00 
 
-Current position: 4f. Input string : RET Written bytes: 09 
+Current position: 4b. Input string : RET Written bytes: 09 
 
 Filled jump destination. Ip: 11. Destination Ip: 16 
 
-Filled jump destination. Ip: 25. Destination Ip: 2d 
+Filled jump destination. Ip: 21. Destination Ip: 29 
 
-Filled jump destination. Ip: 35. Destination Ip: 4f 
+Filled jump destination. Ip: 31. Destination Ip: 4b 
 
