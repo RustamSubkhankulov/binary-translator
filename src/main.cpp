@@ -9,6 +9,7 @@
 
 int main(int argc, const char* argv[])
 {
+
     #ifdef LOGS
         FILE* logs_file = open_log_file(Logfile_name);
         if (!logs_file)

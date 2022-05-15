@@ -5,8 +5,7 @@ HLT
 
 main:
 
-    ;IN           ;argument 
-    PUSH 6
+    IN           ;argument 
     POP bx
 
     PUSH 1

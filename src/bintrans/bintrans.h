@@ -127,16 +127,7 @@ struct Result
 enum Patch_types
 {
     RAM_START_ADDR = 228,
-    CONST          = 229,
     STD_FUNC       = 230,
-};
-
-//-----------------------------------------------
-
-union Info
-{
-    float const_value;
-    int   std_func_code;
 };
 
 //-----------------------------------------------
@@ -148,7 +139,7 @@ struct Patch_instr
     unsigned int res_buf_pos;
 
     Trans_entity* entity;
-    Info info;
+    int std_func_code;
 };
 
 //-----------------------------------------------
@@ -159,8 +150,6 @@ struct Patch
     unsigned int cap;
 
     Patch_instr* instructions;
-
-    unsigned int  num_of_consts; 
 
     unsigned char ram_is_used;
     float*        ram_buffer;
@@ -207,9 +196,6 @@ struct Trans_struct
     struct Jumps jumps;
 
     float* ram_buffer;
-
-    float* consts_buffer;
-    unsigned int consts_ct;
 
     #ifdef BINTRANS_LISTING
 
@@ -287,8 +273,6 @@ int _init_entity(Trans_struct* trans_struct, unsigned int size, const unsigned c
  
 int _patch_entity(Trans_entity* trans_entity, unsigned int   patch_pos, unsigned int  patch_size,
                                               unsigned char* patch_data FOR_LOGS(, LOG_PARAMS));
-
-int _consts_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
 int _ram_buffer_allocate(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
@@ -373,9 +357,6 @@ int _check_and_add_res_dest(Jumps* jumps, unsigned int inp_pos,
 
 #define ram_buffer_allocate(trans_struct) \
        _ram_buffer_allocate(trans_struct FOR_LOGS(, LOG_ARGS))
-
-#define consts_buffer_allocate(trans_struct) \
-       _consts_buffer_allocate(trans_struct FOR_LOGS(, LOG_ARGS))
 
 #define increase_entities_array(trans_struct) \
        _increase_entities_array(trans_struct FOR_LOGS(, LOG_ARGS))
