@@ -40,18 +40,18 @@ int _patch_std_func      (Trans_struct* trans_struct, Patch_instr* patch_instr F
 
 int _patch_ram_start_addr(Trans_struct* trans_struct, Patch_instr* patch_instr FOR_LOGS(, LOG_PARAMS));
 
-int _fix_up_jumps(Jumps* jumps FOR_LOGS(, LOG_PARAMS));
+int _fix_up_jumps(Jumps* jumps, Pos* pos FOR_LOGS(, LOG_PARAMS));
 
-int _get_jump_res_dst(Trans_entity* trans_entity, Jumps* jumps, unsigned int patch_pos
-                                                                FOR_LOGS(, LOG_PARAMS));
+int _get_jump_res_dst(Trans_entity* trans_entity, Pos* pos, 
+                                          unsigned int patch_pos FOR_LOGS(, LOG_PARAMS));
 
 //===============================================
 
-#define get_jump_res_dst(trans_entity, jumps, patch_pos) \
-       _get_jump_res_dst(trans_entity, jumps, patch_pos FOR_LOGS(, LOG_ARGS))
+#define get_jump_res_dst(trans_entity, pos, patch_pos) \
+       _get_jump_res_dst(trans_entity, pos, patch_pos FOR_LOGS(, LOG_ARGS))
 
-#define fix_up_jumps(jumps) \
-       _fix_up_jumps(jumps FOR_LOGS(, LOG_ARGS))
+#define fix_up_jumps(jumps, pos) \
+       _fix_up_jumps(jumps, pos FOR_LOGS(, LOG_ARGS))
 
 #define patch_instr_init(trans_struct, type) \
        _patch_instr_init(trans_struct, type FOR_LOGS(, LOG_ARGS))

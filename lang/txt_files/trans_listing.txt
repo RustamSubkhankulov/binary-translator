@@ -26,7 +26,7 @@ Current position: 34. Input string : EQ  Written bytes: 0b
 
 Current position: 35. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
 
-Current position: 3a. Input string : JAE: FALSE1261599303  Written bytes: 1e 00 00 00 00 
+Current position: 3a. Input string : JAE: FALSE275623074  Written bytes: 1e 00 00 00 00 
 
 Current position: 3f. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
 
@@ -34,7 +34,7 @@ Current position: 44. Input string : POP ex  Written bytes: 46 05
 
 Current position: 46. Input string : RET  Written bytes: 09 
 
-Current position: 47. Input string : JMP: CONDEND1261599303  Written bytes: 19 00 00 00 00 
+Current position: 47. Input string : JMP: CONDEND275623074  Written bytes: 19 00 00 00 00 
 
 Current position: 4c. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
 
@@ -56,7 +56,7 @@ Current position: 63. Input string : EQ  Written bytes: 0b
 
 Current position: 64. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
 
-Current position: 69. Input string : JAE: FALSE1857535896  Written bytes: 1e 00 00 00 00 
+Current position: 69. Input string : JAE: FALSE7305966  Written bytes: 1e 00 00 00 00 
 
 Current position: 6e. Input string : PUSH 1  Written bytes: 25 00 00 80 3f 
 
@@ -64,7 +64,7 @@ Current position: 73. Input string : POP ex  Written bytes: 46 05
 
 Current position: 75. Input string : RET  Written bytes: 09 
 
-Current position: 76. Input string : JMP: CONDEND1857535896  Written bytes: 19 00 00 00 00 
+Current position: 76. Input string : JMP: CONDEND7305966  Written bytes: 19 00 00 00 00 
 
 Current position: 7b. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
 
@@ -156,7 +156,7 @@ Current position: f8. Input string : MR  Written bytes: 0c
 
 Current position: f9. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
 
-Current position: fe. Input string : JAE: CYCLEEND909386637  Written bytes: 1e 00 00 00 00 
+Current position: fe. Input string : JAE: CYCLEEND741409432  Written bytes: 1e 00 00 00 00 
 
 Current position: 103. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
 
@@ -228,7 +228,7 @@ Current position: 162. Input string : POP cx   Written bytes: 46 03
 
 Current position: 164. Input string : POP [ cx ]  Written bytes: c6 03 
 
-Current position: 166. Input string : JMP: REPEAT909386637  Written bytes: 19 e1 00 00 00 
+Current position: 166. Input string : JMP: REPEAT741409432  Written bytes: 19 e1 00 00 00 
 
 Current position: 16b. Input string : PUSH 0  Written bytes: 25 00 00 00 00 
 

@@ -159,18 +159,24 @@ struct Patch
 
 struct Jumps
 {
-    unsigned int* inp_dst;
-
-    unsigned int* res_dst;
-    unsigned int* res_pos;
-
     Trans_entity** entities;
+    unsigned int* jmp_pos;
 
     unsigned int num;
     unsigned int cap;
-    unsigned int counter;
 
     unsigned int cur_index;
+};
+
+//===============================================
+
+struct Pos
+{
+    unsigned int* inp_pos;
+    unsigned int* res_pos;
+
+    unsigned int num;
+    unsigned int cap;
 };
 
 //===============================================
@@ -194,6 +200,8 @@ struct Trans_struct
 
     struct Patch patch;
     struct Jumps jumps;
+
+    struct Pos pos;
 
     float* ram_buffer;
 
@@ -284,18 +292,23 @@ int _jumps_struct_dtor  (Jumps* jumps FOR_LOGS(, LOG_PARAMS));
 
 int _jumps_struct_resize(Jumps* jumps FOR_LOGS(, LOG_PARAMS));
 
-int _sort_jump_destinations(Jumps* jumps FOR_LOGS(, LOG_PARAMS));
-
-int _gather_jumps_in_input(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
-
-int _add_jump_dest(Jumps* jumps, unsigned int cur_inp_pos FOR_LOGS(, LOG_PARAMS));
-
 int _add_jump_entity(Jumps* jumps, Trans_entity* trans_entity, 
-                                   unsigned int res_pos, 
+                                   unsigned int jmp_pos, 
                                    unsigned int inp_dst FOR_LOGS(, LOG_PARAMS));
 
-int _check_and_add_res_dest(Jumps* jumps, unsigned int inp_pos, 
-                                          unsigned int res_pos FOR_LOGS(, LOG_PARAMS));
+//-----------------------------------------------
+
+int _pos_struct_ctor   (Pos* pos FOR_LOGS(, LOG_PARAMS));
+
+int _pos_struct_dtor   (Pos* pos FOR_LOGS(, LOG_PARAMS));
+
+int _pos_struct_resize (Pos* pos FOR_LOGS(, LOG_PARAMS));
+
+int _add_position_accordance(Pos* pos, unsigned int inp_pos,
+                                       unsigned int res_pos  FOR_LOGS(, LOG_PARAMS));
+
+//-----------------------------------------------
+
 
 #ifdef BINTRANS_LISTING
 
@@ -331,20 +344,22 @@ int _check_and_add_res_dest(Jumps* jumps, unsigned int inp_pos,
 
 //===============================================
 
+#define pos_struct_ctor(pos) \
+       _pos_struct_ctor(pos FOR_LOGS(, LOG_ARGS))
+
+#define pos_struct_dtor(pos) \
+       _pos_struct_dtor(pos FOR_LOGS(, LOG_ARGS))
+
+#define pos_struct_resize(pos) \
+       _pos_struct_resize(pos FOR_LOGS(, LOG_ARGS))
+
+#define add_position_accordance(pos, inp_pos, res_pos) \
+       _add_position_accordance(pos, inp_pos, res_pos FOR_LOGS(, LOG_ARGS))
+
+//===============================================
+
 #define add_jump_entity(jumps, entity, res_pos, inp_dst) \
        _add_jump_entity(jumps, entity, res_pos, inp_dst FOR_LOGS(, LOG_ARGS))
-
-#define add_jump_dest(jumps, cur_inp_pos) \
-       _add_jump_dest(jumps, cur_inp_pos FOR_LOGS(, LOG_ARGS))
-
-#define gather_jumps_in_input(trans_struct) \
-       _gather_jumps_in_input(trans_struct FOR_LOGS(, LOG_ARGS))
-
-#define sort_jump_destinations(jumps) \
-       _sort_jump_destinations(jumps FOR_LOGS(, LOG_ARGS))
-
-#define check_and_add_res_dest(jumps, inp_pos, res_pos) \
-       _check_and_add_res_dest(jumps, inp_pos, res_pos FOR_LOGS(, LOG_ARGS)) 
 
 #define jumps_struct_ctor(jumps) \
        _jumps_struct_ctor(jumps FOR_LOGS(, LOG_ARGS))
