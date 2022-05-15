@@ -822,4 +822,25 @@ DEF_INSTR(81, Pop_xmms_1_15, 0xF3, 0x0F, 0x10, 0x0C, 0x24, \
 
 //-----------------------------------------------
 
+// Push constant 4-byte value to stack
+
+// push 0x00000000
+
+DEF_INSTR(82, Push_4_byte_const, 0x68, 0x00, 0x00, 0x00, 0x00)
+
+//-----------------------------------------------
+
+// Store 1.f in r14d register
+
+// mov r14d, 0x3f800000
+
+DEF_INSTR(83, Mov_r14d_float_one, 0x41, 0xBE, 0x00, 0x00, 0x80, 0x3F)
+
+//-----------------------------------------------
+
+// movd xmm13, r14d
+
+DEF_INSTR(84, Movd_xmm13_r14d, 0x66, 0x45, 0x0F, 0x6E, 0xEE)
+
+//-----------------------------------------------
 

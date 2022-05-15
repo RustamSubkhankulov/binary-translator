@@ -2,33 +2,15 @@ Current position: 10. Input string : CALL: MAIN Written bytes: 18 00 00 00 00
 
 Current position: 15. Input string : HLT Written bytes: 00 
 
-Current position: 16. Input string : PUSH 16000000 Written bytes: 25 00 24 74 4b 
+Current position: 16. Input string : PUSH 25 Written bytes: 25 00 00 c8 41 
 
-Current position: 1b. Input string : POP cx Written bytes: 46 03 
+Current position: 1b. Input string : PUSH 26 Written bytes: 25 00 00 d0 41 
 
-Current position: 1d. Input string : PUSH 2 Written bytes: 25 00 00 00 40 
+Current position: 20. Input string : EQ Written bytes: 0b 
 
-Current position: 22. Input string : PUSH 10 Written bytes: 25 00 00 20 41 
+Current position: 21. Input string : OUT Written bytes: 07 
 
-Current position: 27. Input string : POW Written bytes: 0a 
-
-Current position: 28. Input string : POP ax Written bytes: 46 01 
-
-Current position: 2a. Input string : PUSH cx Written bytes: 45 03 
-
-Current position: 2c. Input string : PUSH 1 Written bytes: 25 00 00 80 3f 
-
-Current position: 31. Input string : SUB Written bytes: 02 
-
-Current position: 32. Input string : POP cx Written bytes: 46 03 
-
-Current position: 34. Input string : PUSH cx Written bytes: 45 03 
-
-Current position: 36. Input string : PUSH 0 Written bytes: 25 00 00 00 00 
-
-Current position: 3b. Input string : JNE: LOOP Written bytes: 1a 1d 00 00 00 
-
-Current position: 40. Input string : RET Written bytes: 09 
+Current position: 22. Input string : RET Written bytes: 09 
 
 Filled jump destination. Ip: 11. Destination Ip: 16 
 

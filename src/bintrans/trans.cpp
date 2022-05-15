@@ -283,9 +283,12 @@ int _trans_push   (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS))
         {
             float imm_value = get_float_from_input(trans_struct);
 
-            INIT_ENTITY(trans_struct, Push_qword_ADDR);
-            ADD_PATCH_CONST(trans_struct, imm_value);
-            //needs to be patched
+            unsigned int   patch_pos  = 1;
+            unsigned int   patch_size = sizeof(unsigned int);
+            unsigned char* patch_data = (unsigned char*) &imm_value;
+
+            INIT_ENTITY(trans_struct, Push_4_byte_const);
+            PATCH_ENTITY(LAST_ENTITY, patch_pos, patch_size, patch_data);
 
             break;
         }
@@ -597,11 +600,11 @@ int _trans_compare(Trans_struct* trans_struct, unsigned char op_code
         }
     }
 
-    patch_short_cond_jump(LAST_ENTITY, 0x0A);
+    patch_short_cond_jump(LAST_ENTITY, 0x0B);
 
-    INIT_ENTITY(trans_struct, Movss_xmm13_ADDR);
-    ADD_PATCH_CONST(trans_struct, 1.0f);
-    // needs to be patched
+    // store float 1.f in xmm13
+    INIT_ENTITY(trans_struct, Mov_r14d_float_one);
+    INIT_ENTITY(trans_struct, Movd_xmm13_r14d);
 
     // Clear stack from comparing values
     INIT_ENTITY(trans_struct, Add_rsp_16);

@@ -50,6 +50,7 @@ enum Codes
 {
     #include "../../text_files/commands.txt"
     #include "../../text_files/jumps.txt"
+    FABS = 32,
 };
 
 //-----------------------------------------------

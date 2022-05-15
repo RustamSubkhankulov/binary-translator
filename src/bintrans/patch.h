@@ -6,11 +6,6 @@
 
 //===============================================
 
-#define ADD_PATCH_CONST(trans_struct, const_val)              \
-                                                               \
-    if (add_patch_instr_const(trans_struct, const_val) == -1)   \
-        return -1;
-
 #define ADD_PATCH_STD_FUNC(trans_struct, code)                \
                                                                \
     if (add_patch_instr_std_func(trans_struct, code) == -1)     \
@@ -39,21 +34,11 @@ int _add_patch_instr_ram_start_addr(Trans_struct* trans_struct FOR_LOGS(, LOG_PA
 
 int _add_patch_instr_std_func(Trans_struct* trans_struct, int std_func_code FOR_LOGS(, LOG_PARAMS));
 
-int _add_patch_instr_const(Trans_struct* trans_struct, float const_value FOR_LOGS(, LOG_PARAMS));
-
 Patch_instr* _patch_instr_init(Trans_struct* trans_struct, int type FOR_LOGS(, LOG_PARAMS));
-
-int _patch_const         (Trans_struct* trans_struct, Patch_instr* patch_instr FOR_LOGS(, LOG_PARAMS));
 
 int _patch_std_func      (Trans_struct* trans_struct, Patch_instr* patch_instr FOR_LOGS(, LOG_PARAMS));
 
 int _patch_ram_start_addr(Trans_struct* trans_struct, Patch_instr* patch_instr FOR_LOGS(, LOG_PARAMS));
-
-float* _check_const_added(Patch* patch, float* consts_buffer, float value 
-                                                  FOR_LOGS(, LOG_PARAMS));
-
-float* _add_const_to_buffer(Trans_struct* trans_struct, float value   
-                                             FOR_LOGS(, LOG_PARAMS));
 
 int _fix_up_jumps(Jumps* jumps FOR_LOGS(, LOG_PARAMS));
 
@@ -68,17 +53,8 @@ int _get_jump_res_dst(Trans_entity* trans_entity, Jumps* jumps, unsigned int pat
 #define fix_up_jumps(jumps) \
        _fix_up_jumps(jumps FOR_LOGS(, LOG_ARGS))
 
-#define add_const_to_buffer(trans_struct, value) \
-       _add_const_to_buffer(trans_struct, value FOR_LOGS(, LOG_ARGS))
-
-#define check_const_added(patch, buffer, val) \
-       _check_const_added(patch, buffer, val FOR_LOGS(, LOG_ARGS))
-
 #define patch_instr_init(trans_struct, type) \
        _patch_instr_init(trans_struct, type FOR_LOGS(, LOG_ARGS))
-
-#define patch_const(trans_struct, patch_instr) \
-       _patch_const(trans_struct, patch_instr FOR_LOGS(, LOG_ARGS))
 
 #define patch_std_func(trans_struct, patch_instr) \
        _patch_std_func(trans_struct, patch_instr FOR_LOGS(, LOG_ARGS))
@@ -100,9 +76,6 @@ int _get_jump_res_dst(Trans_entity* trans_entity, Jumps* jumps, unsigned int pat
 
 #define patch_instructions_resize(patch_struct) \
        _patch_instructions_resize(patch_struct FOR_LOGS(, LOG_ARGS))
-
-#define add_patch_instr_const(trans_struct, const_val) \
-       _add_patch_instr_const(trans_struct, const_val FOR_LOGS(, LOG_ARGS))
 
 #define add_patch_instr_std_func(trans_struct, std_func_code) \
        _add_patch_instr_std_func(trans_struct, std_func_code FOR_LOGS(, LOG_ARGS))

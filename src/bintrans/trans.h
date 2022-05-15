@@ -154,9 +154,7 @@ int _init_and_patch_pop_xmmi  (Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS)
 
 int _init_and_patch_mov_r13d_0(Trans_struct* trans_struct FOR_LOGS(, LOG_PARAMS));
 
-
 //===============================================
-
 
 #define init_and_patch_cvtss2si(trans_struct) \
        _init_and_patch_cvtss2si(trans_struct FOR_LOGS(, LOG_ARGS))
